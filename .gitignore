@@ -85,6 +85,11 @@ yarn-error.log
 # pnpm
 pnpm-debug.log*
 
+# package manager lock files (only pnpm allowed)
+package-lock.json
+yarn.lock
+bun.lockb
+
 # turbo
 .turbo
 

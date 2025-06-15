@@ -1,0 +1,115 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { DemoElement } from '@/components/demo';
+import { Sparkles, Zap, Shield, Rocket } from 'lucide-react';
+
+export default function MagicButtonPage() {
+  return (
+    <div className="max-w-6xl mx-auto space-y-12">
+      {/* Hero Section */}
+      <section className="text-center py-12">
+        <div className="inline-flex items-center justify-center p-2 bg-[#233862]/10 rounded-full mb-6">
+          <Sparkles className="w-8 h-8 text-[#233862]" />
+        </div>
+        <h1 className="text-5xl font-bold text-[#233862] mb-4">
+          Welcome to Magic Button
+        </h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+          Your intelligent AI assistant powered by Anthropic Claude, designed to help you work smarter and faster.
+        </p>
+        <div className="flex gap-4 justify-center">
+          <DemoElement id="get-started-button">
+            <Button size="lg" className="bg-[#233862] hover:bg-[#233862]/90">
+              Get Started
+            </Button>
+          </DemoElement>
+          <DemoElement id="learn-more-button">
+            <Button size="lg" variant="outline" className="border-[#233862] text-[#233862]">
+              Learn More
+            </Button>
+          </DemoElement>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section>
+        <h2 className="text-3xl font-bold text-[#233862] text-center mb-8">
+          Key Features
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <DemoElement id="feature-ai-powered">
+            <Card className="border-gray-200 hover:border-[#233862]/30 transition-colors">
+              <CardHeader>
+                <div className="w-12 h-12 bg-[#233862]/10 rounded-lg flex items-center justify-center mb-4">
+                  <Zap className="w-6 h-6 text-[#233862]" />
+                </div>
+                <CardTitle className="text-[#233862]">AI-Powered</CardTitle>
+                <CardDescription>
+                  Leverages Anthropic Claude for intelligent assistance
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Get smart suggestions, automated workflows, and natural language interactions.
+                </p>
+              </CardContent>
+            </Card>
+          </DemoElement>
+
+          <DemoElement id="feature-secure">
+            <Card className="border-gray-200 hover:border-[#233862]/30 transition-colors">
+              <CardHeader>
+                <div className="w-12 h-12 bg-[#233862]/10 rounded-lg flex items-center justify-center mb-4">
+                  <Shield className="w-6 h-6 text-[#233862]" />
+                </div>
+                <CardTitle className="text-[#233862]">Secure by Design</CardTitle>
+                <CardDescription>
+                  Enterprise-grade security with Azure AD integration
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Your data is protected with industry-standard authentication and encryption.
+                </p>
+              </CardContent>
+            </Card>
+          </DemoElement>
+
+          <DemoElement id="feature-scalable">
+            <Card className="border-gray-200 hover:border-[#233862]/30 transition-colors">
+              <CardHeader>
+                <div className="w-12 h-12 bg-[#233862]/10 rounded-lg flex items-center justify-center mb-4">
+                  <Rocket className="w-6 h-6 text-[#233862]" />
+                </div>
+                <CardTitle className="text-[#233862]">Highly Scalable</CardTitle>
+                <CardDescription>
+                  Built on Next.js for optimal performance
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Scales effortlessly from prototype to production with modern infrastructure.
+                </p>
+              </CardContent>
+            </Card>
+          </DemoElement>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-[#233862]/5 rounded-2xl p-12 text-center">
+        <h2 className="text-3xl font-bold text-[#233862] mb-4">
+          Ready to Get Started?
+        </h2>
+        <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          Experience the power of AI-assisted development. Create your own Magic Button assistant today.
+        </p>
+        <DemoElement id="start-building-button">
+          <Button size="lg" className="bg-[#233862] hover:bg-[#233862]/90">
+            Start Building
+          </Button>
+        </DemoElement>
+      </section>
+    </div>
+  );
+}
