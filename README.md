@@ -1,111 +1,177 @@
-# Magic Button Assistant Template
+# Next.js Enterprise Template
 
-A Next.js template for creating specialized Magic Button Assistant applications.
+A production-ready Next.js template with authentication, feature flags, and comprehensive testing infrastructure.
 
 ## Features
 
-- **Next.js 14** with App Router
-- **OpenTelemetry** instrumentation for observability
-- **shadcn/ui** components for beautiful UI
-- **Azure AD authentication** with MSAL
-- **TypeScript** for type safety
-- **Tailwind CSS** for styling
-- **Claude AI** integration ready
+- 🔐 **Azure AD Authentication** - Enterprise-ready authentication with MSAL
+- 🚀 **Feature Flags** - Ring-based feature deployment (Ring 1-4)
+- 🧪 **Testing Infrastructure** - Unit & E2E tests with factories and DI
+- 📊 **OpenTelemetry** - Built-in observability and monitoring
+- 🎨 **UI Components** - Shadcn/ui with Tailwind CSS
+- 🌙 **Dark Mode** - Theme switching support
+- 📝 **TypeScript** - Full type safety
+- 🔧 **Developer Experience** - ESLint, Prettier, hot reload
+- 🤖 **Claude AI Ready** - Anthropic integration prepared
 
-## Getting Started
+## Quick Start
 
-### 1. Clone and Setup
+### Use this template
+
+Click the "Use this template" button above or use the GitHub CLI:
 
 ```bash
-# Copy this template to your new project
-cp -r assistants/template assistants/your-project-name
-cd assistants/your-project-name
+gh repo create my-app --template magicbutton/nextjs-template
+```
 
-# Install dependencies
+### Local Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/your-app.git
+cd your-app
+```
+
+2. Install dependencies:
+```bash
 npm install
 ```
 
-### 2. Environment Configuration
-
+3. Set up environment variables:
 ```bash
 cp .env.example .env.local
 ```
 
-Fill in your environment variables:
+4. Configure your Azure AD application and update `.env.local`:
+```env
+NEXT_PUBLIC_AZURE_AD_CLIENT_ID=your-client-id
+NEXT_PUBLIC_AZURE_AD_TENANT_ID=your-tenant-id
+NEXT_PUBLIC_AZURE_AD_REDIRECT_URI=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+ANTHROPIC_API_KEY=your-api-key  # Optional
+SESSION_SECRET=your-secret-key
+```
 
-- `NEXT_PUBLIC_AZURE_AD_CLIENT_ID`: Your Azure AD app registration client ID
-- `NEXT_PUBLIC_AZURE_AD_TENANT_ID`: Your Azure AD tenant ID
-- `ANTHROPIC_API_KEY`: Your Anthropic Claude API key
-- `SESSION_SECRET`: A random string for session security
-
-### 3. Customize for Your Use Case
-
-Replace "XXX" throughout the codebase with your specific use case:
-
-1. **Update package.json**: Change the name field
-2. **Update app/layout.tsx**: Modify title and description
-3. **Update app/page.tsx**: Customize the homepage content
-4. **Add your specific components**: Create specialized UI for your domain
-
-### 4. Development
-
+5. Run the development server:
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application.
+Open [http://localhost:3000](http://localhost:3000) to see your app.
 
 ## Project Structure
 
 ```
 ├── app/                    # Next.js App Router
-│   ├── globals.css        # Global styles
+│   ├── api/               # API routes
 │   ├── layout.tsx         # Root layout
-│   ├── page.tsx          # Homepage
-│   └── providers.tsx     # Context providers
-├── components/
-│   └── ui/               # shadcn/ui components
-├── lib/
+│   └── page.tsx           # Home page
+├── components/            # React components
+│   ├── ui/               # Shadcn/ui components
+│   └── features/         # Feature components
+├── lib/                   # Core utilities
 │   ├── auth/             # Authentication logic
-│   └── utils.ts          # Utility functions
-├── hooks/                # Custom React hooks
-├── public/               # Static assets
-├── instrumentation.ts    # OpenTelemetry setup
-└── package.json
+│   ├── features/         # Feature flag system
+│   ├── di/               # Dependency injection
+│   └── demo/             # Demo mode utilities
+├── hooks/                 # Custom React hooks
+├── tests/                 # Test infrastructure
+│   ├── factories/        # Test data factories
+│   ├── e2e/              # Playwright E2E tests
+│   └── utils/            # Test utilities
+└── public/               # Static assets
 ```
 
-## Customization Guide
+## Feature Ring System
 
-### Adding Domain-Specific Features
+The template includes a ring-based feature deployment system:
 
-1. **Create specialized components** in `/components`
-2. **Add API routes** in `/app/api`
-3. **Implement custom hooks** in `/hooks`
-4. **Add domain logic** in `/lib`
+- **Ring 1**: Experimental features (high risk)
+- **Ring 2**: Preview features (medium risk)
+- **Ring 3**: Beta features (low risk)
+- **Ring 4**: Stable features (production ready)
 
-### Integrating with Claude AI
+### Using Feature Gates
 
-The template is ready for Claude integration. Add your API routes and streaming logic:
+```tsx
+import { FeatureGate } from '@/components/features/FeatureGate';
+
+<FeatureGate featureId="experimental-chat">
+  <ExperimentalChat />
+</FeatureGate>
+```
+
+### Defining Features
+
+Edit `lib/features/constants.ts`:
 
 ```typescript
-// app/api/chat/route.ts
-import { anthropic } from '@anthropic-ai/sdk';
-
-export async function POST(req: Request) {
-  // Your Claude integration here
-}
+export const FEATURES = {
+  MY_FEATURE: {
+    id: 'my-feature',
+    name: 'My Feature',
+    description: 'Description of my feature',
+    ring: 2, // Preview feature
+    category: 'UI',
+  },
+};
 ```
 
-### Authentication
+## Testing
 
-The template includes Azure AD authentication via MSAL. Users must authenticate before accessing the application.
+### Unit Tests
 
-### Observability
+```bash
+npm run test:unit              # Run all unit tests
+npm run test:unit:watch        # Watch mode
+npm run test:unit:coverage     # Coverage report
+```
 
-OpenTelemetry is pre-configured for:
-- **Traces**: HTTP requests, database calls
-- **Metrics**: Custom application metrics
-- **Logs**: Structured logging
+### E2E Tests
+
+```bash
+npm run test:e2e              # Run all E2E tests
+npm run test:e2e:ui           # Playwright UI mode
+npm run test:e2e:headed       # Run in headed browser
+```
+
+### Test Factories
+
+Create test data using factories:
+
+```typescript
+import { factories } from '@/tests/factories';
+
+const user = await factories.user.admin().create();
+const features = await factories.feature.experimental().createMany(5);
+```
+
+## Authentication
+
+The template uses Azure AD for authentication. Users must authenticate to access the application.
+
+### Demo Mode
+
+For development without Azure AD:
+1. Set `NEXT_PUBLIC_DEMO_MODE=true` in `.env.local`
+2. Use the demo login button on the homepage
+
+## Deployment
+
+### Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmagicbutton%2Fnextjs-template)
+
+### Environment Variables
+
+Configure these in your deployment platform:
+
+- `NEXT_PUBLIC_AZURE_AD_CLIENT_ID`
+- `NEXT_PUBLIC_AZURE_AD_TENANT_ID`
+- `NEXT_PUBLIC_AZURE_AD_REDIRECT_URI`
+- `NEXT_PUBLIC_APP_URL`
+- `SESSION_SECRET`
+- `ANTHROPIC_API_KEY` (optional)
 
 ## Scripts
 
@@ -114,17 +180,43 @@ OpenTelemetry is pre-configured for:
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 - `npm run typecheck` - TypeScript type checking
+- `npm test` - Run all tests
 
-## Environment Variables
+## Customization Guide
 
-See `.env.example` for all required environment variables.
+### 1. Update Branding
+
+- Replace "XXX" placeholders in `package.json` and `app/layout.tsx`
+- Update `public/` assets with your branding
+- Customize theme in `app/globals.css`
+
+### 2. Add Features
+
+- Create new components in `/components`
+- Add API routes in `/app/api`
+- Implement business logic in `/lib`
+
+### 3. Configure Authentication
+
+- Set up your Azure AD application
+- Update redirect URIs for your domains
+- Configure authentication scopes as needed
 
 ## Contributing
 
-1. Make changes specific to your use case
-2. Test thoroughly
-3. Update documentation as needed
+This is a template repository. To contribute to the template itself:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
 ## License
 
-This template is part of the Magic Button Cloud project.
+MIT License - see LICENSE file for details
+
+## Support
+
+- Documentation: [docs.magicbutton.cloud](https://docs.magicbutton.cloud)
+- Issues: [GitHub Issues](https://github.com/magicbutton/nextjs-template/issues)
+- Discussions: [GitHub Discussions](https://github.com/magicbutton/nextjs-template/discussions)
