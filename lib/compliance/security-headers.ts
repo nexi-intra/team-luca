@@ -34,9 +34,14 @@ export function getSecurityHeaders(nonce?: string): SecurityHeaders {
 }
 
 export function getContentSecurityPolicy(nonce: string): string {
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
   const directives = [
     `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: 'unsafe-inline'`,
+    // In development, we need 'unsafe-eval' for Next.js hot reload
+    isDevelopment 
+      ? `script-src 'self' 'unsafe-eval' 'unsafe-inline'`
+      : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: 'unsafe-inline'`,
     `style-src 'self' 'unsafe-inline'`,
     `img-src 'self' data: https: blob:`,
     `font-src 'self' data:`,

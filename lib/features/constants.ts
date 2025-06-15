@@ -44,6 +44,13 @@ export const FEATURES: Record<string, Feature> = {
     ring: 1,
     category: 'UI',
   },
+  SIDEBAR_PANEL: {
+    id: 'sidebar-panel',
+    name: 'Sidebar Panel',
+    description: 'Collapsible sidebar navigation with mobile support',
+    ring: 1,
+    category: 'UI',
+  },
 };
 
 export function getAllFeatures(): Feature[] {

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { LanguageSelector } from './language-selector';
 import { Button } from './ui/button';
 import { Menu } from 'lucide-react';
+import { CommandTrigger } from './command/CommandTrigger';
 import {
   Sheet,
   SheetContent,
@@ -50,9 +51,20 @@ export function MainHeader() {
             >
               Authentication
             </Link>
+            <Link
+              href="/demo/sidebar"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Sidebar (Ring 1)
+            </Link>
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
+          <CommandTrigger 
+            variant="ghost"
+            size="sm"
+            className="hidden sm:flex"
+          />
           <LanguageSelector 
             variant="ghost" 
             size="sm"
@@ -92,6 +104,12 @@ export function MainHeader() {
                   className="text-sm font-medium transition-colors hover:text-primary"
                 >
                   Authentication
+                </Link>
+                <Link
+                  href="/demo/sidebar"
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Sidebar (Ring 1)
                 </Link>
               </nav>
               <div className="mt-6">

@@ -29,9 +29,9 @@ export function Breadcrumb({ className, showOnHomePage = false }: BreadcrumbProp
   return (
     <nav
       aria-label="Breadcrumb"
-      className={cn('flex items-center space-x-1 text-sm', className)}
+      className={cn('flex items-center text-sm', className)}
     >
-      <ol className="flex items-center space-x-1">
+      <ol className="flex items-center flex-wrap gap-1">
         {items.map((item, index) => (
           <li key={item.href} className="flex items-center">
             {index > 0 && (
@@ -40,24 +40,24 @@ export function Breadcrumb({ className, showOnHomePage = false }: BreadcrumbProp
             
             {item.isCurrentPage ? (
               <span
-                className="text-gray-700 font-medium"
+                className="text-gray-700 font-medium flex items-center"
                 aria-current="page"
               >
                 {index === 0 ? (
                   <Home className="h-4 w-4" aria-label="Home" />
                 ) : (
-                  item.label
+                  <span className="max-w-[200px] truncate sm:max-w-none">{item.label}</span>
                 )}
               </span>
             ) : (
               <Link
                 href={item.href}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
+                className="text-gray-500 hover:text-gray-700 transition-colors flex items-center"
               >
                 {index === 0 ? (
                   <Home className="h-4 w-4" aria-label="Home" />
                 ) : (
-                  item.label
+                  <span className="max-w-[150px] truncate sm:max-w-none">{item.label}</span>
                 )}
               </Link>
             )}

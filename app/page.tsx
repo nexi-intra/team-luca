@@ -3,12 +3,10 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import { MainHeader } from '@/components/main-header';
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      <MainHeader />
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           {/* Hero Section */}

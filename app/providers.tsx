@@ -12,6 +12,15 @@ import { AnnounceProvider } from '@/components/accessibility/announce-provider';
 import { AccessibilityToolbar } from '@/components/accessibility/accessibility-toolbar';
 import { BreadcrumbProvider } from '@/lib/breadcrumb/context';
 import { LanguageProvider } from '@/lib/i18n';
+import { CommandPaletteProvider } from '@/lib/command/context';
+import { CommandPalette } from '@/components/command/CommandPalette';
+import { Toaster } from 'sonner';
+import dynamic from 'next/dynamic';
+
+// Lazy load DevPanel only in development
+const DevPanel = dynamic(() => import('@/components/dev-tools/DevPanel'), {
+  ssr: false,
+});
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const msalInstance = getMsalInstance();
@@ -27,13 +36,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 defaultTheme="system"
                 enableSystem
                 disableTransitionOnChange
+                storageKey="magic-button-theme"
               >
                 <AnnounceProvider>
                   <LanguageProvider>
                     <BreadcrumbProvider>
-                      {children}
-                      <ReauthNotification />
-                      <AccessibilityToolbar />
+                      <CommandPaletteProvider>
+                        {children}
+                        <CommandPalette />
+                        <ReauthNotification />
+                        <AccessibilityToolbar />
+                        <Toaster />
+                        <DevPanel />
+                      </CommandPaletteProvider>
                     </BreadcrumbProvider>
                   </LanguageProvider>
                 </AnnounceProvider>

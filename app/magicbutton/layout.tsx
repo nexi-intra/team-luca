@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { BreadcrumbContainer } from '@/components/navigation/BreadcrumbContainer';
+import { MagicButtonFooter } from '@/components/navigation/MagicButtonFooter';
 
 export default function MagicButtonLayout({
   children,
@@ -77,27 +78,7 @@ export default function MagicButtonLayout({
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white/50 mt-auto">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <Image
-                src="/magic-button-logo.svg"
-                alt="Magic Button"
-                width={24}
-                height={24}
-                className="rounded"
-              />
-              <span className="text-sm text-[#233862]">
-                © 2024 Magic Button Assistant
-              </span>
-            </div>
-            <div className="text-sm text-gray-600">
-              Built with Next.js and Anthropic Claude
-            </div>
-          </div>
-        </div>
-      </footer>
+      <MagicButtonFooter />
     </div>
   );
 }
