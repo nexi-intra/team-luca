@@ -1,0 +1,198 @@
+name: Build and Deploy to Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'release/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_AZURE_AD_CLIENT_ID=${{ vars.NEXT_PUBLIC_AZURE_AD_CLIENT_ID }}
+            NEXT_PUBLIC_AZURE_AD_TENANT_ID=${{ vars.NEXT_PUBLIC_AZURE_AD_TENANT_ID }}
+            NEXT_PUBLIC_AZURE_AD_REDIRECT_URI=${{ vars.NEXT_PUBLIC_AZURE_AD_REDIRECT_URI }}
+            NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL }}
+            NEXT_PUBLIC_LOG_LEVEL=${{ vars.NEXT_PUBLIC_LOG_LEVEL }}
+
+  deploy-to-k8s:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'development' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set deployment name
+        id: deployment
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          ORG_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+          BRANCH_NAME=$(echo "${{ github.ref_name }}" | sed 's/\//-/g')
+          
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            DEPLOYMENT_NAME="${ORG_NAME}-${REPO_NAME}"
+          else
+            DEPLOYMENT_NAME="${ORG_NAME}-${REPO_NAME}-${BRANCH_NAME}"
+          fi
+          
+          # Ensure the name is valid for K8s (lowercase, alphanumeric, hyphens)
+          DEPLOYMENT_NAME=$(echo "$DEPLOYMENT_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
+          
+          echo "deployment-name=$DEPLOYMENT_NAME" >> $GITHUB_OUTPUT
+          echo "branch-name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
+
+      - name: Create namespace if not exists
+        run: |
+          kubectl create namespace ${{ vars.K8S_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create image pull secret
+        run: |
+          kubectl create secret docker-registry ${{ steps.deployment.outputs.deployment-name }}-registry \
+            --docker-server=${{ env.REGISTRY }} \
+            --docker-username=${{ github.actor }} \
+            --docker-password=${{ secrets.GITHUB_TOKEN }} \
+            --namespace=${{ vars.K8S_NAMESPACE }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Prepare K8s manifests
+        run: |
+          # Copy manifests to temp directory
+          mkdir -p temp-k8s
+          cp k8s/*.yaml temp-k8s/
+          
+          # Replace variables in manifests
+          for file in temp-k8s/*.yaml; do
+            sed -i "s/\${DEPLOYMENT_NAME}/${{ steps.deployment.outputs.deployment-name }}/g" "$file"
+            sed -i "s/\${K8S_NAMESPACE}/${{ vars.K8S_NAMESPACE }}/g" "$file"
+            sed -i "s/\${IMAGE_NAME}/${{ env.REGISTRY }}\/${{ env.IMAGE_NAME }}/g" "$file"
+            sed -i "s/\${IMAGE_TAG}/${{ github.sha }}/g" "$file"
+            sed -i "s/\${GIT_SHA}/${{ github.sha }}/g" "$file"
+            sed -i "s/\${BRANCH_NAME}/${{ steps.deployment.outputs.branch-name }}/g" "$file"
+            sed -i "s/\${GITHUB_REPOSITORY}/${{ github.repository }}/g" "$file"
+            sed -i "s/\${REPLICAS}/${{ vars.REPLICAS || '2' }}/g" "$file"
+            sed -i "s/\${APP_URL}/${{ vars.APP_URL }}/g" "$file"
+            sed -i "s/\${INGRESS_HOST}/${{ vars.INGRESS_HOST }}/g" "$file"
+            
+            # Public vars from GitHub Variables
+            sed -i "s/\${NEXT_PUBLIC_AZURE_AD_CLIENT_ID}/${{ vars.NEXT_PUBLIC_AZURE_AD_CLIENT_ID }}/g" "$file"
+            sed -i "s/\${NEXT_PUBLIC_AZURE_AD_TENANT_ID}/${{ vars.NEXT_PUBLIC_AZURE_AD_TENANT_ID }}/g" "$file"
+            sed -i "s/\${NEXT_PUBLIC_AZURE_AD_REDIRECT_URI}/${{ vars.NEXT_PUBLIC_AZURE_AD_REDIRECT_URI }}/g" "$file"
+            sed -i "s/\${NEXT_PUBLIC_LOG_LEVEL}/${{ vars.NEXT_PUBLIC_LOG_LEVEL || 'INFO' }}/g" "$file"
+            sed -i "s/\${LOG_LEVEL}/${{ vars.LOG_LEVEL || 'INFO' }}/g" "$file"
+            
+            # OpenTelemetry vars
+            sed -i "s/\${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT}/${{ vars.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT }}/g" "$file"
+            sed -i "s/\${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT}/${{ vars.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT }}/g" "$file"
+            sed -i "s/\${OTEL_SAMPLING_RATE}/${{ vars.OTEL_SAMPLING_RATE || '1.0' }}/g" "$file"
+            
+            # Secrets from GitHub Secrets
+            sed -i "s/\${ANTHROPIC_API_KEY}/${{ secrets.ANTHROPIC_API_KEY }}/g" "$file"
+            sed -i "s/\${SESSION_SECRET}/${{ secrets.SESSION_SECRET }}/g" "$file"
+            sed -i "s/\${DATABASE_URL}/${{ secrets.DATABASE_URL }}/g" "$file"
+            sed -i "s/\${REDIS_URL}/${{ secrets.REDIS_URL }}/g" "$file"
+            sed -i "s/\${OTEL_EXPORTER_OTLP_HEADERS}/${{ secrets.OTEL_EXPORTER_OTLP_HEADERS || '{}' }}/g" "$file"
+          done
+
+      - name: Deploy to Kubernetes
+        run: |
+          # Apply manifests in order
+          kubectl apply -f temp-k8s/secret.yaml
+          kubectl apply -f temp-k8s/configmap.yaml
+          kubectl apply -f temp-k8s/deployment.yaml
+          kubectl apply -f temp-k8s/service.yaml
+          
+          # Apply ingress only if INGRESS_HOST is set
+          if [ -n "${{ vars.INGRESS_HOST }}" ]; then
+            kubectl apply -f temp-k8s/ingress.yaml
+          fi
+          
+          # Wait for deployment to be ready
+          kubectl rollout status deployment/${{ steps.deployment.outputs.deployment-name }} \
+            -n ${{ vars.K8S_NAMESPACE }} \
+            --timeout=5m
+
+      - name: Verify deployment
+        run: |
+          echo "Deployment Status:"
+          kubectl get deployment ${{ steps.deployment.outputs.deployment-name }} -n ${{ vars.K8S_NAMESPACE }}
+          
+          echo -e "\nPods:"
+          kubectl get pods -l app=${{ steps.deployment.outputs.deployment-name }} -n ${{ vars.K8S_NAMESPACE }}
+          
+          echo -e "\nServices:"
+          kubectl get service ${{ steps.deployment.outputs.deployment-name }} -n ${{ vars.K8S_NAMESPACE }}
+          
+          if [ -n "${{ vars.INGRESS_HOST }}" ]; then
+            echo -e "\nIngress:"
+            kubectl get ingress ${{ steps.deployment.outputs.deployment-name }} -n ${{ vars.K8S_NAMESPACE }}
+          fi
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf kubeconfig temp-k8s

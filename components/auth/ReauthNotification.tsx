@@ -7,6 +7,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Clock, RefreshCw, X } from 'lucide-react';
+import { createLogger } from '@/lib/logger';
+
+const logger = createLogger('ReauthNotification');
 
 export function ReauthNotification() {
   const { 
@@ -44,7 +47,7 @@ export function ReauthNotification() {
       await refreshSession();
       setShowNotification(false);
     } catch (error) {
-      console.error('Failed to refresh session:', error);
+      logger.error('Failed to refresh session:', error);
     } finally {
       setIsRefreshing(false);
     }

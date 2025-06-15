@@ -1,0 +1,78 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+            - "http://localhost:*"
+            - "https://localhost:*"
+          allowed_headers: ["*"]
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+  
+  memory_limiter:
+    limit_mib: 512
+    spike_limit_mib: 128
+    check_interval: 5s
+
+  attributes:
+    actions:
+      - key: test.environment
+        value: integration
+        action: insert
+      - key: test.run_id
+        from_attribute: run_id
+        action: insert
+
+exporters:
+  otlp:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    namespace: magicbutton
+    const_labels:
+      environment: test
+  
+  debug:
+    verbosity: detailed
+
+service:
+  telemetry:
+    logs:
+      level: debug
+    metrics:
+      level: detailed
+      address: 0.0.0.0:8888
+
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, attributes]
+      exporters: [otlp, debug]
+    
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, attributes]
+      exporters: [prometheus, debug]
+
+  extensions: [health_check, pprof, zpages]
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+    path: /
+    
+  pprof:
+    endpoint: 0.0.0.0:1777
+    
+  zpages:
+    endpoint: 0.0.0.0:55679

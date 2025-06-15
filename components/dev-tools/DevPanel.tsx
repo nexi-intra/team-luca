@@ -29,6 +29,9 @@ import { cn } from "@/lib/utils";
 import { useFeatureRingContext } from "@/lib/features/context";
 import { getRingName, FEATURE_RINGS } from "@/lib/features/constants";
 import type { FeatureRing } from "@/lib/features/constants";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger('DevPanel');
 
 interface Position {
   x: number;
@@ -77,18 +80,18 @@ export default function DevPanel() {
 
   const handleRingChange = (value: string) => {
     const newRing = parseInt(value) as FeatureRing;
-    console.log('DevPanel: Changing ring from', userRing, 'to', newRing);
+    logger.info('Changing ring from', userRing, 'to', newRing);
     setUserRing(newRing);
     
     // Force a small delay to see the change
     setTimeout(() => {
-      console.log('DevPanel: Ring after change:', userRing);
+      logger.verbose('Ring after change:', userRing);
     }, 100);
   };
 
   // Debug current ring
   useEffect(() => {
-    console.log('DevPanel - Current user ring:', userRing);
+    logger.verbose('Current user ring:', userRing);
   }, [userRing]);
 
   useEffect(() => {
@@ -222,7 +225,7 @@ export default function DevPanel() {
         }
       });
     } catch (error) {
-      console.error("Screenshot failed:", error);
+      logger.error("Screenshot failed:", error);
       alert("Failed to capture screenshot");
     }
   };

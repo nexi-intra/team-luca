@@ -21,9 +21,11 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:integration": "jest --testPathPattern=integration --runInBand",
+    "test:telemetry": "./scripts/test-telemetry.sh",
     "vercel:init": "node scripts/vercel-init.js",
     "git:env-sync": "node scripts/env-sync.js",
-    "git:env-sync:force": "node scripts/env-sync.js --force"
+    "git:env-sync:force": "node scripts/env-sync.js --force",
+    "docker:env": "./scripts/setup-docker-env.sh"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.12",

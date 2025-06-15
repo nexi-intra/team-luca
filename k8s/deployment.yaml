@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOYMENT_NAME}
+  namespace: ${K8S_NAMESPACE}
+  labels:
+    app: ${DEPLOYMENT_NAME}
+    version: ${GIT_SHA}
+    branch: ${BRANCH_NAME}
+    repo: ${GITHUB_REPOSITORY}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: ${DEPLOYMENT_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOYMENT_NAME}
+        version: ${GIT_SHA}
+    spec:
+      containers:
+      - name: nextjs
+        image: ${IMAGE_NAME}:${IMAGE_TAG}
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3000"
+        - name: NEXT_PUBLIC_APP_URL
+          value: "${APP_URL}"
+        envFrom:
+        - secretRef:
+            name: ${DEPLOYMENT_NAME}-secrets
+        - configMapRef:
+            name: ${DEPLOYMENT_NAME}-config
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      imagePullSecrets:
+      - name: ${DEPLOYMENT_NAME}-registry

@@ -1,56 +1,66 @@
-# Build stage
-FROM node:20-alpine AS builder
+# Multi-stage build for Next.js application
 
-# Add build arguments
-ARG BUILDTIME
-ARG VERSION
-ARG REVISION
-
-# Set working directory
+# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY package.json package-lock.json* pnpm-lock.yaml* ./
 
-# Install dependencies
-RUN npm ci --only=production && \
-    npm cache clean --force
+# Install dependencies based on lockfile
+RUN \
+  if [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm install --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f yarn.lock ]; then corepack enable yarn && yarn install --frozen-lockfile; \
+  else echo "No lockfile found." && exit 1; \
+  fi
 
-# Copy source code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Production stage
-FROM node:20-alpine AS runner
-
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
-
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
-
-# Set working directory
+# Stage 2: Builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copy necessary files from builder
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+# Build arguments for environment variables
+ARG NEXT_PUBLIC_AZURE_AD_CLIENT_ID
+ARG NEXT_PUBLIC_AZURE_AD_TENANT_ID
+ARG NEXT_PUBLIC_AZURE_AD_REDIRECT_URI
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_LOG_LEVEL
 
-# Add labels
-LABEL org.opencontainers.image.created="${BUILDTIME}"
-LABEL org.opencontainers.image.version="${VERSION}"
-LABEL org.opencontainers.image.revision="${REVISION}"
-LABEL org.opencontainers.image.title="Magic Button Assistant Template"
-LABEL org.opencontainers.image.description="Next.js template for Magic Button Assistants"
+# Set environment variables for build
+ENV NEXT_PUBLIC_AZURE_AD_CLIENT_ID=$NEXT_PUBLIC_AZURE_AD_CLIENT_ID
+ENV NEXT_PUBLIC_AZURE_AD_TENANT_ID=$NEXT_PUBLIC_AZURE_AD_TENANT_ID
+ENV NEXT_PUBLIC_AZURE_AD_REDIRECT_URI=$NEXT_PUBLIC_AZURE_AD_REDIRECT_URI
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ENV NEXT_PUBLIC_LOG_LEVEL=$NEXT_PUBLIC_LOG_LEVEL
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Build the application
+RUN \
+  if [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm build; \
+  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f yarn.lock ]; then corepack enable yarn && yarn build; \
+  fi
+
+# Stage 3: Runner
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+# Copy necessary files
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+# Set ownership
+RUN chown -R nextjs:nodejs /app
 
 # Switch to non-root user
 USER nextjs
@@ -58,8 +68,14 @@ USER nextjs
 # Expose port
 EXPOSE 3000
 
-# Use dumb-init to handle signals properly
-ENTRYPOINT ["dumb-init", "--"]
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); })"
 
 # Start the application
 CMD ["node", "server.js"]
