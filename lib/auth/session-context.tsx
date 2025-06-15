@@ -14,14 +14,14 @@ interface SessionContextValue {
 const SessionContext = createContext<SessionContextValue | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, account, getAccessToken } = useAuth();
+  const { isAuthenticated, user, session } = useAuth();
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const establishSession = useCallback(async () => {
-    if (!isAuthenticated || !account) {
+    if (!isAuthenticated || !user || !session) {
       setIsSessionActive(false);
       setIsLoading(false);
       return;
@@ -31,23 +31,17 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       setError(null);
 
-      // Get the access token
-      const accessToken = await getAccessToken();
-      if (!accessToken) {
-        throw new Error('Failed to get access token');
-      }
-
-      // Exchange the access token for a session cookie
+      // Exchange the auth token for a session cookie
       const response = await fetch('/api/auth/session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${session.token}`,
         },
         body: JSON.stringify({
-          userId: account.homeAccountId || account.localAccountId,
-          email: account.username,
-          name: account.name || account.username,
+          userId: user.id,
+          email: user.email,
+          name: user.displayName,
         }),
       });
 
@@ -67,7 +61,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, account, getAccessToken, router]);
+  }, [isAuthenticated, user, session, router]);
 
   const refreshSession = useCallback(async () => {
     if (!isAuthenticated) {
@@ -97,13 +91,13 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
   // Establish session when user logs in
   useEffect(() => {
-    if (isAuthenticated && account && !isSessionActive) {
+    if (isAuthenticated && user && !isSessionActive) {
       establishSession();
     } else if (!isAuthenticated) {
       setIsSessionActive(false);
       setIsLoading(false);
     }
-  }, [isAuthenticated, account, isSessionActive, establishSession]);
+  }, [isAuthenticated, user, isSessionActive, establishSession]);
 
   // Set up session refresh interval (refresh every 30 minutes)
   useEffect(() => {

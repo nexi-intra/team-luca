@@ -40,7 +40,7 @@ export class SessionManager {
   static async verifySession(token: string): Promise<SessionPayload | null> {
     try {
       const { payload } = await jwtVerify(token, SessionManager.getSecret());
-      return payload as SessionPayload;
+      return payload as unknown as SessionPayload;
     } catch (error) {
       console.error('Session verification failed:', error);
       return null;
@@ -119,8 +119,8 @@ export async function requireAuth(): Promise<SessionPayload> {
 // Helper function for API routes
 export function withAuth<T extends (...args: any[]) => any>(
   handler: T
-): (...args: Parameters<T>) => Promise<ReturnType<T> | NextResponse> {
-  return async (...args: Parameters<T>) => {
+): (...args: Parameters<T>) => Promise<NextResponse> {
+  return async (...args: Parameters<T>): Promise<NextResponse> => {
     try {
       const request = args[0] as NextRequest;
       const session = await SessionManager.getSession(request);
@@ -135,7 +135,7 @@ export function withAuth<T extends (...args: any[]) => any>(
       // Add session to request context
       (request as any).session = session;
       
-      return handler(...args);
+      return await handler(...args);
     } catch (error) {
       console.error('Auth middleware error:', error);
       return NextResponse.json(

@@ -23,6 +23,7 @@ jest.mock('next/navigation', () => ({
 
 // Mock MSAL
 jest.mock('@azure/msal-react', () => ({
+  MsalProvider: ({ children }) => children,
   useMsal: () => ({
     instance: {
       loginPopup: jest.fn(),

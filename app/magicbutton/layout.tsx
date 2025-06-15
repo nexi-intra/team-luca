@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { BreadcrumbContainer } from '@/components/navigation/BreadcrumbContainer';
 
 export default function MagicButtonLayout({
   children,
@@ -45,6 +46,18 @@ export default function MagicButtonLayout({
                 Demo
               </Link>
               <Link 
+                href="/magicbutton/auth-demo"
+                className="text-[#233862] hover:text-[#233862]/80 transition-colors font-medium"
+              >
+                Auth Demo
+              </Link>
+              <Link 
+                href="/demo/language"
+                className="text-[#233862] hover:text-[#233862]/80 transition-colors font-medium"
+              >
+                Language
+              </Link>
+              <Link 
                 href="/"
                 className="text-[#233862] hover:text-[#233862]/80 transition-colors font-medium"
               >
@@ -54,6 +67,9 @@ export default function MagicButtonLayout({
           </div>
         </div>
       </header>
+
+      {/* Breadcrumb */}
+      <BreadcrumbContainer />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">

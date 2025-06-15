@@ -4,7 +4,7 @@ import { MsalProvider } from '@azure/msal-react';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { ThemeProvider } from 'next-themes';
 import { FeatureRingProvider } from '@/lib/features';
-import { AuthProvider } from '@/lib/auth/auth-context';
+import { AuthProviderWrapper } from '@/lib/auth/auth-provider-wrapper';
 import { DIContainer } from '@/lib/di/container';
 import { createMockMsalInstance } from './mock-msal';
 
@@ -24,13 +24,13 @@ function AllTheProviders({ children, options }: AllTheProvidersProps) {
 
   return (
     <MsalProvider instance={msalInstance}>
-      <AuthProvider>
+      <AuthProviderWrapper>
         <FeatureRingProvider defaultRing={options?.initialFeatureRing || 4}>
           <ThemeProvider attribute="class" defaultTheme="light">
             {children}
           </ThemeProvider>
         </FeatureRingProvider>
-      </AuthProvider>
+      </AuthProviderWrapper>
     </MsalProvider>
   );
 }

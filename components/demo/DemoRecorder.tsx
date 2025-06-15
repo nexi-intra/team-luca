@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Record, Square, Download, Upload } from 'lucide-react';
+import { Circle, Square, Download, Upload } from 'lucide-react';
 import { DemoStep, DemoScript } from '@/lib/demo/types';
 import { generateMarkdownScript } from '@/lib/demo/parser';
 import { useDemoContext } from '@/lib/demo/context';
@@ -189,7 +189,7 @@ export function DemoRecorder() {
         <div className="flex gap-2">
           {!isRecording ? (
             <Button onClick={startRecording} className="flex-1">
-              <Record className="h-4 w-4 mr-2" />
+              <Circle className="h-4 w-4 mr-2" />
               Start Recording
             </Button>
           ) : (
@@ -211,7 +211,7 @@ export function DemoRecorder() {
                       {index + 1}. {step.type.toUpperCase()}
                     </span>
                     {step.target && <span className="ml-2">{step.target}</span>}
-                    {step.value && <span className="ml-2 text-muted-foreground">"{step.value}"</span>}
+                    {step.value && <span className="ml-2 text-muted-foreground">&quot;{step.value}&quot;</span>}
                   </div>
                 ))}
               </div>

@@ -115,7 +115,7 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
           {!showDetails ? (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                By clicking "Accept All", you agree to the storing of cookies on your device. You can also customize your preferences.
+                By clicking &quot;Accept All&quot;, you agree to the storing of cookies on your device. You can also customize your preferences.
               </p>
               
               <div className="flex flex-col gap-3 sm:flex-row">

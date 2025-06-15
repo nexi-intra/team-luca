@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { CookieConsent } from '@/components/cookie-consent';
+import { AccessibilitySkipLinks } from '@/components/compliance/accessibility-skip-links';
+import { PrivacyBanner } from '@/components/compliance/privacy-banner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -22,19 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <Providers>{children}</Providers>
-        <CookieConsent
-          onAccept={(preferences) => {
-            console.log('Cookie preferences accepted:', preferences);
-            // You can handle analytics initialization here based on preferences
-            if (preferences.analytics) {
-              // Initialize analytics services
-            }
-          }}
-          onDecline={() => {
-            console.log('Cookies declined');
-          }}
-        />
+        <AccessibilitySkipLinks />
+        <Providers>
+          <main id="main-content" role="main">
+            {children}
+          </main>
+        </Providers>
+        <CookieConsent />
+        <PrivacyBanner />
       </body>
     </html>
   );

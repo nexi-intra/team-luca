@@ -74,7 +74,6 @@ interface DemoProviderProps {
 export function DemoProvider({ children }: DemoProviderProps) {
   const [state, dispatch] = useReducer(demoReducer, initialState);
   const elementsRef = useRef<Map<string, HTMLElement>>(new Map());
-  const playIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const executeStep = useCallback(async (step: DemoStep) => {
     dispatch({ type: 'CLEAR_HIGHLIGHTS' });
@@ -271,9 +270,8 @@ export function DemoProvider({ children }: DemoProviderProps) {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (playIntervalRef.current) {
-        clearInterval(playIntervalRef.current);
-      }
+      // Clear any highlights when unmounting
+      dispatch({ type: 'CLEAR_HIGHLIGHTS' });
     };
   }, []);
 
