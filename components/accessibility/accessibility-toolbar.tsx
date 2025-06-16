@@ -13,33 +13,31 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useAccessibility } from '@/hooks/useAccessibility';
+import { useAccessibility } from '@/lib/accessibility/context';
 import { useAnnounce } from './announce-provider';
 
 export function AccessibilityToolbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { fontSize, setFontSize, highContrast } = useAccessibility();
+  const { fontSize, setFontSize, highContrast, setHighContrast } = useAccessibility();
   const { announce } = useAnnounce();
 
   const handleFontSizeChange = (direction: 'increase' | 'decrease') => {
-    const sizes: Array<'normal' | 'large' | 'extra-large'> = ['normal', 'large', 'extra-large'];
-    const currentIndex = sizes.indexOf(fontSize);
-    
-    let newIndex: number;
+    let newSize: number;
     if (direction === 'increase') {
-      newIndex = Math.min(currentIndex + 1, sizes.length - 1);
+      newSize = Math.min(fontSize + 2, 24);
     } else {
-      newIndex = Math.max(currentIndex - 1, 0);
+      newSize = Math.max(fontSize - 2, 12);
     }
     
-    const newSize = sizes[newIndex];
-    setFontSize(newSize);
-    announce(`Font size changed to ${newSize}`);
+    if (newSize !== fontSize) {
+      setFontSize(newSize);
+      announce(`Font size changed to ${newSize} pixels`);
+    }
   };
 
   const toggleHighContrast = () => {
-    document.documentElement.classList.toggle('high-contrast');
-    announce(`High contrast mode ${document.documentElement.classList.contains('high-contrast') ? 'enabled' : 'disabled'}`);
+    setHighContrast(!highContrast);
+    announce(`High contrast mode ${!highContrast ? 'enabled' : 'disabled'}`);
   };
 
   return (
@@ -48,14 +46,14 @@ export function AccessibilityToolbar() {
         <Card className="mb-2 animate-in slide-in-from-bottom-2">
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-medium">Font Size</span>
+              <span className="text-sm font-medium">Font Size ({fontSize}px)</span>
               <div className="flex gap-1">
                 <Button
                   size="icon"
                   variant="outline"
                   className="h-8 w-8"
                   onClick={() => handleFontSizeChange('decrease')}
-                  disabled={fontSize === 'normal'}
+                  disabled={fontSize <= 12}
                   aria-label="Decrease font size"
                 >
                   <ZoomOut className="h-4 w-4" />
@@ -65,7 +63,7 @@ export function AccessibilityToolbar() {
                   variant="outline"
                   className="h-8 w-8"
                   onClick={() => handleFontSizeChange('increase')}
-                  disabled={fontSize === 'extra-large'}
+                  disabled={fontSize >= 24}
                   aria-label="Increase font size"
                 >
                   <ZoomIn className="h-4 w-4" />

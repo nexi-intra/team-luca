@@ -14,6 +14,7 @@ import { LanguageProvider } from '@/lib/i18n';
 import { CommandPaletteProvider } from '@/lib/command/context';
 import { CommandPalette } from '@/components/command/CommandPalette';
 import { Toaster } from 'sonner';
+import { AccessibilityProvider } from '@/lib/accessibility/context';
 import dynamic from 'next/dynamic';
 
 // Lazy load DevPanel only in development
@@ -35,20 +36,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 disableTransitionOnChange
                 storageKey="magic-button-theme"
               >
-                <AnnounceProvider>
-                  <LanguageProvider>
-                    <BreadcrumbProvider>
-                      <CommandPaletteProvider>
-                        {children}
-                        <CommandPalette />
-                        <ReauthNotification />
-                        <AccessibilityToolbar />
-                        <Toaster />
-                        <DevPanel />
-                      </CommandPaletteProvider>
-                    </BreadcrumbProvider>
-                  </LanguageProvider>
-                </AnnounceProvider>
+                <AccessibilityProvider>
+                  <AnnounceProvider>
+                    <LanguageProvider>
+                      <BreadcrumbProvider>
+                        <CommandPaletteProvider>
+                          {children}
+                          <CommandPalette />
+                          <ReauthNotification />
+                          <AccessibilityToolbar />
+                          <Toaster />
+                          <DevPanel />
+                        </CommandPaletteProvider>
+                      </BreadcrumbProvider>
+                    </LanguageProvider>
+                  </AnnounceProvider>
+                </AccessibilityProvider>
               </ThemeProvider>
             </DemoProvider>
           </FeatureRingProvider>

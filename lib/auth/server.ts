@@ -1,4 +1,4 @@
-import { headers } from 'next/headers';
+import { headers, type UnsafeUnwrappedHeaders } from 'next/headers';
 import { SessionPayload } from './session';
 
 /**
@@ -6,7 +6,7 @@ import { SessionPayload } from './session';
  * This is populated by the middleware for protected routes.
  */
 export function getCurrentUser(): SessionPayload | null {
-  const headersList = headers();
+  const headersList = (headers() as unknown as UnsafeUnwrappedHeaders);
   
   const userId = headersList.get('x-user-id');
   const email = headersList.get('x-user-email');

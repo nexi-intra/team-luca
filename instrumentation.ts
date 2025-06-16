@@ -1,7 +1,10 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     try {
-      const { NodeSDK } = await import('@opentelemetry/sdk-node');
+      // Dynamic imports to avoid bundling issues
+      const { NodeSDK } = await import('@opentelemetry/sdk-node').catch(() => ({ NodeSDK: null }));
+      if (!NodeSDK) return;
+      
       const { getNodeAutoInstrumentations } = await import('@opentelemetry/auto-instrumentations-node');
       const { OTLPTraceExporter } = await import('@opentelemetry/exporter-trace-otlp-http');
       const { OTLPMetricExporter } = await import('@opentelemetry/exporter-metrics-otlp-http');

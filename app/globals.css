@@ -99,19 +99,50 @@
     --card-foreground: 0 0% 0%;
     --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 85%;
+    --muted-foreground: 0 0% 0%;
+    --accent: 0 0% 0%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 35%;
+    --destructive-foreground: 0 0% 100%;
     --border: 0 0% 0%;
     --input: 0 0% 0%;
+    --ring: 0 0% 0%;
   }
 
-  .high-contrast .dark {
+  .high-contrast.dark,
+  .dark .high-contrast {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
     --card: 0 0% 0%;
     --card-foreground: 0 0% 100%;
     --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 80%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 100%;
+    --accent: 0 0% 100%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 100% 65%;
+    --destructive-foreground: 0 0% 0%;
     --border: 0 0% 100%;
     --input: 0 0% 100%;
+    --ring: 0 0% 100%;
+  }
+  
+  /* Enhanced high contrast borders and outlines */
+  .high-contrast * {
+    @apply border-opacity-100;
+  }
+  
+  .high-contrast button,
+  .high-contrast input,
+  .high-contrast select,
+  .high-contrast textarea {
+    @apply border-2;
   }
 
   /* Focus styles for keyboard navigation */
@@ -134,6 +165,16 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+  
+  /* Reduced motion class */
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 
   .animate-in {

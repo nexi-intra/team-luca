@@ -98,7 +98,7 @@ export default function MagicButtonDemoPage() {
           Ready to build your own Magic Button?
         </h3>
         <div className="flex gap-4 justify-center">
-          <Button size="lg" className="bg-[#233862] hover:bg-[#233862]/90">
+          <Button size="lg" className="bg-[#233862] hover:bg-[#233862]/90 dark:bg-white dark:hover:bg-gray-100 dark:text-[#233862]">
             Get Started
           </Button>
           <Button size="lg" variant="outline" className="border-[#233862] dark:border-gray-600 text-[#233862] dark:text-white">

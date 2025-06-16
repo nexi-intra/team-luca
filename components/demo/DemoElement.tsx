@@ -23,13 +23,16 @@ export function DemoElement({ id, children, className }: DemoElementProps) {
     }
   }, [id, registerElement, unregisterElement]);
 
-  return React.cloneElement(children, {
+  // Use React.Children.only to ensure we have a single valid element
+  const child = React.Children.only(children) as React.ReactElement<any>;
+
+  return React.cloneElement(child, {
     ref: elementRef,
     'data-demo-id': id,
     className: cn(
-      children.props.className,
+      child.props.className,
       className,
       isHighlighted && 'ring-2 ring-primary ring-offset-2 transition-all duration-300'
     )
-  });
+  } as any);
 }

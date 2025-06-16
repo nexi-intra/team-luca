@@ -8,6 +8,7 @@ import { Button } from './ui/button';
 import { Menu } from 'lucide-react';
 import { CommandTrigger } from './command/CommandTrigger';
 import { ThemeToggle } from './theme-toggle';
+import { AccessibilityQuickControls } from './accessibility/quick-controls';
 import {
   Sheet,
   SheetContent,
@@ -58,6 +59,12 @@ export function MainHeader() {
             >
               Sidebar (Ring 1)
             </Link>
+            <Link
+              href="/accessibility"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Accessibility
+            </Link>
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
@@ -72,6 +79,7 @@ export function MainHeader() {
             showName={false}
             className="hidden sm:flex"
           />
+          <AccessibilityQuickControls />
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
@@ -112,6 +120,12 @@ export function MainHeader() {
                   className="text-sm font-medium transition-colors hover:text-primary"
                 >
                   Sidebar (Ring 1)
+                </Link>
+                <Link
+                  href="/accessibility"
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Accessibility
                 </Link>
               </nav>
               <div className="mt-6 space-y-4">

@@ -6,9 +6,8 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
-    instrumentationHook: true,
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, webpack }) => {
     if (isServer) {
       // Ignore optional OpenTelemetry dependencies
       config.resolve.alias = {
@@ -17,12 +16,33 @@ const nextConfig = {
         '@opentelemetry/exporter-jaeger': false,
       };
       
-      // Ignore require-in-the-middle warning
-      config.module.exprContextCritical = false;
-      
       // Handle MSAL browser imports on server
       config.externals = [...(config.externals || []), '@azure/msal-browser', '@azure/msal-react'];
     }
+    
+    // Suppress critical dependency warnings from OpenTelemetry
+    config.module = {
+      ...config.module,
+      // This is the key setting to suppress the warning
+      exprContextCritical: false,
+    };
+    
+    // Filter out the specific warning using webpack's IgnorePlugin
+    if (webpack && webpack.IgnorePlugin) {
+      config.plugins = config.plugins || [];
+      config.plugins.push(
+        new webpack.IgnorePlugin({
+          checkResource(resource, context) {
+            // Ignore the warning for require-in-the-middle
+            if (resource.includes('require-in-the-middle')) {
+              return true;
+            }
+            return false;
+          },
+        })
+      );
+    }
+    
     return config;
   },
   images: {

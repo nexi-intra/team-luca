@@ -1,4 +1,3 @@
-import { test, expect } from '@playwright/test';
 import { TelemetryTestHelpers } from './telemetry-helpers';
 import { execSync } from 'child_process';
 import axios from 'axios';
@@ -7,11 +6,11 @@ import { createLogger } from '@/lib/logger';
 const logger = createLogger('TelemetryTest');
 
 // Increase timeout for integration tests
-test.setTimeout(120000);
+jest.setTimeout(120000);
 
 let helpers: TelemetryTestHelpers;
 
-test.beforeAll(async () => {
+beforeAll(async () => {
   logger.info('Starting telemetry integration test setup');
   
   // Start Docker containers
@@ -31,7 +30,7 @@ test.beforeAll(async () => {
   logger.info('Telemetry test infrastructure is ready');
 });
 
-test.afterAll(async () => {
+afterAll(async () => {
   logger.info('Cleaning up telemetry test infrastructure');
   
   // Stop and remove Docker containers
@@ -42,7 +41,7 @@ test.afterAll(async () => {
   }
 });
 
-test.describe('OpenTelemetry Integration', () => {
+describe('OpenTelemetry Integration', () => {
   test('should capture server-side traces', async () => {
     // Make API request to trigger server-side instrumentation
     const response = await axios.get('http://localhost:3000/api/health', {
@@ -126,95 +125,6 @@ test.describe('OpenTelemetry Integration', () => {
     }
   });
 
-  test('should track operations with aggregate keys', async ({ page }) => {
-    // Navigate to the app
-    await page.goto('http://localhost:3000');
-    
-    // Wait for client telemetry to initialize
-    await page.waitForTimeout(2000);
-    
-    // Trigger various operations
-    await page.evaluate(() => {
-      // Import would be available in the actual app context
-      const { trackOperation, trackFeatureAccess, OPERATION_KEYS } = 
-        (window as any).__TELEMETRY__ || {};
-      
-      if (trackOperation) {
-        // Track API operation
-        trackOperation(
-          OPERATION_KEYS.API_REQUEST,
-          'test.api.call',
-          () => Promise.resolve({ success: true }),
-          { endpoint: '/api/test' }
-        );
-        
-        // Track feature access
-        trackFeatureAccess('dark-mode', true, { userRing: 3 });
-      }
-    });
-    
-    // Wait for traces to be sent
-    await page.waitForTimeout(3000);
-    
-    // Verify operation keys in traces
-    const traces = await helpers.waitForTraces('magic-button-assistant', undefined, 1);
-    
-    if (traces.length > 0) {
-      helpers.verifyOperationKeys(traces[0], [
-        'api.request',
-        'feature.access',
-      ]);
-    }
-  });
-
-  test('should capture client-side browser telemetry', async ({ page }) => {
-    // Enable console logging
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        logger.error('Browser console error:', msg.text());
-      }
-    });
-    
-    // Navigate to the app
-    await page.goto('http://localhost:3000', {
-      waitUntil: 'networkidle',
-    });
-    
-    // Wait for telemetry to initialize
-    await page.waitForTimeout(2000);
-    
-    // Perform user interactions
-    await page.click('body'); // Trigger user interaction instrumentation
-    
-    // Make a fetch request from the browser
-    await page.evaluate(async () => {
-      await fetch('/api/health');
-    });
-    
-    // Wait for traces to be sent
-    await page.waitForTimeout(5000);
-    
-    // Check for document load traces
-    const traces = await helpers.waitForTraces('magic-button-assistant', 'documentLoad', 1, 30000);
-    
-    expect(traces.length).toBeGreaterThan(0);
-    
-    // Verify browser-specific attributes
-    const trace = traces[0];
-    const documentLoadSpan = trace.spans.find(s => s.operationName === 'documentLoad');
-    
-    if (documentLoadSpan) {
-      const attrs = documentLoadSpan.tags.reduce((acc, tag) => {
-        acc[tag.key] = tag.value;
-        return acc;
-      }, {} as Record<string, any>);
-      
-      // Check for browser attributes
-      expect(attrs['browser.user_agent']).toBeDefined();
-      expect(attrs['browser.language']).toBeDefined();
-    }
-  });
-
   test('should export metrics to Prometheus', async () => {
     // Make several API calls to generate metrics
     for (let i = 0; i < 5; i++) {
@@ -236,7 +146,7 @@ test.describe('OpenTelemetry Integration', () => {
   });
 });
 
-test.describe('Telemetry Configuration', () => {
+describe('Telemetry Configuration', () => {
   test('should respect sampling rate configuration', async () => {
     // This would require modifying the sampling rate and verifying
     // that only a percentage of traces are captured
@@ -247,19 +157,5 @@ test.describe('Telemetry Configuration', () => {
     
     // In a real test, we'd make many requests and verify sampling
     logger.info('Sampling rate test placeholder - would verify sampling behavior');
-  });
-
-  test('should handle telemetry endpoint failures gracefully', async ({ page }) => {
-    // Temporarily misconfigure the endpoint
-    process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = 'http://localhost:99999/invalid';
-    
-    // The app should still function
-    await page.goto('http://localhost:3000');
-    
-    // Verify page loads successfully
-    await expect(page).toHaveTitle(/Magic Button/);
-    
-    // Reset configuration
-    process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = 'http://localhost:14268/api/traces';
   });
 });

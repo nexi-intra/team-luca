@@ -107,7 +107,7 @@ export default function MagicButtonPage() {
           Experience the power of AI-assisted development. Create your own Magic Button assistant today.
         </p>
         <DemoElement id="start-building-button">
-          <Button size="lg" className="bg-[#233862] hover:bg-[#233862]/90">
+          <Button size="lg" className="bg-[#233862] hover:bg-[#233862]/90 dark:bg-white dark:hover:bg-gray-100 dark:text-[#233862]">
             Start Building
           </Button>
         </DemoElement>

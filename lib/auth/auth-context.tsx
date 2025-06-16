@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     msalData = useMsal();
   } catch (error) {
     // During SSR, useMsal will throw because MsalProvider hasn't initialized yet
-    console.debug('Auth context initializing without MSAL during SSR');
+    // This is expected behavior - no need to log
   }
   
   const { instance, accounts, inProgress } = msalData;

@@ -11,6 +11,10 @@ export const routeMetadata: RouteMetadata = {
   '/settings': 'Settings',
   '/profile': 'Profile',
   '/dashboard': 'Dashboard',
+  '/sidebar-demo': 'Sidebar Demo',
+  '/demo/sidebar': 'Sidebar Component Demo',
+  '/accessibility': 'Accessibility',
+  '/admin/console': 'System Console',
 };
 
 // Helper to get title from path

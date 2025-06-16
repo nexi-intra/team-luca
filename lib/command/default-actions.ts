@@ -59,17 +59,6 @@ export const defaultCommandActions: CommandAction[] = [
 
   // Ring 4 (Stable) actions
   {
-    id: 'profile',
-    title: 'View Profile',
-    description: 'View and edit your profile',
-    icon: User,
-    shortcut: 'cmd+p',
-    requiredRing: 4 as FeatureRing,
-    category: 'Account',
-    action: () => { window.location.href = '/profile'; },
-    keywords: ['profile', 'account', 'user']
-  },
-  {
     id: 'settings',
     title: 'Settings',
     description: 'Manage application settings',
@@ -90,93 +79,62 @@ export const defaultCommandActions: CommandAction[] = [
     action: () => { window.location.href = '/dashboard'; },
     keywords: ['dashboard', 'overview', 'stats']
   },
+  {
+    id: 'accessibility',
+    title: 'Accessibility',
+    description: 'View accessibility settings',
+    icon: Settings,
+    requiredRing: 4 as FeatureRing,
+    category: 'Navigation',
+    action: () => { window.location.href = '/accessibility'; },
+    keywords: ['accessibility', 'a11y', 'settings']
+  },
 
   // Ring 3 (Power User) actions
   {
-    id: 'analytics',
-    title: 'Analytics',
-    description: 'View detailed analytics',
+    id: 'features-demo',
+    title: 'Features Demo',
+    description: 'View all feature ring demonstrations',
     icon: Activity,
     requiredRing: 3 as FeatureRing,
     category: 'Advanced',
-    action: () => { window.location.href = '/analytics'; },
-    keywords: ['analytics', 'metrics', 'data']
+    action: () => { window.location.href = '/magicbutton/features'; },
+    keywords: ['features', 'demo', 'rings']
   },
   {
-    id: 'api-docs',
-    title: 'API Documentation',
-    description: 'View API documentation',
+    id: 'auth-demo',
+    title: 'Authentication Demo',
+    description: 'Test authentication flows',
+    icon: Shield,
+    requiredRing: 3 as FeatureRing,
+    category: 'Developer',
+    action: () => { window.location.href = '/magicbutton/auth-demo'; },
+    keywords: ['auth', 'authentication', 'demo']
+  },
+  {
+    id: 'language-demo',
+    title: 'Language Context Demo',
+    description: 'Test language detection and switching',
     icon: FileText,
-    shortcut: 'cmd+d',
     requiredRing: 3 as FeatureRing,
     category: 'Developer',
-    action: () => { window.location.href = '/docs/api'; },
-    keywords: ['api', 'docs', 'documentation']
-  },
-  {
-    id: 'developer-tools',
-    title: 'Developer Tools',
-    description: 'Access developer tools',
-    icon: Code,
-    requiredRing: 3 as FeatureRing,
-    category: 'Developer',
-    action: () => { window.location.href = '/dev-tools'; },
-    keywords: ['dev', 'developer', 'tools', 'debug']
+    action: () => { window.location.href = '/magicbutton/language'; },
+    keywords: ['language', 'i18n', 'locale', 'demo']
   },
 
   // Ring 2 (Admin) actions
   {
-    id: 'user-management',
-    title: 'User Management',
-    description: 'Manage users and permissions',
-    icon: Users,
+    id: 'sidebar-demo',
+    title: 'Sidebar Demo',
+    description: 'Interactive sidebar component demo',
+    icon: Code,
     requiredRing: 2 as FeatureRing,
-    category: 'Admin',
-    action: () => { window.location.href = '/admin/users'; },
-    keywords: ['users', 'admin', 'manage']
-  },
-  {
-    id: 'system-config',
-    title: 'System Configuration',
-    description: 'Configure system settings',
-    icon: Cog,
-    requiredRing: 2 as FeatureRing,
-    category: 'Admin',
-    action: () => { window.location.href = '/admin/config'; },
-    keywords: ['system', 'config', 'admin']
-  },
-  {
-    id: 'security-settings',
-    title: 'Security Settings',
-    description: 'Manage security configurations',
-    icon: Shield,
-    requiredRing: 2 as FeatureRing,
-    category: 'Admin',
-    action: () => { window.location.href = '/admin/security'; },
-    keywords: ['security', 'admin', 'protection']
+    category: 'Advanced',
+    action: () => { window.location.href = '/demo/sidebar'; },
+    keywords: ['sidebar', 'demo', 'ui', 'component']
   },
 
   // Ring 1 (Super Admin) actions
-  {
-    id: 'database-admin',
-    title: 'Database Administration',
-    description: 'Direct database access and management',
-    icon: Database,
-    requiredRing: 1 as FeatureRing,
-    category: 'Super Admin',
-    action: () => { window.location.href = '/admin/database'; },
-    keywords: ['database', 'db', 'admin', 'super']
-  },
-  {
-    id: 'api-keys',
-    title: 'API Key Management',
-    description: 'Manage API keys and tokens',
-    icon: Key,
-    requiredRing: 1 as FeatureRing,
-    category: 'Super Admin',
-    action: () => { window.location.href = '/admin/api-keys'; },
-    keywords: ['api', 'keys', 'tokens', 'admin']
-  },
   {
     id: 'system-console',
     title: 'System Console',
@@ -187,5 +145,15 @@ export const defaultCommandActions: CommandAction[] = [
     category: 'Super Admin',
     action: () => { window.location.href = '/admin/console'; },
     keywords: ['console', 'terminal', 'system', 'admin']
+  },
+  {
+    id: 'sidebar-test',
+    title: 'Sidebar Component Test',
+    description: 'Test the new sidebar implementation',
+    icon: Code,
+    requiredRing: 1 as FeatureRing,
+    category: 'Super Admin',
+    action: () => { window.location.href = '/sidebar-demo'; },
+    keywords: ['sidebar', 'test', 'demo', 'component']
   },
 ];

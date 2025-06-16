@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify } from 'jose';
-import { cookies } from 'next/headers';
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 const SESSION_COOKIE_NAME = 'session-token';
@@ -48,7 +48,7 @@ export class SessionManager {
   }
 
   static async getSession(request?: NextRequest): Promise<SessionPayload | null> {
-    const cookieStore = request ? request.cookies : cookies();
+    const cookieStore = request ? request.cookies : (cookies() as unknown as UnsafeUnwrappedCookies);
     const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
     if (!token) {
@@ -72,7 +72,7 @@ export class SessionManager {
     if (response) {
       response.cookies.set(cookieOptions);
     } else {
-      cookies().set(cookieOptions);
+      (cookies() as unknown as UnsafeUnwrappedCookies).set(cookieOptions);
     }
   }
 
@@ -90,7 +90,7 @@ export class SessionManager {
     if (response) {
       response.cookies.set(cookieOptions);
     } else {
-      cookies().set(cookieOptions);
+      (cookies() as unknown as UnsafeUnwrappedCookies).set(cookieOptions);
     }
   }
 

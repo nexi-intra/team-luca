@@ -129,7 +129,7 @@ export function CommandPalette() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {action.requiredRing < currentRing && (
+                        {action.requiredRing <= currentRing && (
                           <Badge variant="outline" className="text-xs">
                             Ring {action.requiredRing}
                           </Badge>
