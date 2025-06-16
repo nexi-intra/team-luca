@@ -1,8 +1,7 @@
 'use client';
 
-import { MsalProvider } from '@azure/msal-react';
 import { ThemeProvider } from 'next-themes';
-import { getMsalInstance } from '@/lib/auth/msal-config';
+import { MsalProviderWrapper } from '@/lib/auth/msal-provider';
 import { AuthProviderWrapper } from '@/lib/auth/auth-provider-wrapper';
 import { SessionProvider } from '@/lib/auth/session-context';
 import { FeatureRingProvider } from '@/lib/features';
@@ -23,10 +22,8 @@ const DevPanel = dynamic(() => import('@/components/dev-tools/DevPanel'), {
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const msalInstance = getMsalInstance();
-
   return (
-    <MsalProvider instance={msalInstance}>
+    <MsalProviderWrapper>
       <AuthProviderWrapper>
         <SessionProvider>
           <FeatureRingProvider defaultRing={4}>
@@ -57,6 +54,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           </FeatureRingProvider>
         </SessionProvider>
       </AuthProviderWrapper>
-    </MsalProvider>
+    </MsalProviderWrapper>
   );
 }

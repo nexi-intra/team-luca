@@ -35,12 +35,12 @@ export function Breadcrumb({ className, showOnHomePage = false }: BreadcrumbProp
         {items.map((item, index) => (
           <li key={item.href} className="flex items-center">
             {index > 0 && (
-              <ChevronRight className="mx-1 h-4 w-4 text-gray-400" aria-hidden="true" />
+              <ChevronRight className="mx-1 h-4 w-4 text-gray-400 dark:text-gray-600" aria-hidden="true" />
             )}
             
             {item.isCurrentPage ? (
               <span
-                className="text-gray-700 font-medium flex items-center"
+                className="text-gray-700 dark:text-gray-300 font-medium flex items-center"
                 aria-current="page"
               >
                 {index === 0 ? (
@@ -52,7 +52,7 @@ export function Breadcrumb({ className, showOnHomePage = false }: BreadcrumbProp
             ) : (
               <Link
                 href={item.href}
-                className="text-gray-500 hover:text-gray-700 transition-colors flex items-center"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors flex items-center"
               >
                 {index === 0 ? (
                   <Home className="h-4 w-4" aria-label="Home" />

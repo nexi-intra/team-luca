@@ -1,12 +1,11 @@
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { ConsoleSpanExporter } from '@opentelemetry/sdk-trace-node';
+import { BatchSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { getTelemetryConfig, getResourceAttributes } from './config';
 import { createSanitizingSpanProcessor } from './processors';
@@ -34,7 +33,7 @@ export function initializeServerTelemetry() {
   });
   
   // Create resource
-  const resource = new Resource({
+  const resource = resourceFromAttributes({
     ...getResourceAttributes(),
     [SemanticResourceAttributes.PROCESS_PID]: process.pid,
     [SemanticResourceAttributes.PROCESS_EXECUTABLE_NAME]: 'node',
@@ -75,32 +74,45 @@ export function initializeServerTelemetry() {
         '@opentelemetry/instrumentation-fs': {
           enabled: false, // Disable fs to reduce noise
         },
+        '@opentelemetry/instrumentation-winston': {
+          enabled: false, // Disable winston as it's not installed
+        },
         '@opentelemetry/instrumentation-http': {
           requestHook: (span, request) => {
-            // Add custom attributes
-            span.setAttributes({
-              'http.request.body.size': request.headers['content-length'] || 0,
-              'app.request.id': request.headers['x-request-id'] || 'unknown',
-            });
+            // Add custom attributes for incoming messages
+            if ('headers' in request && request.headers) {
+              span.setAttributes({
+                'http.request.body.size': request.headers['content-length'] || 0,
+                'app.request.id': request.headers['x-request-id'] || 'unknown',
+              });
+            }
           },
           responseHook: (span, response) => {
             // Add response attributes
-            span.setAttributes({
-              'http.response.body.size': response.headers['content-length'] || 0,
-            });
+            if ('headers' in response && response.headers) {
+              span.setAttributes({
+                'http.response.body.size': response.headers['content-length'] || 0,
+              });
+            }
           },
-          ignoreIncomingPaths: [
-            /^\/_next/,
-            /^\/api\/health/,
-            /^\/favicon/,
-            /\.js$/,
-            /\.css$/,
-            /\.map$/,
-          ],
-          ignoreOutgoingUrls: [
-            /localhost:9464/, // Metrics endpoint
-            /localhost:14268/, // Traces endpoint
-          ],
+          ignoreIncomingRequestHook: (request) => {
+            const url = request.url || '';
+            return (
+              url.startsWith('/_next') ||
+              url.startsWith('/api/health') ||
+              url.startsWith('/favicon') ||
+              url.endsWith('.js') ||
+              url.endsWith('.css') ||
+              url.endsWith('.map')
+            );
+          },
+          ignoreOutgoingRequestHook: (options) => {
+            const hostname = options.hostname || '';
+            const port = options.port || '';
+            return (
+              (hostname === 'localhost' && (port === 9464 || port === 14268))
+            );
+          },
         },
       }),
     ],

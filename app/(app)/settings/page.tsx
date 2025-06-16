@@ -7,14 +7,24 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useBreadcrumbTitle } from '@/hooks/useBreadcrumbTitle';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
+
+export const dynamic = 'force-dynamic';
 
 export default function SettingsPage() {
   useBreadcrumbTitle('Application Settings');
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Settings</h1>
+        <h1 className="text-3xl font-bold mb-8 text-foreground">Settings</h1>
         
         <Tabs defaultValue="general" className="space-y-4">
           <TabsList>
@@ -45,7 +55,11 @@ export default function SettingsPage() {
                       Enable dark theme across the application
                     </p>
                   </div>
-                  <Switch />
+                  <Switch 
+                    checked={mounted ? theme === 'dark' : false}
+                    onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                    disabled={!mounted}
+                  />
                 </div>
                 
                 <div className="flex items-center justify-between">

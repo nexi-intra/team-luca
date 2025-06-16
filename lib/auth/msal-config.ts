@@ -1,4 +1,12 @@
-import { Configuration, LogLevel, PublicClientApplication } from '@azure/msal-browser';
+import type { Configuration } from '@azure/msal-browser';
+
+// Import LogLevel as a type to avoid runtime issues
+const LogLevel = {
+  Error: 0,
+  Warning: 1,
+  Info: 2,
+  Verbose: 3,
+} as const;
 
 const getRedirectUri = () => {
   if (typeof window !== 'undefined') {
@@ -51,14 +59,7 @@ export const graphScopes = {
   scopes: ['User.Read', 'User.ReadWrite', 'Directory.Read.All'],
 };
 
-let msalInstance: PublicClientApplication | null = null;
-
-export const getMsalInstance = () => {
-  if (!msalInstance) {
-    msalInstance = new PublicClientApplication(msalConfig);
-  }
-  return msalInstance;
-};
+// Remove singleton pattern - will be handled in the provider
 
 export const isGuestUser = (account: any): boolean => {
   return account?.idTokenClaims?.idp !== undefined && 

@@ -8,6 +8,8 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { defaultReauthConfig } from '@/lib/auth/reauth-config';
 import { Clock, RefreshCw, ShieldCheck, Timer } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function ReauthTestPage() {
   const { 
     isAuthenticated, 

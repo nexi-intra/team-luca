@@ -8,6 +8,23 @@ const nextConfig = {
     },
     instrumentationHook: true,
   },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Ignore optional OpenTelemetry dependencies
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@opentelemetry/winston-transport': false,
+        '@opentelemetry/exporter-jaeger': false,
+      };
+      
+      // Ignore require-in-the-middle warning
+      config.module.exprContextCritical = false;
+      
+      // Handle MSAL browser imports on server
+      config.externals = [...(config.externals || []), '@azure/msal-browser', '@azure/msal-react'];
+    }
+    return config;
+  },
   images: {
     remotePatterns: [
       {

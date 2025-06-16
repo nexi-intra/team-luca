@@ -7,6 +7,7 @@ import { LanguageSelector } from './language-selector';
 import { Button } from './ui/button';
 import { Menu } from 'lucide-react';
 import { CommandTrigger } from './command/CommandTrigger';
+import { ThemeToggle } from './theme-toggle';
 import {
   Sheet,
   SheetContent,
@@ -40,7 +41,7 @@ export function MainHeader() {
               Demo
             </Link>
             <Link
-              href="/demo/language"
+              href="/magicbutton/language"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
               Languages
@@ -71,6 +72,7 @@ export function MainHeader() {
             showName={false}
             className="hidden sm:flex"
           />
+          <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -112,8 +114,12 @@ export function MainHeader() {
                   Sidebar (Ring 1)
                 </Link>
               </nav>
-              <div className="mt-6">
+              <div className="mt-6 space-y-4">
                 <LanguageSelector variant="outline" className="w-full" />
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Theme</span>
+                  <ThemeToggle />
+                </div>
               </div>
             </SheetContent>
           </Sheet>

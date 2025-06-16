@@ -88,29 +88,25 @@ class Logger {
 
   verbose(message: string, ...args: any[]): void {
     if (this.shouldLog(LogLevel.VERBOSE)) {
-      const method = this.getConsoleMethod(LogLevel.VERBOSE);
-      console[method](this.formatMessage('VERBOSE', message), ...args);
+      console.debug(this.formatMessage('VERBOSE', message), ...args);
     }
   }
 
   info(message: string, ...args: any[]): void {
     if (this.shouldLog(LogLevel.INFO)) {
-      const method = this.getConsoleMethod(LogLevel.INFO);
-      console[method](this.formatMessage('INFO', message), ...args);
+      console.info(this.formatMessage('INFO', message), ...args);
     }
   }
 
   warn(message: string, ...args: any[]): void {
     if (this.shouldLog(LogLevel.WARN)) {
-      const method = this.getConsoleMethod(LogLevel.WARN);
-      console[method](this.formatMessage('WARN', message), ...args);
+      console.warn(this.formatMessage('WARN', message), ...args);
     }
   }
 
   error(message: string, ...args: any[]): void {
     if (this.shouldLog(LogLevel.ERROR)) {
-      const method = this.getConsoleMethod(LogLevel.ERROR);
-      console[method](this.formatMessage('ERROR', message), ...args);
+      console.error(this.formatMessage('ERROR', message), ...args);
     }
   }
 

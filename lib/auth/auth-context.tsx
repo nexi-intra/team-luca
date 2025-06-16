@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { AccountInfo, InteractionStatus } from '@azure/msal-browser';
+import type { AccountInfo, InteractionStatus as MSALInteractionStatus } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { loginRequest, getUserRoles, isGuestUser } from './msal-config';
@@ -20,7 +20,18 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { instance, accounts, inProgress } = useMsal();
+  // Handle server-side rendering gracefully
+  let msalData = { instance: null as any, accounts: [] as any[], inProgress: 'None' as string };
+  
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    msalData = useMsal();
+  } catch (error) {
+    // During SSR, useMsal will throw because MsalProvider hasn't initialized yet
+    console.debug('Auth context initializing without MSAL during SSR');
+  }
+  
+  const { instance, accounts, inProgress } = msalData;
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -127,14 +138,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
-    if (inProgress === InteractionStatus.None && msalAccount) {
+    // Check if no interaction is in progress
+    if ((inProgress as string) === 'None' && msalAccount) {
       handleMsalAuth();
     }
   }, [msalAccount, inProgress, instance, session]);
 
   // Initialize auth state
   useEffect(() => {
-    if (inProgress === InteractionStatus.None && !searchParams.get('magicauth')) {
+    if ((inProgress as string) === 'None' && !searchParams.get('magicauth')) {
       setIsLoading(false);
     }
   }, [inProgress, searchParams]);

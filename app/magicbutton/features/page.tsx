@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { CheckCircle, Circle, Settings, Sparkles, TestTube, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 const ringColors = {
   1: 'bg-red-500',
   2: 'bg-orange-500', 
@@ -39,7 +41,7 @@ export default function FeaturesPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Feature Rings & Access</h1>
+        <h1 className="text-3xl font-bold mb-2 text-foreground">Feature Rings & Access</h1>
         <p className="text-muted-foreground">
           Manage your feature access level and explore available features across different rings.
         </p>

@@ -11,6 +11,8 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { AuthStatus } from '@/components/auth/AuthStatus';
 import { Copy, ExternalLink, Shield } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function AuthDemoPage() {
   const { isAuthenticated, user, authSource, login, switchAuthSource } = useAuth();
   const [sampleToken, setSampleToken] = useState('');
@@ -44,7 +46,7 @@ export default function AuthDemoPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-[#233862] mb-2">
+        <h1 className="text-3xl font-bold text-[#233862] dark:text-white mb-2">
           Multi-Source Authentication Demo
         </h1>
         <p className="text-gray-600">

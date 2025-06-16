@@ -83,7 +83,7 @@ export function MagicButtonFooter() {
   };
 
   return (
-    <footer className="border-t border-gray-200 bg-white/50 mt-auto">
+    <footer className="border-t border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
           {/* Logo and Copyright */}
@@ -95,13 +95,13 @@ export function MagicButtonFooter() {
               height={24}
               className="rounded"
             />
-            <span className="text-sm text-[#233862]">
+            <span className="text-sm text-[#233862] dark:text-gray-300">
               © 2024 Magic Button Assistant
             </span>
           </div>
 
           {/* Middle section */}
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             Built with Next.js and Anthropic Claude
           </div>
 
@@ -111,7 +111,7 @@ export function MagicButtonFooter() {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Reset All Data

@@ -31,13 +31,14 @@ export function trackOperation<T>(
       },
     },
     async (span) => {
+      const startTime = Date.now();
       try {
         const result = await fn();
         
         // Add success metrics
         span.setAttributes({
           'operation.status': 'success',
-          'operation.duration_ms': Date.now() - span.startTime.getTime(),
+          'operation.duration_ms': Date.now() - startTime,
         });
         
         span.setStatus({ code: SpanStatusCode.OK });
@@ -48,6 +49,7 @@ export function trackOperation<T>(
           'operation.status': 'error',
           'operation.error.type': error?.constructor?.name || 'Unknown',
           'operation.error.message': (error as Error)?.message || 'Unknown error',
+          'operation.duration_ms': Date.now() - startTime,
         });
         
         span.recordException(error as Error);

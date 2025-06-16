@@ -49,6 +49,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FeatureGate } from '@/lib/features';
 
+export const dynamic = 'force-dynamic';
+
 const navigation = [
   {
     title: 'Dashboard',

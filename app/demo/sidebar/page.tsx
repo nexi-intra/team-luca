@@ -66,6 +66,8 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 
+export const dynamic = 'force-dynamic';
+
 const mainNavItems = [
   {
     title: 'Home',

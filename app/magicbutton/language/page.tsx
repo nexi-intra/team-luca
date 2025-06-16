@@ -7,6 +7,8 @@ import { LanguageSelector } from '@/components/language-selector';
 import { useLanguage, useTranslation, usePlural } from '@/lib/i18n';
 import { Calendar, DollarSign, Hash, Globe2 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function LanguageDemoPage() {
   const { language, languageInfo, detectionResult, formatNumber, formatDate, formatCurrency } = useLanguage();
   const { t } = useTranslation();
@@ -20,7 +22,7 @@ export default function LanguageDemoPage() {
   return (
     <div className="container mx-auto py-8 space-y-6 max-w-4xl">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Language & Internationalization Demo</h1>
+        <h1 className="text-3xl font-bold text-foreground">Language & Internationalization Demo</h1>
         <p className="text-muted-foreground">
           Explore automatic language detection and formatting capabilities
         </p>

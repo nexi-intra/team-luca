@@ -5,6 +5,8 @@ import { RingGate } from '@/components/features/RingGate';
 import { Terminal, Shield, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
+export const dynamic = 'force-dynamic';
+
 export default function SystemConsolePage() {
   return (
     <RingGate requiredRing={1}>
