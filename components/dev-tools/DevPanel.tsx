@@ -30,6 +30,7 @@ import { useFeatureRingContext } from "@/lib/features/context";
 import { getRingName, FEATURE_RINGS } from "@/lib/features/constants";
 import type { FeatureRing } from "@/lib/features/constants";
 import { createLogger } from "@/lib/logger";
+import { KoksmatCompanionStatus } from "./KoksmatCompanionStatus";
 
 const logger = createLogger('DevPanel');
 
@@ -52,22 +53,23 @@ const languages = [
 export default function DevPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<Position>(() => {
-    // Load saved position from localStorage
+    // Start at center of screen for animation
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('devPanelPosition');
-      if (saved) {
-        try {
-          return JSON.parse(saved);
-        } catch {}
-      }
+      return { 
+        x: window.innerWidth / 2 - 24, 
+        y: window.innerHeight / 2 - 24 
+      };
     }
     return { x: 20, y: 20 };
   });
+  const [targetPosition, setTargetPosition] = useState<Position | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState("en");
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [panelPosition, setPanelPosition] = useState<'left' | 'right'>('left');
+  const [isSignaling, setIsSignaling] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const { theme, setTheme } = useTheme();
   
   // Feature ring context
@@ -93,6 +95,41 @@ export default function DevPanel() {
   useEffect(() => {
     logger.verbose('Current user ring:', userRing);
   }, [userRing]);
+
+  // Initial load animation
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Get saved position or default
+    const saved = localStorage.getItem('devPanelPosition');
+    let finalPosition = { x: 20, y: 20 };
+    
+    if (saved) {
+      try {
+        finalPosition = JSON.parse(saved);
+        // Ensure position is within viewport
+        finalPosition.x = Math.min(finalPosition.x, window.innerWidth - 48);
+        finalPosition.y = Math.min(finalPosition.y, window.innerHeight - 48);
+      } catch {}
+    }
+
+    setTargetPosition(finalPosition);
+
+    // Start animation after a brief delay
+    const animationTimer = setTimeout(() => {
+      setPosition(finalPosition);
+    }, 300);
+
+    // Dim the panel after 2 seconds
+    const dimTimer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(animationTimer);
+      clearTimeout(dimTimer);
+    };
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -149,6 +186,31 @@ export default function DevPanel() {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Handle Control + Option to signal location
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Control + Option (Alt) on Mac/Windows
+      if (e.ctrlKey && e.altKey) {
+        setIsSignaling(true);
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      // Stop signaling when either key is released
+      if (!e.ctrlKey || !e.altKey) {
+        setIsSignaling(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
   }, []);
 
   // Only show in development
@@ -233,14 +295,43 @@ export default function DevPanel() {
   return (
     <div
       ref={dragRef}
-      className="fixed z-[9999] select-none"
+      className={cn(
+        "fixed z-[9999] select-none",
+        isInitialLoad && "transition-all duration-1000 ease-out"
+      )}
       style={{ left: `${position.x}px`, top: `${position.y}px` }}
     >
+      {/* Initial load indicator */}
+      {isInitialLoad && (
+        <div className="absolute -top-16 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-600 px-3 py-2 text-xs text-white shadow-lg animate-pulse">
+          <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-blue-600" />
+          DevPanel Ready! 🚀
+        </div>
+      )}
+
+      {/* Signaling indicator */}
+      {isSignaling && (
+        <>
+          <div className="absolute inset-0 h-12 w-12 animate-ping rounded-full bg-blue-500 opacity-75" />
+          <div className="absolute inset-0 h-12 w-12 animate-ping rounded-full bg-blue-500 opacity-50" style={{ animationDelay: '0.5s' }} />
+          <div className="absolute inset-0 h-12 w-12 animate-ping rounded-full bg-blue-500 opacity-25" style={{ animationDelay: '1s' }} />
+          
+          {/* Location tooltip */}
+          <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-100 px-3 py-1 text-xs text-white dark:text-gray-900 shadow-lg">
+            <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-gray-900 dark:bg-gray-100" />
+            DevPanel is here!
+          </div>
+        </>
+      )}
+      
       {/* Draggable Icon */}
       <button
-        className={`relative h-12 w-12 cursor-move rounded-full bg-white p-2 shadow-lg transition-opacity duration-200 ${
-          isHovered || isOpen ? "opacity-100" : "opacity-20"
-        }`}
+        className={cn(
+          "relative h-12 w-12 cursor-move rounded-full bg-white p-2 shadow-lg transition-all duration-200",
+          isInitialLoad ? "opacity-100 scale-125" : (isHovered || isOpen ? "opacity-100" : "opacity-20"),
+          isSignaling && "ring-4 ring-blue-500 ring-opacity-50 scale-110",
+          isInitialLoad && "animate-bounce"
+        )}
         onMouseDown={handleMouseDown}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -396,8 +487,14 @@ export default function DevPanel() {
               </div>
             </div>
 
+            {/* Koksmat Companion Status */}
+            <KoksmatCompanionStatus />
+
             {/* Actions */}
             <div className="space-y-2 pt-2 border-t">
+              <div className="text-xs text-muted-foreground text-center pb-1">
+                Hold <kbd className="px-1 py-0.5 text-xs bg-muted rounded">Ctrl</kbd>+<kbd className="px-1 py-0.5 text-xs bg-muted rounded">Alt</kbd> to find panel
+              </div>
               <Button
                 variant="outline"
                 size="sm"

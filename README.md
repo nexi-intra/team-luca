@@ -34,7 +34,7 @@ cd your-app
 
 2. Install dependencies:
 ```bash
-npm install
+pnpm install
 ```
 
 3. Set up environment variables:
@@ -54,10 +54,28 @@ SESSION_SECRET=your-secret-key
 
 5. Run the development server:
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see your app.
+
+### Optional: Koksmat Companion
+
+The template includes a Koksmat Companion server for developer automation:
+
+1. Install companion dependencies:
+```bash
+pnpm run koksmat:install
+```
+
+2. Start the companion server (in a separate terminal):
+```bash
+pnpm run koksmat:dev  # Development mode with hot reload
+# or
+pnpm run koksmat      # Production mode
+```
+
+The companion integrates with the DevPanel and provides script automation capabilities.
 
 ## Project Structure
 
@@ -77,6 +95,10 @@ Open [http://localhost:3000](http://localhost:3000) to see your app.
 ├── hooks/                 # Custom React hooks
 ├── tests/                 # Test infrastructure
 │   ├── factories/        # Test data factories
+├── koksmat-companion/     # Developer automation server
+│   ├── scripts/          # Automation scripts
+│   ├── lib/              # Server utilities
+│   └── routes/           # API routes
 │   ├── e2e/              # Playwright E2E tests
 │   └── utils/            # Test utilities
 └── public/               # Static assets

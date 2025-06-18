@@ -25,7 +25,10 @@
     "vercel:init": "node scripts/vercel-init.js",
     "git:env-sync": "node scripts/env-sync.js",
     "git:env-sync:force": "node scripts/env-sync.js --force",
-    "docker:env": "./scripts/setup-docker-env.sh"
+    "docker:env": "./scripts/setup-docker-env.sh",
+    "koksmat:dev": "cd koksmat-companion && pnpm run koksmat:dev",
+    "koksmat": "cd koksmat-companion && pnpm run koksmat",
+    "koksmat:install": "cd koksmat-companion && pnpm install"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.12",
@@ -105,6 +108,7 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
+    "socket.io-client": "^4.8.1",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",

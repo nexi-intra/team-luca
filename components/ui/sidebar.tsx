@@ -219,7 +219,7 @@ export const Sidebar = React.forwardRef<
     >
       <div
         className={cn(
-          'duration-200 flex h-svh transition-[width] ease-linear',
+          'duration-200 flex h-svh transition-[width] ease-linear overflow-hidden',
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]'
@@ -227,11 +227,11 @@ export const Sidebar = React.forwardRef<
           // Adjust the padding for floating and inset variants.
           variant === 'floating' ? 'p-2 group-data-[side=right]:pr-0 group-data-[side=left]:pl-0' : '',
           variant === 'inset' ? 'p-2' : '',
-          'group-data-[side=left]:border-r group-data-[side=right]:border-l',
+          state === 'expanded' && 'group-data-[side=left]:border-r group-data-[side=right]:border-l',
           className
         )}
         style={{
-          width: state === 'collapsed' ? SIDEBAR_WIDTH_COLLAPSED : `${width}px`,
+          width: state === 'collapsed' ? '0' : `${width}px`,
           '--sidebar-width': `${width}px`,
           '--sidebar-width-icon': SIDEBAR_WIDTH_COLLAPSED,
         } as React.CSSProperties}

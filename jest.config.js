@@ -31,7 +31,12 @@ const customJestConfig = {
       },
     }],
   },
-  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/', '<rootDir>/tests/e2e/'],
+  testPathIgnorePatterns: [
+    '<rootDir>/.next/', 
+    '<rootDir>/node_modules/', 
+    '<rootDir>/tests/e2e/',
+    '<rootDir>/koksmat-companion/'
+  ],
   coverageDirectory: '<rootDir>/coverage',
   globals: {
     'ts-jest': {

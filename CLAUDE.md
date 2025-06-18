@@ -10,16 +10,24 @@ This is a Magic Button Assistant template for creating specialized AI assistants
 - **Authentication**: Microsoft Authentication Library (MSAL) for Azure AD
 - **AI**: Anthropic Claude API integration ready
 - **Observability**: OpenTelemetry instrumentation included
+- **Package Manager**: pnpm (required)
 
 ## Commands
 
 ### Development
 ```bash
-npm run dev          # Start development server on http://localhost:3000
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run typecheck    # TypeScript type checking
+pnpm run dev          # Start development server on http://localhost:3000
+pnpm run build        # Build for production
+pnpm run start        # Start production server
+pnpm run lint         # Run ESLint
+pnpm run typecheck    # TypeScript type checking
+```
+
+### Koksmat Companion (Developer Automation)
+```bash
+pnpm run koksmat:install   # Install companion dependencies
+pnpm run koksmat:dev       # Start companion in dev mode (with hot reload)
+pnpm run koksmat           # Start companion in production mode
 ```
 
 ## Logging
@@ -158,6 +166,7 @@ ANTHROPIC_API_KEY
 SESSION_SECRET
 NEXT_PUBLIC_APP_URL
 OTEL_SERVICE_NAME (optional)
+NEXT_PUBLIC_KOKSMAT_COMPANION_URL (optional, defaults to http://localhost:2512)
 ```
 
 ## Directory Structure
@@ -166,5 +175,24 @@ OTEL_SERVICE_NAME (optional)
 - `/lib` - Core utilities (auth, utils)
 - `/hooks` - Custom React hooks
 - `/public` - Static assets
+- `/koksmat-companion` - Developer automation server (optional)
+
+## Koksmat Companion
+
+The template includes an optional Koksmat Companion server for developer automation:
+
+- **Purpose**: Provides script execution and automation capabilities
+- **Integration**: Automatically integrates with DevPanel when running
+- **Port**: Runs on port 2512 by default
+- **Features**: 
+  - Real-time script execution with WebSocket support
+  - Script output streaming
+  - Connection status monitoring in DevPanel
+  - HTTP REST API and Socket.IO communication
+
+To use the companion:
+1. Install dependencies: `pnpm run koksmat:install`
+2. Start the server: `pnpm run koksmat:dev` (development) or `pnpm run koksmat` (production)
+3. View status in DevPanel (floating Magic Button icon in development mode)
 
 This template provides the foundation for building specialized Magic Button Assistants with consistent architecture and best practices.
