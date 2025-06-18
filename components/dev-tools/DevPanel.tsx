@@ -50,7 +50,7 @@ const languages = [
   { code: "ja", name: "日本語" },
 ];
 
-export default function DevPanel() {
+function DevPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<Position>(() => {
     // Start at center of screen for animation
@@ -543,3 +543,13 @@ export default function DevPanel() {
     </div>
   );
 }
+
+// Only show DevPanel in development mode
+export default function DevPanelWrapper() {
+  if (process.env.NODE_ENV !== 'development') {
+    return null;
+  }
+  
+  return <DevPanel />;
+}
+
