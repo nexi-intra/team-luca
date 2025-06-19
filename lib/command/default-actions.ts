@@ -130,7 +130,7 @@ export const defaultCommandActions: CommandAction[] = [
     icon: Code,
     requiredRing: 2 as FeatureRing,
     category: 'Advanced',
-    action: () => { window.location.href = '/demo/sidebar'; },
+    action: () => { window.location.href = '/magicbutton/demo/sidebar'; },
     keywords: ['sidebar', 'demo', 'ui', 'component']
   },
 

@@ -132,11 +132,11 @@ The telemetry system automatically:
 
 When creating a new Magic Button Assistant from this template:
 
-### 1. Replace "XXX" placeholder
-- Update `package.json` name field
-- Modify `app/layout.tsx` title and description
-- Customize `app/page.tsx` content
-- Update environment variable `OTEL_SERVICE_NAME`
+### 1. Use the White-label Configuration
+- Edit `/config/whitelabel.ts` with your branding and settings
+- Add your logos and assets to `/public`
+- The configuration automatically updates throughout the app
+- See `WHITELABEL.md` for detailed customization guide
 
 ### 2. Add domain-specific features
 - Create specialized components in `/components`
@@ -156,6 +156,38 @@ When creating a new Magic Button Assistant from this template:
 3. **Authentication Required**: MSAL integration for secure access
 4. **AI-Ready**: Structured for easy Claude API integration
 5. **Scalable**: Built on Next.js App Router for performance
+
+## Component Organization Strategy
+
+Components are organized based on their scope and usage:
+
+### 1. Shared UI Components (`/components/ui`)
+- **Location**: `/components/ui`
+- **Content**: shadcn/ui components and other shared UI primitives
+- **Rule**: Keep all shadcn/ui components here, do NOT move to route groups
+
+### 2. Route Group Components
+- **Location**: `/app/(app)/components` and `/app/(magicbutton)/components`
+- **Content**: Components specific to each route group
+- **Rule**: Components used only within a route group should live in that group's components folder
+- **Examples**:
+  - Components used only in (app) routes → `/app/(app)/components`
+  - Components used only in (magicbutton) routes → `/app/(magicbutton)/components`
+
+### 3. Global Components (`/components`)
+- **Location**: `/components`
+- **Content**: Components used across multiple route groups or globally
+- **Examples**: `theme-toggle`, `language-selector`, `cookie-consent`, `auth/*`, `accessibility/*`
+
+### When Adding New Components
+1. **First ask**: Is this a shadcn/ui component? → Keep in `/components/ui`
+2. **Second ask**: Is this specific to one route group? → Place in `/app/(route-group)/components`
+3. **Otherwise**: Place in `/components` for global usage
+
+### Import Paths
+- Route group components: `@/app/(route-group)/components/ComponentName`
+- Global components: `@/components/ComponentName`
+- UI components: `@/components/ui/component-name`
 
 ## Environment Variables Required
 ```

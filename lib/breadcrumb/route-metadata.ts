@@ -12,7 +12,7 @@ export const routeMetadata: RouteMetadata = {
   '/profile': 'Profile',
   '/dashboard': 'Dashboard',
   '/sidebar-demo': 'Sidebar Demo',
-  '/demo/sidebar': 'Sidebar Component Demo',
+  '/magicbutton/demo/sidebar': 'Sidebar Component Demo',
   '/accessibility': 'Accessibility',
   '/admin/console': 'System Console',
 };

@@ -54,10 +54,10 @@ export function MainHeader() {
               Authentication
             </Link>
             <Link
-              href="/demo/sidebar"
+              href="/magicbutton/demo/sidebar"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Sidebar (Ring 1)
+              Sidebar
             </Link>
             <Link
               href="/accessibility"
@@ -116,10 +116,10 @@ export function MainHeader() {
                   Authentication
                 </Link>
                 <Link
-                  href="/demo/sidebar"
+                  href="/magicbutton/demo/sidebar"
                   className="text-sm font-medium transition-colors hover:text-primary"
                 >
-                  Sidebar (Ring 1)
+                  Sidebar
                 </Link>
                 <Link
                   href="/accessibility"

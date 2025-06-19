@@ -16,6 +16,7 @@ import { CommandPalette } from '@/components/command/CommandPalette';
 import { Toaster } from 'sonner';
 import { AccessibilityProvider } from '@/lib/accessibility/context';
 import dynamic from 'next/dynamic';
+import { WhitelabelProvider } from '@/components/providers/WhitelabelProvider';
 
 // Lazy load DevPanel only in development
 const DevPanel = dynamic(() => import('@/components/dev-tools/DevPanel'), {
@@ -24,39 +25,41 @@ const DevPanel = dynamic(() => import('@/components/dev-tools/DevPanel'), {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <MsalProviderWrapper>
-      <AuthProviderWrapper>
-        <SessionProvider>
-          <FeatureRingProvider defaultRing={4}>
-            <DemoProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-                storageKey="magic-button-theme"
-              >
-                <AccessibilityProvider>
-                  <AnnounceProvider>
-                    <LanguageProvider>
-                      <BreadcrumbProvider>
-                        <CommandPaletteProvider>
-                          {children}
-                          <CommandPalette />
-                          <ReauthNotification />
-                          <AccessibilityToolbar />
-                          <Toaster />
-                          <DevPanel />
-                        </CommandPaletteProvider>
-                      </BreadcrumbProvider>
-                    </LanguageProvider>
-                  </AnnounceProvider>
-                </AccessibilityProvider>
-              </ThemeProvider>
-            </DemoProvider>
-          </FeatureRingProvider>
-        </SessionProvider>
-      </AuthProviderWrapper>
-    </MsalProviderWrapper>
+    <WhitelabelProvider>
+      <MsalProviderWrapper>
+        <AuthProviderWrapper>
+          <SessionProvider>
+            <FeatureRingProvider defaultRing={4}>
+              <DemoProvider>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                  storageKey="magic-button-theme"
+                >
+                  <AccessibilityProvider>
+                    <AnnounceProvider>
+                      <LanguageProvider>
+                        <BreadcrumbProvider>
+                          <CommandPaletteProvider>
+                            {children}
+                            <CommandPalette />
+                            <ReauthNotification />
+                            <AccessibilityToolbar />
+                            <Toaster />
+                            <DevPanel />
+                          </CommandPaletteProvider>
+                        </BreadcrumbProvider>
+                      </LanguageProvider>
+                    </AnnounceProvider>
+                  </AccessibilityProvider>
+                </ThemeProvider>
+              </DemoProvider>
+            </FeatureRingProvider>
+          </SessionProvider>
+        </AuthProviderWrapper>
+      </MsalProviderWrapper>
+    </WhitelabelProvider>
   );
 }

@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useBreadcrumbTitle } from '@/hooks/useBreadcrumbTitle';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { ExternalLink } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +34,7 @@ export default function SettingsPage() {
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
+            <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
           
           <TabsContent value="general" className="space-y-4">
@@ -171,6 +174,54 @@ export default function SettingsPage() {
                 </div>
                 
                 <Button variant="destructive">Change Password</Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="about" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>About This Application</CardTitle>
+                <CardDescription>
+                  Version information and legal notices
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Application Version</Label>
+                  <p className="text-sm text-muted-foreground">v0.1.0</p>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>License</Label>
+                  <p className="text-sm text-muted-foreground">MIT License</p>
+                  <p className="text-sm text-muted-foreground">Copyright © 2025 MagicButton OÜ</p>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Open Source Credits</Label>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    This application is built with amazing open source software.
+                  </p>
+                  <Link href="/credits" className="inline-flex items-center">
+                    <Button variant="outline" className="gap-2">
+                      View Credits & Attributions
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+                
+                <div className="space-y-2 pt-4">
+                  <Label>Legal</Label>
+                  <p className="text-sm text-muted-foreground">
+                    For licensing inquiries and permissions, please contact:
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <a href="mailto:legal@magicbutton.cloud" className="text-blue-500 hover:underline">
+                      legal@magicbutton.cloud
+                    </a>
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

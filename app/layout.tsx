@@ -5,16 +5,11 @@ import { Providers } from './providers';
 import { CookieConsent } from '@/components/cookie-consent';
 import { AccessibilitySkipLinks } from '@/components/compliance/accessibility-skip-links';
 import { PrivacyBanner } from '@/components/compliance/privacy-banner';
+import { generateMetadata } from '@/lib/whitelabel/metadata';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
-export const metadata: Metadata = {
-  title: 'Magic Button Assistant for XXX',
-  description: 'Leverage Claude AI to its fullest potential for your specific use case',
-  icons: {
-    icon: '/magic-button-logo.svg',
-  },
-};
+export const metadata: Metadata = generateMetadata();
 
 export default function RootLayout({
   children,
