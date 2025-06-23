@@ -14,14 +14,14 @@ interface SessionContextValue {
 const SessionContext = createContext<SessionContextValue | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user, session } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const establishSession = useCallback(async () => {
-    if (!isAuthenticated || !user || !session) {
+    if (!isAuthenticated || !user) {
       setIsSessionActive(false);
       setIsLoading(false);
       return;
@@ -36,7 +36,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.token}`,
+          'Authorization': `Bearer ${user.accessToken || ''}`,
         },
         body: JSON.stringify({
           userId: user.id,
@@ -61,7 +61,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, user, session, router]);
+  }, [isAuthenticated, user, router]);
 
   const refreshSession = useCallback(async () => {
     if (!isAuthenticated) {

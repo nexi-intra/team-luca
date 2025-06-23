@@ -12,17 +12,21 @@ export interface TelemetryConfig {
 }
 
 export function getTelemetryConfig(): TelemetryConfig {
+  // Import config dynamically to avoid circular dependency
+  const { config } = require('@/lib/config');
+  
+  // Allow disabling telemetry entirely
+  const isDisabled = process.env.OTEL_DISABLED === 'true' || process.env.DISABLE_TELEMETRY === 'true';
+  
   return {
-    serviceName: process.env.OTEL_SERVICE_NAME || 'magic-button-assistant',
-    serviceVersion: process.env.OTEL_SERVICE_VERSION || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
-    tracesEndpoint: process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,
-    metricsEndpoint: process.env.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT,
-    headers: process.env.OTEL_EXPORTER_OTLP_HEADERS 
-      ? JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS)
-      : {},
-    enableConsoleExporter: process.env.NODE_ENV === 'development',
-    samplingRate: parseFloat(process.env.OTEL_SAMPLING_RATE || '1.0'),
+    serviceName: config.getOrDefault('telemetry.serviceName', 'magic-button-assistant'),
+    serviceVersion: '1.0.0', // TODO: Move to config if needed
+    environment: config.getOrDefault('general.environment', 'development'),
+    tracesEndpoint: isDisabled ? undefined : config.get('telemetry.tracesEndpoint'),
+    metricsEndpoint: isDisabled ? undefined : config.get('telemetry.metricsEndpoint'),
+    headers: config.getOrDefault('telemetry.headers', {}),
+    enableConsoleExporter: config.getOrDefault('general.environment', 'development') === 'development',
+    samplingRate: config.getOrDefault('telemetry.samplingRate', 1.0),
   };
 }
 

@@ -18,7 +18,7 @@ const ringConfig = {
   'compliance': { label: 'Compliance & Security', color: 'destructive' }
 };
 
-export function DocPlaceholder({ title, description, ring, comingSoon = true }: DocPlaceholderProps) {
+export default function DocPlaceholder({ title, description, ring, comingSoon = true }: DocPlaceholderProps) {
   const config = ringConfig[ring];
   
   return (

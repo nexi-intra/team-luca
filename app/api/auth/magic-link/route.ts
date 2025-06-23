@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { magicAuth } from '@/lib/auth/magic-auth';
+import { config } from '@/lib/config';
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate magic link
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
+    const baseUrl = config.getOrDefault('general.appUrl', request.nextUrl.origin);
     const magicLink = magicAuth.generateMagicLink(baseUrl, token, route);
 
     return NextResponse.json({ magicLink });

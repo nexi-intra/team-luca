@@ -13,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
+import { withDevOverlay } from '@/lib/dev/with-dev-overlay';
 
 interface LanguageSelectorProps {
   className?: string;
@@ -22,7 +23,7 @@ interface LanguageSelectorProps {
   showName?: boolean;
 }
 
-export function LanguageSelector({
+function LanguageSelectorBase({
   className,
   variant = 'outline',
   size = 'default',
@@ -83,7 +84,7 @@ export function LanguageSelector({
 }
 
 // Compact version for mobile or space-constrained areas
-export function LanguageSelectorCompact({ className }: { className?: string }) {
+function LanguageSelectorCompactBase({ className }: { className?: string }) {
   const { languageInfo, availableLanguages, setLanguage } = useLanguage();
   
   return (
@@ -105,3 +106,6 @@ export function LanguageSelectorCompact({ className }: { className?: string }) {
     </select>
   );
 }
+
+export const LanguageSelector = withDevOverlay(LanguageSelectorBase, "LanguageSelector");
+export const LanguageSelectorCompact = withDevOverlay(LanguageSelectorCompactBase, "LanguageSelectorCompact");

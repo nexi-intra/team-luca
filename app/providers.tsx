@@ -1,8 +1,7 @@
 'use client';
 
 import { ThemeProvider } from 'next-themes';
-import { MsalProviderWrapper } from '@/lib/auth/msal-provider';
-import { AuthProviderWrapper } from '@/lib/auth/auth-provider-wrapper';
+import { AuthProviderWrapper } from '@/lib/auth/auth-provider';
 import { SessionProvider } from '@/lib/auth/session-context';
 import { FeatureRingProvider } from '@/lib/features';
 import { DemoProvider } from '@/lib/demo/context';
@@ -17,6 +16,14 @@ import { Toaster } from 'sonner';
 import { AccessibilityProvider } from '@/lib/accessibility/context';
 import dynamic from 'next/dynamic';
 import { WhitelabelProvider } from '@/components/providers/WhitelabelProvider';
+import { AuthCallbackHandler } from '@/components/auth/AuthCallbackHandler';
+import { initializeConsoleWrapper } from '@/lib/console-wrapper';
+import { Suspense } from 'react';
+
+// Initialize console wrapper on the client side
+if (typeof window !== 'undefined') {
+  initializeConsoleWrapper();
+}
 
 // Lazy load DevPanel only in development
 const DevPanel = dynamic(() => import('@/components/dev-tools/DevPanel'), {
@@ -26,40 +33,42 @@ const DevPanel = dynamic(() => import('@/components/dev-tools/DevPanel'), {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WhitelabelProvider>
-      <MsalProviderWrapper>
-        <AuthProviderWrapper>
-          <SessionProvider>
-            <FeatureRingProvider defaultRing={4}>
-              <DemoProvider>
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="system"
-                  enableSystem
-                  disableTransitionOnChange
-                  storageKey="magic-button-theme"
-                >
-                  <AccessibilityProvider>
-                    <AnnounceProvider>
-                      <LanguageProvider>
-                        <BreadcrumbProvider>
-                          <CommandPaletteProvider>
-                            {children}
-                            <CommandPalette />
-                            <ReauthNotification />
-                            <AccessibilityToolbar />
-                            <Toaster />
-                            <DevPanel />
-                          </CommandPaletteProvider>
-                        </BreadcrumbProvider>
-                      </LanguageProvider>
-                    </AnnounceProvider>
-                  </AccessibilityProvider>
-                </ThemeProvider>
-              </DemoProvider>
-            </FeatureRingProvider>
-          </SessionProvider>
-        </AuthProviderWrapper>
-      </MsalProviderWrapper>
+      <AuthProviderWrapper>
+        <SessionProvider>
+          <FeatureRingProvider defaultRing={4}>
+            <DemoProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+                storageKey="magic-button-theme"
+              >
+                <AccessibilityProvider>
+                  <AnnounceProvider>
+                    <LanguageProvider>
+                      <BreadcrumbProvider>
+                        <CommandPaletteProvider>
+                          <Suspense fallback={<div className="min-h-screen" />}>
+                            <AuthCallbackHandler>
+                              {children}
+                            </AuthCallbackHandler>
+                          </Suspense>
+                          <CommandPalette />
+                          <ReauthNotification />
+                          <AccessibilityToolbar />
+                          <Toaster />
+                          <DevPanel />
+                        </CommandPaletteProvider>
+                      </BreadcrumbProvider>
+                    </LanguageProvider>
+                  </AnnounceProvider>
+                </AccessibilityProvider>
+              </ThemeProvider>
+            </DemoProvider>
+          </FeatureRingProvider>
+        </SessionProvider>
+      </AuthProviderWrapper>
     </WhitelabelProvider>
   );
 }

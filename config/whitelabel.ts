@@ -70,6 +70,11 @@ export const whitelabel = {
       koksmatCompanion: true, // Enable Koksmat Companion integration
       devPanel: true, // Show dev panel in development
     },
+    
+    // Template features
+    template: {
+      showIntro: true, // Show template introduction on home page
+    },
   },
 
   // ========== CONTENT ==========

@@ -1,4 +1,5 @@
 import { SessionPayload } from '@/lib/auth/session';
+import { config } from '@/lib/config';
 
 export interface AuditEvent {
   id: string;
@@ -35,7 +36,7 @@ export class AuditLogger {
 
     // In production, send to your audit logging service
     // For now, just log to console in development
-    if (process.env.NODE_ENV === 'development') {
+    if (config.getOrDefault('general.environment', 'development') === 'development') {
       console.log('[AUDIT]', JSON.stringify(auditEvent, null, 2));
     } else {
       // TODO: Send to audit logging service (e.g., Datadog, Splunk, ELK)

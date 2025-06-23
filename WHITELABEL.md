@@ -49,6 +49,9 @@ features: {
     enabled: true,
     serviceName: 'your-service-name',
   },
+  template: {
+    showIntro: true, // Set to false to hide template intro on home page
+  },
 }
 ```
 

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { withDevOverlay } from '@/lib/dev/with-dev-overlay';
 
 export interface CookiePreferences {
   necessary: boolean;
@@ -22,7 +23,7 @@ interface CookieConsentProps {
 const CONSENT_KEY = 'cookie-consent';
 const PREFERENCES_KEY = 'cookie-preferences';
 
-export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
+function CookieConsentBase({ onAccept, onDecline }: CookieConsentProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>({
@@ -248,3 +249,5 @@ export function useCookieConsent() {
 
   return { hasConsent, preferences, updatePreferences };
 }
+
+export const CookieConsent = withDevOverlay(CookieConsentBase, "CookieConsent");

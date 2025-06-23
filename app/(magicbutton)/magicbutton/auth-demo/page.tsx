@@ -14,7 +14,7 @@ import { Copy, ExternalLink, Shield } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 export default function AuthDemoPage() {
-  const { isAuthenticated, user, authSource, login, switchAuthSource } = useAuth();
+  const { isAuthenticated, user, loginWithPopup, logout, error } = useAuth();
   const [sampleToken, setSampleToken] = useState('');
   const [magicLink, setMagicLink] = useState('');
 
@@ -47,10 +47,10 @@ export default function AuthDemoPage() {
     <div className="max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-[#233862] dark:text-white mb-2">
-          Multi-Source Authentication Demo
+          Authentication Demo
         </h1>
         <p className="text-gray-600">
-          Test different authentication methods including Magic Auth with JWT tokens
+          Test popup authentication with Microsoft Entra ID and Magic Auth
         </p>
       </div>
 
@@ -82,7 +82,7 @@ export default function AuthDemoPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Auth Source:</p>
-                  <p className="font-medium">{authSource?.toUpperCase()}</p>
+                  <p className="font-medium">{user.source?.toUpperCase() || 'CUSTOM'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Email:</p>
@@ -105,35 +105,52 @@ export default function AuthDemoPage() {
       </Card>
 
       {/* Authentication Methods */}
-      <Tabs defaultValue="msal" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="msal">MSAL (Azure AD)</TabsTrigger>
+      <Tabs defaultValue="entraid" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="entraid">Entra ID</TabsTrigger>
           <TabsTrigger value="magic">Magic Auth</TabsTrigger>
-          <TabsTrigger value="switch">Switch Source</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="msal">
+        <TabsContent value="entraid">
           <Card>
             <CardHeader>
-              <CardTitle>MSAL Authentication</CardTitle>
+              <CardTitle>Entra ID Authentication</CardTitle>
               <CardDescription>
-                Sign in using Microsoft Azure Active Directory
+                Sign in using Microsoft Entra ID (formerly Azure AD)
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Alert>
                 <AlertDescription>
-                  This uses the configured Azure AD tenant for authentication. 
-                  User roles and metadata are extracted from the MSAL token.
+                  This uses popup authentication with Microsoft Entra ID. 
+                  User roles and metadata are extracted from the ID token.
                 </AlertDescription>
               </Alert>
-              <Button 
-                onClick={() => login('msal')}
-                disabled={isAuthenticated && authSource === 'msal'}
-                className="w-full"
-              >
-                Sign in with Microsoft
-              </Button>
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>
+                    Error: {error.message}
+                  </AlertDescription>
+                </Alert>
+              )}
+              <div className="space-y-2">
+                <Button 
+                  onClick={() => loginWithPopup()}
+                  disabled={isAuthenticated}
+                  className="w-full"
+                >
+                  Sign in with Entra ID (Popup)
+                </Button>
+                {isAuthenticated && (
+                  <Button 
+                    onClick={() => logout()}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Sign out
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -212,56 +229,6 @@ export default function AuthDemoPage() {
                   </Alert>
                 </>
               )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="switch">
-          <Card>
-            <CardHeader>
-              <CardTitle>Switch Auth Source</CardTitle>
-              <CardDescription>
-                Switch between different authentication providers
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert>
-                <AlertDescription>
-                  Switching auth source will log you out from the current provider 
-                  and attempt to authenticate with the new one.
-                </AlertDescription>
-              </Alert>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => switchAuthSource('msal')}
-                  disabled={!isAuthenticated || authSource === 'msal'}
-                >
-                  Switch to MSAL
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => switchAuthSource('sso')}
-                  disabled={!isAuthenticated}
-                >
-                  Switch to SSO
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => switchAuthSource('supabase')}
-                  disabled={!isAuthenticated}
-                >
-                  Switch to Supabase
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => switchAuthSource('custom')}
-                  disabled={!isAuthenticated}
-                >
-                  Switch to Custom
-                </Button>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>

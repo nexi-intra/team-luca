@@ -11,7 +11,7 @@ export const defaultReauthConfig: ReauthConfig = {
   enabled: true,
   intervalMinutes: 10, // Re-authenticate every 10 minutes
   warningMinutes: 1,   // Show warning 1 minute before re-auth
-  providers: ['msal', 'sso', 'supabase', 'custom'] // Magic auth excluded
+  providers: ['entraid', 'sso', 'supabase', 'custom'] // Magic auth excluded
 };
 
 export function shouldReauthenticate(

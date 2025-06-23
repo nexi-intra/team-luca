@@ -9,6 +9,7 @@ export function generateMetadata(overrides?: Partial<Metadata>): Metadata {
   const processedDescription = whitelabel.processTemplate(whitelabel.metadata.description);
   
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
     title: processedTitle,
     description: processedDescription,
     keywords: whitelabel.metadata.keywords,

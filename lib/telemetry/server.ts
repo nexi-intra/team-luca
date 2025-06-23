@@ -9,12 +9,22 @@ import { BatchSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trac
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { getTelemetryConfig, getResourceAttributes } from './config';
 import { createSanitizingSpanProcessor } from './processors';
+import { createErrorHandlingProcessor } from './error-handling-processor';
 // Import logger without alias for server-side
 const { createLogger } = require('../logger');
 
 const logger = createLogger('Telemetry:Server');
 
+// Global flag to prevent duplicate initialization
+let isInitialized = false;
+
 export function initializeServerTelemetry() {
+  // Prevent duplicate initialization
+  if (isInitialized) {
+    logger.debug('OpenTelemetry already initialized, skipping');
+    return;
+  }
+  
   const config = getTelemetryConfig();
   
   if (!config.tracesEndpoint && !config.enableConsoleExporter) {
@@ -22,9 +32,12 @@ export function initializeServerTelemetry() {
     return;
   }
   
+  // Mark as initialized early to prevent race conditions
+  isInitialized = true;
+  
   // Enable diagnostics in development
-  if (process.env.NODE_ENV === 'development') {
-    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+  if (config.environment === 'development') {
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
   }
   
   logger.info('Initializing OpenTelemetry for server', {
@@ -60,9 +73,13 @@ export function initializeServerTelemetry() {
   // Create SDK
   const sdk = new NodeSDK({
     resource,
-    spanProcessor: createSanitizingSpanProcessor(
-      new BatchSpanProcessor(traceExporter)
-    ),
+    spanProcessors: [
+      createErrorHandlingProcessor(
+        createSanitizingSpanProcessor(
+          new BatchSpanProcessor(traceExporter)
+        )
+      )
+    ],
     metricReader: metricExporter
       ? new PeriodicExportingMetricReader({
           exporter: metricExporter,
@@ -119,20 +136,26 @@ export function initializeServerTelemetry() {
   });
   
   // Initialize the SDK
-  sdk.start();
-  
-  // Graceful shutdown
-  process.on('SIGTERM', () => {
-    logger.info('Shutting down OpenTelemetry');
-    sdk.shutdown()
-      .then(() => logger.info('OpenTelemetry terminated'))
-      .catch((error) => logger.error('Error terminating OpenTelemetry', error));
-  });
-  
-  logger.info('OpenTelemetry initialized successfully');
-}
-
-// Initialize on module load if not in test environment
-if (process.env.NODE_ENV !== 'test') {
-  initializeServerTelemetry();
+  try {
+    sdk.start();
+    
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      logger.info('Shutting down OpenTelemetry');
+      sdk.shutdown()
+        .then(() => logger.info('OpenTelemetry terminated'))
+        .catch((error) => logger.error('Error terminating OpenTelemetry', error));
+    });
+    
+    logger.info('OpenTelemetry initialized successfully');
+  } catch (error) {
+    // Handle duplicate registration errors gracefully
+    if (error instanceof Error && error.message.includes('duplicate registration')) {
+      logger.debug('OpenTelemetry already registered, continuing normally');
+    } else {
+      logger.error('Failed to start OpenTelemetry SDK', error);
+      // Reset initialization flag on failure
+      isInitialized = false;
+    }
+  }
 }

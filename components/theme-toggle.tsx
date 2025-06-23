@@ -11,8 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { withDevOverlay } from "@/lib/dev/with-dev-overlay";
 
-export function ThemeToggle() {
+function ThemeToggleBase() {
   const { setTheme, theme } = useTheme();
 
   return (
@@ -39,7 +40,7 @@ export function ThemeToggle() {
   );
 }
 
-export function ThemeToggleSimple() {
+function ThemeToggleSimpleBase() {
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
@@ -64,3 +65,6 @@ export function ThemeToggleSimple() {
     </Button>
   );
 }
+
+export const ThemeToggle = withDevOverlay(ThemeToggleBase, "ThemeToggle");
+export const ThemeToggleSimple = withDevOverlay(ThemeToggleSimpleBase, "ThemeToggleSimple");

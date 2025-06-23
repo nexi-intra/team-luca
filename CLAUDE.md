@@ -5,18 +5,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 ## Template Overview
 
 This is a Magic Button Assistant template for creating specialized AI assistants using:
-- **Framework**: Next.js 14 with App Router
-- **UI**: React 18, TypeScript, Tailwind CSS, shadcn/ui components
-- **Authentication**: Microsoft Authentication Library (MSAL) for Azure AD
+- **Framework**: Next.js 15 with App Router
+- **UI**: React 19, TypeScript, Tailwind CSS, shadcn/ui components
+- **Authentication**: Custom OAuth 2.0 + PKCE implementation for Microsoft Entra ID (supports popup and redirect flows)
 - **AI**: Anthropic Claude API integration ready
 - **Observability**: OpenTelemetry instrumentation included
 - **Package Manager**: pnpm (required)
+
+## Authentication Providers
+
+The template supports multiple authentication providers configured via the `AUTH_PROVIDER` environment variable:
+
+### 1. No Authentication (`AUTH_PROVIDER=none`)
+- Disables authentication completely
+- User menu in sidebar is hidden
+- All users have access without sign-in
+- Useful for internal tools or development
+
+### 2. Microsoft Entra ID (`AUTH_PROVIDER=entraid`) - Default
+- OAuth 2.0 + PKCE flow with Microsoft identity platform
+- Supports both popup and redirect flows
+- Automatic token refresh
+- Requires: `NEXT_PUBLIC_AUTH_CLIENT_ID`, `NEXT_PUBLIC_AUTH_AUTHORITY`, `SESSION_SECRET`
+
+### 3. Supabase (`AUTH_PROVIDER=supabase`)
+- Uses Supabase Auth for authentication
+- Supports multiple identity providers via Supabase
+- Real-time auth state synchronization
+- Requires: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SESSION_SECRET`
 
 ## Commands
 
 ### Development
 ```bash
-pnpm run dev          # Start development server on http://localhost:3000
+pnpm run dev          # Start development server on http://localhost:2803
 pnpm run build        # Build for production
 pnpm run start        # Start production server
 pnpm run lint         # Run ESLint
@@ -128,6 +150,98 @@ The telemetry system automatically:
 - Removes forbidden headers (authorization, cookies)
 - Redacts email addresses and phone numbers
 
+## Context Providers
+
+The template uses a comprehensive provider hierarchy to manage global state and features. All providers are configured in `/app/providers.tsx`:
+
+### Provider Hierarchy (Order Matters)
+1. **WhitelabelProvider** - Provides white-label configuration across the app
+2. **AuthProviderWrapper** - Wraps authentication logic for Microsoft Entra ID
+3. **SessionProvider** - Manages user session state
+4. **FeatureRingProvider** - Controls feature flags and gradual rollouts (default ring: 4)
+5. **DemoProvider** - Manages demo mode state
+6. **ThemeProvider** - Next.js themes for dark/light mode support
+7. **AccessibilityProvider** - Accessibility preferences and settings
+8. **AnnounceProvider** - Screen reader announcements
+9. **LanguageProvider** - Internationalization support
+10. **BreadcrumbProvider** - Navigation breadcrumb state
+11. **CommandPaletteProvider** - Command palette (Cmd+K) functionality
+12. **AuthCallbackHandler** - Handles OAuth callbacks
+
+### Using Context Providers
+
+#### Authentication Context
+```typescript
+import { useAuth } from '@/lib/auth/custom-auth-context';
+
+const { user, isAuthenticated, signIn, signOut } = useAuth();
+```
+
+#### Session Context
+```typescript
+import { useSession } from '@/lib/auth/session-context';
+
+const { session, checkSession } = useSession();
+```
+
+#### Feature Flags
+```typescript
+import { useFeatureRing } from '@/lib/features';
+
+const { currentRing, hasFeatureAccess } = useFeatureRing();
+const canUseFeature = hasFeatureAccess('new-feature', 3); // Ring 3 and above
+```
+
+#### Theme
+```typescript
+import { useTheme } from 'next-themes';
+
+const { theme, setTheme } = useTheme();
+```
+
+#### Demo Mode
+```typescript
+import { useDemo } from '@/lib/demo/context';
+
+const { isDemoMode, toggleDemoMode } = useDemo();
+```
+
+#### Language/i18n
+```typescript
+import { useLanguage } from '@/lib/i18n';
+
+const { language, setLanguage, t } = useLanguage();
+```
+
+#### Command Palette
+```typescript
+import { useCommandPalette } from '@/lib/command/context';
+
+const { isOpen, setIsOpen, registerCommand } = useCommandPalette();
+```
+
+#### Accessibility
+```typescript
+import { useAccessibility } from '@/lib/accessibility/context';
+
+const { reducedMotion, highContrast, fontSize } = useAccessibility();
+```
+
+#### Breadcrumbs
+```typescript
+import { useBreadcrumb } from '@/lib/breadcrumb/context';
+
+const { breadcrumbs, addBreadcrumb } = useBreadcrumb();
+```
+
+### Global Components
+The following components are rendered globally through the provider hierarchy:
+- **CommandPalette** - Global command palette (Cmd+K)
+- **ReauthNotification** - Shows when re-authentication is needed
+- **AccessibilityToolbar** - Accessibility settings toolbar
+- **Toaster** - Toast notifications (via sonner)
+- **DevPanel** - Development tools panel (dev mode only)
+
 ## Customization Instructions
 
 When creating a new Magic Button Assistant from this template:
@@ -189,16 +303,104 @@ Components are organized based on their scope and usage:
 - Global components: `@/components/ComponentName`
 - UI components: `@/components/ui/component-name`
 
+## Configuration Factory
+
+The template uses a type-safe configuration factory pattern for managing all application settings:
+
+### Key Features
+- **Type Safety**: Full TypeScript support with auto-completion
+- **Validation**: Built-in validation for all configuration values
+- **Feature Rings**: Gradual rollout support (Internal → Beta → GA → Public)
+- **Metadata**: Each config includes name, description, and examples
+- **Categories**: Organized into Authentication, API, Telemetry, General, Features
+
+### Usage
+```typescript
+import { config } from '@/lib/config';
+
+// Get configuration values
+const clientId = config.get('auth.clientId');
+const apiKey = config.getRequired('api.anthropicKey');
+const scopes = config.getOrDefault('auth.scopes', ['openid']);
+
+// Get with metadata
+const { value, name, description } = config.getWithMetadata('auth.clientId');
+
+// Check if config exists
+if (config.has('telemetry.enabled')) {
+  // ...
+}
+
+// Get configs by feature ring
+const betaConfigs = config.getByFeatureRing('beta');
+
+// Validate all required configs
+const validationErrors = config.validate();
+```
+
+### Configuration Categories
+- **Authentication** (`auth.*`): OAuth, session, and security settings
+- **API** (`api.*`): External service keys and endpoints
+- **Telemetry** (`telemetry.*`): Observability and monitoring
+- **General** (`general.*`): App-wide settings like URLs and names
+- **Features** (`features.*`): Feature flags and toggles
+
+### Adding New Configuration
+1. Update `/lib/config/schema.ts` with your new config
+2. Add corresponding environment variable mapping in `/lib/config/providers/env-provider.ts`
+3. Use the config throughout the app with full type safety
+
+Example:
+```typescript
+// In schema.ts
+myFeature: {
+  enabled: {
+    value: false,
+    name: 'My Feature Toggle',
+    description: 'Enables the new experimental feature',
+    featureRing: FeatureRing.Beta,
+    required: false,
+    defaultValue: false
+  }
+}
+```
+
 ## Environment Variables Required
 ```
-NEXT_PUBLIC_AZURE_AD_CLIENT_ID
-NEXT_PUBLIC_AZURE_AD_TENANT_ID
-NEXT_PUBLIC_AZURE_AD_REDIRECT_URI
-ANTHROPIC_API_KEY
-SESSION_SECRET
-NEXT_PUBLIC_APP_URL
-OTEL_SERVICE_NAME (optional)
-NEXT_PUBLIC_KOKSMAT_COMPANION_URL (optional, defaults to http://localhost:2512)
+# Authentication Provider (Required)
+AUTH_PROVIDER                  # Authentication provider: none, entraid, or supabase (default: entraid)
+
+# Microsoft Entra ID Authentication (Required when AUTH_PROVIDER=entraid)
+NEXT_PUBLIC_AUTH_CLIENT_ID      # Microsoft Entra ID client ID
+NEXT_PUBLIC_AUTH_AUTHORITY      # Authority URL (tenant-specific or common)
+SESSION_SECRET                  # Session encryption key (min 32 chars)
+
+# Microsoft Entra ID Authentication (Optional)
+NEXT_PUBLIC_AUTH_REDIRECT_URI   # OAuth redirect URI
+NEXT_PUBLIC_AUTH_POST_LOGOUT_REDIRECT_URI  # Post-logout redirect
+
+# Supabase Authentication (Required when AUTH_PROVIDER=supabase)
+NEXT_PUBLIC_SUPABASE_URL       # Your Supabase project URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY  # Your Supabase anonymous/public key
+SESSION_SECRET                  # Session encryption key (min 32 chars)
+
+# API Keys (Required)
+ANTHROPIC_API_KEY              # Claude AI API key
+
+# General (Required)
+NEXT_PUBLIC_APP_URL            # Application base URL
+
+# Telemetry (Optional)
+OTEL_SERVICE_NAME              # Service name for tracing
+OTEL_SERVICE_VERSION           # Service version
+OTEL_EXPORTER_OTLP_TRACES_ENDPOINT  # Traces endpoint
+OTEL_EXPORTER_OTLP_METRICS_ENDPOINT # Metrics endpoint
+OTEL_SAMPLING_RATE             # Sampling rate (0.0-1.0)
+
+# Development (Optional)
+NEXT_PUBLIC_KOKSMAT_COMPANION_URL  # Companion server URL (default: http://localhost:2512)
+LOG_LEVEL                      # Server-side log level
+NEXT_PUBLIC_LOG_LEVEL          # Client-side log level
 ```
 
 ## Directory Structure

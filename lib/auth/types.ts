@@ -1,4 +1,20 @@
-export type AuthSource = 'msal' | 'sso' | 'supabase' | 'magic' | 'custom';
+export type AuthSource = 'entraid' | 'sso' | 'supabase' | 'magic' | 'custom';
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  givenName: string;
+  surname: string;
+  jobTitle: string;
+  officeLocation: string;
+  preferredLanguage: string;
+  accessToken: string | null;
+  idToken: string | null;
+  refreshToken: string | null;
+  expiresAt: string | null;
+  photo: string | null;
+}
 
 export interface AuthUser {
   id: string;

@@ -13,9 +13,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { withDevOverlay } from '@/lib/dev/with-dev-overlay';
 
-export function AuthStatus() {
-  const { isAuthenticated, isLoading, user, authSource, logout } = useAuth();
+function AuthStatusBase() {
+  const { isAuthenticated, isLoading, user, logout } = useAuth();
 
   if (isLoading) {
     return <div className="animate-pulse h-10 w-32 bg-gray-200 rounded" />;
@@ -26,13 +27,15 @@ export function AuthStatus() {
   }
 
   const getSourceBadgeVariant = () => {
-    switch (authSource) {
-      case 'msal':
+    switch (user?.source) {
+      case 'entraid':
         return 'default';
       case 'magic':
         return 'secondary';
       case 'sso':
         return 'outline';
+      case 'custom':
+        return 'secondary';
       default:
         return 'default';
     }
@@ -45,7 +48,7 @@ export function AuthStatus() {
           <User className="h-4 w-4" />
           <span className="max-w-[150px] truncate">{user.displayName}</span>
           <Badge variant={getSourceBadgeVariant()} className="text-xs">
-            {authSource?.toUpperCase()}
+            {user?.source?.toUpperCase() || 'AUTH'}
           </Badge>
         </Button>
       </DropdownMenuTrigger>
@@ -83,3 +86,5 @@ export function AuthStatus() {
     </DropdownMenu>
   );
 }
+
+export const AuthStatus = withDevOverlay(AuthStatusBase, "AuthStatus");

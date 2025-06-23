@@ -42,12 +42,13 @@ pnpm install
 cp .env.example .env.local
 ```
 
-4. Configure your Azure AD application and update `.env.local`:
+4. Configure your Microsoft Entra ID application and update `.env.local`:
 ```env
-NEXT_PUBLIC_AZURE_AD_CLIENT_ID=your-client-id
-NEXT_PUBLIC_AZURE_AD_TENANT_ID=your-tenant-id
-NEXT_PUBLIC_AZURE_AD_REDIRECT_URI=http://localhost:3000
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_AUTH_CLIENT_ID=your-client-id
+NEXT_PUBLIC_AUTH_AUTHORITY=https://login.microsoftonline.com/your-tenant-id
+NEXT_PUBLIC_AUTH_REDIRECT_URI=http://localhost:2803
+NEXT_PUBLIC_AUTH_POST_LOGOUT_URI=http://localhost:2803
+NEXT_PUBLIC_APP_URL=http://localhost:2803
 ANTHROPIC_API_KEY=your-api-key  # Optional
 SESSION_SECRET=your-secret-key
 ```

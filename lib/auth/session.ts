@@ -1,6 +1,7 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+import { config } from '@/lib/config';
 
 const SESSION_COOKIE_NAME = 'session-token';
 const SESSION_DURATION = 60 * 60 * 8; // 8 hours
@@ -18,9 +19,9 @@ export class SessionManager {
 
   private static getSecret(): Uint8Array {
     if (!SessionManager.secret) {
-      const secret = process.env.SESSION_SECRET;
+      const secret = config.get('auth.sessionSecret');
       if (!secret) {
-        throw new Error('SESSION_SECRET environment variable is not set');
+        throw new Error('Session secret is not configured');
       }
       SessionManager.secret = new TextEncoder().encode(secret);
     }
@@ -63,7 +64,7 @@ export class SessionManager {
       name: SESSION_COOKIE_NAME,
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: (config.getOrDefault('general.environment', 'development') as string) === 'production',
       sameSite: 'lax' as const,
       maxAge: SESSION_DURATION,
       path: '/',
@@ -81,7 +82,7 @@ export class SessionManager {
       name: SESSION_COOKIE_NAME,
       value: '',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: (config.getOrDefault('general.environment', 'development') as string) === 'production',
       sameSite: 'lax' as const,
       maxAge: 0,
       path: '/',

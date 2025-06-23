@@ -31,6 +31,8 @@ import { getRingName, FEATURE_RINGS } from "@/lib/features/constants";
 import type { FeatureRing } from "@/lib/features/constants";
 import { createLogger } from "@/lib/logger";
 import { KoksmatCompanionStatus } from "./KoksmatCompanionStatus";
+import { withDevOverlay } from "@/lib/dev/with-dev-overlay";
+import { EnvWarningBanner } from "./EnvWarningBanner";
 
 const logger = createLogger('DevPanel');
 
@@ -50,7 +52,7 @@ const languages = [
   { code: "ja", name: "日本語" },
 ];
 
-function DevPanel() {
+function DevPanelBase() {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<Position>(() => {
     // Start at center of screen for animation
@@ -214,7 +216,7 @@ function DevPanel() {
   }, []);
 
   // Only show in development
-  if (process.env.NODE_ENV !== "development") {
+  if (process.env.NODE_ENV !== 'development') {
     return null;
   }
 
@@ -544,12 +546,19 @@ function DevPanel() {
   );
 }
 
+const DevPanel = withDevOverlay(DevPanelBase, "DevPanel");
+
 // Only show DevPanel in development mode
 export default function DevPanelWrapper() {
   if (process.env.NODE_ENV !== 'development') {
     return null;
   }
   
-  return <DevPanel />;
+  return (
+    <>
+      <DevPanel />
+      <EnvWarningBanner />
+    </>
+  );
 }
 

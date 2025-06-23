@@ -6,6 +6,7 @@ import { CommandTrigger } from '@/components/command/CommandTrigger';
 import { LanguageSelector } from '@/components/language-selector';
 import { AccessibilityQuickControls } from '@/components/accessibility/quick-controls';
 import { useBranding, useRoutes } from '@/components/providers/WhitelabelProvider';
+import { ClientEnvCheck } from './components/ClientEnvCheck';
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +24,7 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { AuthStatus } from '@/components/auth/AuthStatus';
+import { SidebarUserMenu } from '@/components/auth/SidebarUserMenu';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Home, FileText, Settings, User, BarChart, Shield, Sparkles, Users, ChevronUp } from 'lucide-react';
@@ -132,7 +134,7 @@ export default function AppLayout({
             <SidebarSeparator />
             <SidebarMenu>
               <SidebarMenuItem>
-                <AuthStatus />
+                <SidebarUserMenu />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarFooter>
@@ -159,6 +161,7 @@ export default function AppLayout({
           </main>
         </SidebarInset>
       </div>
+      <ClientEnvCheck />
     </SidebarProvider>
   );
 }

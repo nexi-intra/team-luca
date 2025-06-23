@@ -21,9 +21,16 @@ class Logger {
   private namespace?: string;
 
   constructor(config?: Partial<LoggerConfig>, namespace?: string) {
-    // Get log level from environment variable or default to INFO
-    const envLevel = process.env.NEXT_PUBLIC_LOG_LEVEL || process.env.LOG_LEVEL || 'INFO';
-    this.level = this.parseLogLevel(envLevel);
+    // Import config dynamically to avoid circular dependency
+    const { config: appConfig } = require('@/lib/config');
+    
+    // Get log level from config or default to INFO
+    const isClient = typeof window !== 'undefined';
+    const configLevel = isClient 
+      ? appConfig.getOrDefault('telemetry.clientLogLevel', 'INFO')
+      : appConfig.getOrDefault('telemetry.logLevel', 'INFO');
+    
+    this.level = this.parseLogLevel(configLevel);
     
     this.prefix = config?.prefix || '[Magic Button]';
     this.timestamp = config?.timestamp ?? true;

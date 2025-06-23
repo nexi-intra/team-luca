@@ -45,21 +45,23 @@ exporters:
     resource_to_telemetry_conversion:
       enabled: true
 
-  # Logging exporter for debugging
-  logging:
-    loglevel: info
+  # Debug exporter for debugging (replaces deprecated logging exporter)
+  debug:
+    verbosity: normal
+    sampling_initial: 5
+    sampling_thereafter: 200
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [otlp/jaeger, logging]
+      exporters: [otlp/jaeger]
     
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [prometheus, logging]
+      exporters: [prometheus]
 
   extensions: [health_check, pprof, zpages]
 
