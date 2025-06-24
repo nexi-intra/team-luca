@@ -1,0 +1,39 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["jest", "@testing-library/jest-dom"],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"],
+      "@monorepo/logger": ["../../packages/logger/src"],
+      "@monorepo/telemetry": ["../../packages/telemetry/src"],
+      "@monorepo/config": ["../../packages/config/src"],
+      "@monorepo/types": ["../../packages/types/src"],
+      "@monorepo/utils": ["../../packages/utils/src"],
+      "@monorepo/auth": ["../../packages/auth/src"],
+      "@monorepo/features": ["../../packages/features/src"]
+    }
+  },
+  "include": ["next-env.d.ts", "jest.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "tests", "scripts", "*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"]
+}
