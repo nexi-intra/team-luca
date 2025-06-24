@@ -1,0 +1,61 @@
+# Gitleaks configuration file
+# https://github.com/gitleaks/gitleaks
+
+[extend]
+# useDefault will extend the base configuration with the default gitleaks config:
+# https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+useDefault = true
+
+[allowlist]
+description = "Allowlisted files"
+paths = [
+  # Lock files often contain hashes that can be false positives
+  '''pnpm-lock\.yaml''',
+  '''package-lock\.json''',
+  '''yarn\.lock''',
+  
+  # Build artifacts
+  '''\.next/''',
+  '''dist/''',
+  '''build/''',
+  '''out/''',
+  
+  # Test fixtures and snapshots
+  '''__snapshots__/''',
+  '''fixtures/''',
+  
+  # Coverage reports
+  '''coverage/''',
+  
+  # Documentation
+  '''\.md$''',
+  
+  # Environment examples
+  '''\.env\.example$''',
+  '''\.env\.sample$''',
+  '''\.env\.template$'''
+]
+
+[[rules]]
+description = "Custom rule for Magic Button specific patterns"
+id = "magic-button-api-key"
+regex = '''(?i)(magic[_-]?button[_-]?api[_-]?key|MB_API_KEY|MAGIC_BUTTON_KEY)\s*[:=]\s*['"]?[a-zA-Z0-9]{20,}['"]?'''
+tags = ["api-key", "magic-button"]
+
+[[rules]]
+description = "Custom rule for database connection strings"
+id = "database-connection-string"
+regex = '''(?i)(postgresql://|postgres://|mysql://|mongodb://|redis://)([^:]+):([^@]+)@'''
+tags = ["database", "connection-string"]
+
+[[rules]]
+description = "Custom rule for JWT secrets"
+id = "jwt-secret"
+regex = '''(?i)(jwt[_-]?secret|token[_-]?secret|auth[_-]?secret)\s*[:=]\s*['"]?[a-zA-Z0-9+/=]{32,}['"]?'''
+tags = ["jwt", "secret"]
+
+# Additional entropy settings
+[entropy]
+# Reduce false positives by increasing entropy thresholds
+Base64 = 5.0
+HexadecimalString = 3.5

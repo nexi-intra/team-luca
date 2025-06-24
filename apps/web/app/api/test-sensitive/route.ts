@@ -2,9 +2,8 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    
     // For now, skip telemetry to test basic functionality
+    // const body = await request.json();
     console.log('Received sensitive data test request');
     
     return NextResponse.json(

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useDemoContext } from '@/lib/demo/context';
-import { cn } from '@/lib/utils';
+import { cn } from '@monorepo/utils';
 
 interface DemoElementProps {
   id: string;
@@ -21,6 +21,7 @@ export function DemoElement({ id, children, className }: DemoElementProps) {
       registerElement(id, element);
       return () => unregisterElement(id);
     }
+    return undefined;
   }, [id, registerElement, unregisterElement]);
 
   // Use React.Children.only to ensure we have a single valid element

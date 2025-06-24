@@ -1,5 +1,5 @@
 {
-  "name": "koksmat-companion",
+  "name": "@monorepo/koksmat-companion",
   "version": "1.0.0",
   "description": "Koksmat Companion - Developer script automation server",
   "main": "server.js",

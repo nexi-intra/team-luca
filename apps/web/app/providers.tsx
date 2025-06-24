@@ -1,9 +1,10 @@
 'use client';
 
 import { ThemeProvider } from 'next-themes';
-import { AuthProviderWrapper } from '@/lib/auth/auth-provider';
+import { AuthProvider } from '@monorepo/auth';
+import { AuthProviderFactory } from '@/lib/auth/providers/factory';
 import { SessionProvider } from '@/lib/auth/session-context';
-import { FeatureRingProvider } from '@/lib/features';
+import { FeatureRingProvider } from '@monorepo/features';
 import { DemoProvider } from '@/lib/demo/context';
 import { ReauthNotification } from '@/components/auth/ReauthNotification';
 import { AnnounceProvider } from '@/components/accessibility/announce-provider';
@@ -18,7 +19,7 @@ import dynamic from 'next/dynamic';
 import { WhitelabelProvider } from '@/components/providers/WhitelabelProvider';
 import { AuthCallbackHandler } from '@/components/auth/AuthCallbackHandler';
 import { initializeConsoleWrapper } from '@/lib/console-wrapper';
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 
 // Initialize console wrapper on the client side
 if (typeof window !== 'undefined') {
@@ -33,9 +34,14 @@ const DevPanel = dynamic(() => import('@/components/dev-tools/DevPanel'), {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WhitelabelProvider>
-      <AuthProviderWrapper>
+      <Suspense fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      }>
+        <AuthProvider provider={AuthProviderFactory.create()}>
         <SessionProvider>
-          <FeatureRingProvider defaultRing={4}>
+          <FeatureRingProvider initialRing={4}>
             <DemoProvider>
               <ThemeProvider
                 attribute="class"
@@ -68,7 +74,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             </DemoProvider>
           </FeatureRingProvider>
         </SessionProvider>
-      </AuthProviderWrapper>
+        </AuthProvider>
+      </Suspense>
     </WhitelabelProvider>
   );
 }

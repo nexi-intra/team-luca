@@ -13,10 +13,7 @@ import {
   LogOut,
   CreditCard,
   Keyboard,
-  UserPlus,
   Mail,
-  MessageSquare,
-  PlusCircle,
   UserCircle,
   Bell,
   Bookmark,
@@ -24,10 +21,9 @@ import {
   Trash2,
   Send,
   FileText,
-  Paperclip,
 } from 'lucide-react';
 import { AuthStatus } from '@/components/auth/AuthStatus';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@/lib/auth';
 import {
   Sidebar,
   SidebarContent,
@@ -40,15 +36,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
   SidebarMenuBadge,
   SidebarMenuAction,
-  SidebarWithFeatureGate,
 } from '@/components/ui/sidebar';
 import {
   DropdownMenu,
@@ -58,10 +50,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { useFeatureRing } from '@/lib/features';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@monorepo/utils';
 import {
   Collapsible,
   CollapsibleContent,
@@ -134,7 +124,6 @@ const mailItems = [
 ];
 
 export default function SidebarDemoPage() {
-  const { currentRing, setRing } = useFeatureRing();
   const [activeItem, setActiveItem] = React.useState('Home');
   const [isCollapsibleOpen, setIsCollapsibleOpen] = React.useState(true);
   const { isAuthenticated, user } = useAuth();
@@ -408,5 +397,3 @@ export default function SidebarDemoPage() {
     </div>
   );
 }
-
-import { cn } from '@/lib/utils';

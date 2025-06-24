@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@monorepo/auth';
 import { Button } from '@/components/ui/button';
 import { LogOut, Settings, User, Shield, LogIn } from 'lucide-react';
 import {
@@ -36,9 +36,8 @@ export function SidebarUserMenu() {
   }, [isAuthenticated, isLoading, user]);
   
   // Don't render the user menu if authentication is disabled
-  if (!auth.requiresAuth) {
-    return null;
-  }
+  // For now, always show the user menu
+  // TODO: Add logic to check if auth provider requires authentication
 
   if (isLoading) {
     return (

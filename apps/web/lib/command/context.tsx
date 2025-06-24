@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { CommandPaletteContextType, CommandAction } from './types';
 import { defaultCommandActions } from './default-actions';
-import { useFeatureRingContext } from '@/lib/features/context';
+import { useFeatureRingContext } from '@monorepo/features';
 
 const CommandPaletteContext = createContext<CommandPaletteContextType | undefined>(undefined);
 
@@ -23,13 +23,13 @@ interface CommandPaletteProviderProps {
 export function CommandPaletteProvider({ children, customActions = [] }: CommandPaletteProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [registeredActions, setRegisteredActions] = useState<CommandAction[]>([]);
-  const { hasAccessToRing } = useFeatureRingContext();
+  const { currentRing } = useFeatureRingContext();
 
   // Filter actions based on current user's ring access
   const availableActions = React.useMemo(() => {
     const allActions = [...defaultCommandActions, ...registeredActions, ...customActions];
-    return allActions.filter(action => hasAccessToRing(action.requiredRing));
-  }, [registeredActions, customActions, hasAccessToRing]);
+    return allActions.filter(action => currentRing <= action.requiredRing);
+  }, [registeredActions, customActions, currentRing]);
 
   const toggle = useCallback(() => {
     setIsOpen(prev => !prev);

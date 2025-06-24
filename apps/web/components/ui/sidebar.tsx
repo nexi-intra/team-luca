@@ -5,11 +5,11 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { PanelLeft } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@monorepo/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useFeatureAccess } from '@/lib/features';
+import { useFeatureAccess } from '@monorepo/features';
 import { SidebarResizer } from './sidebar-resizer';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';

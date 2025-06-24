@@ -2,7 +2,7 @@ import { createBrowserClient } from '@supabase/ssr';
 import { AuthChangeEvent, Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { IAuthProvider, AuthProviderConfig } from './types';
 import { User } from '../types';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 
 const logger = createLogger('SupabaseAuthProvider');
 
@@ -120,6 +120,13 @@ export class SupabaseAuthProvider implements IAuthProvider {
 
   requiresAuth(): boolean {
     return true;
+  }
+
+  getAuthState(): { isLoading: boolean; error: Error | null } {
+    return {
+      isLoading: false,
+      error: null
+    };
   }
 
   private mapSupabaseUserToUser(supabaseUser: SupabaseUser, session: Session): User {

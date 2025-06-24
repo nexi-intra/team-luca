@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/lib/i18n';
-import { cn } from '@/lib/utils';
+import { cn } from '@monorepo/utils';
 import { withDevOverlay } from '@/lib/dev/with-dev-overlay';
 
 interface LanguageSelectorProps {

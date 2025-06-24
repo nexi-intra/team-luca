@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { useFeatureRingContext } from '@/lib/features/context';
-import type { FeatureRing } from '@/lib/features/constants';
+import { useFeatureRingContext } from '@monorepo/features';
+import type { FeatureRing } from '@monorepo/features';
 
 interface RingGateProps {
   requiredRing: FeatureRing;
@@ -11,9 +11,12 @@ interface RingGateProps {
 }
 
 export function RingGate({ requiredRing, children, fallback = null }: RingGateProps) {
-  const { hasAccessToRing } = useFeatureRingContext();
+  const { currentRing } = useFeatureRingContext();
   
-  if (!hasAccessToRing(requiredRing)) {
+  // User has access if their ring is less than or equal to required ring
+  const hasAccess = currentRing <= requiredRing;
+  
+  if (!hasAccess) {
     return <>{fallback}</>;
   }
   

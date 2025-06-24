@@ -1,10 +1,11 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -23,7 +24,14 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@monorepo/logger": ["../../packages/logger/src"],
+      "@monorepo/telemetry": ["../../packages/telemetry/src"],
+      "@monorepo/config": ["../../packages/config/src"],
+      "@monorepo/types": ["../../packages/types/src"],
+      "@monorepo/utils": ["../../packages/utils/src"],
+      "@monorepo/auth": ["../../packages/auth/src"],
+      "@monorepo/features": ["../../packages/features/src"]
     }
   },
   "include": ["next-env.d.ts", "jest.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

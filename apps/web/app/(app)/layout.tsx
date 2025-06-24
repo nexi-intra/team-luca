@@ -23,21 +23,10 @@ import {
   SidebarTrigger,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
-import { AuthStatus } from '@/components/auth/AuthStatus';
 import { SidebarUserMenu } from '@/components/auth/SidebarUserMenu';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Home, FileText, Settings, User, BarChart, Shield, Sparkles, Users, ChevronUp } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useAuth } from '@/lib/auth/auth-context';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Home, FileText, Settings, BarChart, Shield } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 const getSidebarItems = (routes: any) => [
@@ -59,7 +48,6 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { isAuthenticated, user } = useAuth();
   const branding = useBranding();
   const routes = useRoutes();
 

@@ -177,7 +177,7 @@ export function DemoController() {
               </div>
               <Slider
                 value={[speed]}
-                onValueChange={([value]) => setSpeed(value)}
+                onValueChange={([value]) => setSpeed(value ?? 1)}
                 min={0.5}
                 max={5}
                 step={0.5}

@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { config } from '@/lib/config';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 
 const logger = createLogger('AuthCallbackRoute');
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const provider = config.get<string>('auth.provider');
+  const provider = config.get('auth.provider') as string;
   
   logger.info('Auth callback received', { 
     provider,

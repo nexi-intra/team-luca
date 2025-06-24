@@ -48,7 +48,7 @@ export function FocusTrap({
 
     // Focus the first focusable element
     const focusableElements = getFocusableElements();
-    if (focusableElements.length > 0) {
+    if (focusableElements.length > 0 && focusableElements[0]) {
       focusableElements[0].focus();
     }
 
@@ -61,6 +61,8 @@ export function FocusTrap({
 
       const firstElement = focusableElements[0];
       const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (!firstElement || !lastElement) return;
 
       // Tab backwards
       if (e.shiftKey) {

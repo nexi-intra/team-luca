@@ -8,9 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, CheckCircle, XCircle, AlertCircle, Download, RefreshCw, Save, Eye, EyeOff, FileText } from 'lucide-react';
-import { EnvCheckResult, EnvVariable } from '@/lib/setup/types';
-import { checkEnvironment, updateEnvironmentVariable } from '@/app/actions/setup';
+import { Loader2, CheckCircle, XCircle, AlertCircle, RefreshCw, Save, Eye, EyeOff, FileText } from 'lucide-react';
+import { EnvCheckResult } from '@/lib/setup/types';
 import { toast } from 'sonner';
 
 export function EnvConfigWizard() {

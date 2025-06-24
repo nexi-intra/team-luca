@@ -1,6 +1,6 @@
 import { IAuthProvider, AuthProviderConfig } from './types';
 import { User } from '../types';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 import { generateCodeChallenge, generateCodeVerifier } from '../custom-auth-utils';
 import { handleAuthCallback, refreshAccessToken } from './entraid-utils';
 import { config } from '@/lib/config';
@@ -171,6 +171,13 @@ export class EntraIDAuthProvider implements IAuthProvider {
 
   requiresAuth(): boolean {
     return true;
+  }
+
+  getAuthState(): { isLoading: boolean; error: Error | null } {
+    return {
+      isLoading: false,
+      error: null
+    };
   }
 
   private async refreshToken(user: User): Promise<void> {

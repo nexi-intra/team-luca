@@ -17,12 +17,12 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@monorepo/auth';
 import { useBranding, useWhitelabel } from '@/components/providers/WhitelabelProvider';
 
 export function MagicButtonFooter() {
   const router = useRouter();
-  const { logout } = useAuth();
+  const { signOut } = useAuth();
   const [isClearing, setIsClearing] = useState(false);
   const branding = useBranding();
   const { getContent } = useWhitelabel();
@@ -64,7 +64,7 @@ export function MagicButtonFooter() {
       }
 
       // Logout user
-      await logout();
+      await signOut();
 
       toast.success('All data cleared successfully', {
         description: 'Cookies, session, and local storage have been reset.'

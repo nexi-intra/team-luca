@@ -4,7 +4,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@/lib/auth';
 import { defaultReauthConfig } from '@/lib/auth/reauth-config';
 import { Clock, RefreshCw, ShieldCheck, Timer } from 'lucide-react';
 
@@ -13,7 +13,6 @@ export const dynamic = 'force-dynamic';
 export default function ReauthTestPage() {
   const { 
     isAuthenticated, 
-    user, 
     authSource,
     lastAuthTime,
     nextReauthTime,

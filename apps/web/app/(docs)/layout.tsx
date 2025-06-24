@@ -7,15 +7,10 @@ import { LanguageSelector } from '@/components/language-selector';
 import { AccessibilityQuickControls } from '@/components/accessibility/quick-controls';
 import { AuthStatus } from '@/components/auth/AuthStatus';
 import { 
-  BookOpen, 
   FileText, 
   Code, 
-  Rocket, 
   Settings, 
-  GitBranch,
-  Database,
   Shield,
-  Sparkles,
   Home,
   ChevronRight,
   Users,
@@ -36,9 +31,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
   SidebarProvider,
   SidebarTrigger,
   SidebarSeparator,

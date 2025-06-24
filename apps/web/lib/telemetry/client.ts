@@ -2,7 +2,7 @@
 
 import { context, trace, SpanStatusCode } from '@opentelemetry/api';
 import { getTelemetryConfig, getResourceAttributes } from './config';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 
 const logger = createLogger('Telemetry:Client');
 

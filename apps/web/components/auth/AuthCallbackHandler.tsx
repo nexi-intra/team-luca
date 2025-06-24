@@ -1,15 +1,16 @@
 'use client';
 
-import { useAuthCallback } from '@/lib/auth/use-auth-callback';
+// useAuthCallback is not available in @monorepo/auth
+// This component will handle auth callbacks internally
 import { useSearchParams } from 'next/navigation';
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { AuthLogger } from '@/lib/auth/logger';
 
 const logger = new AuthLogger('AuthCallbackHandler');
 
 export function AuthCallbackHandler({ children }: { children: React.ReactNode }) {
-  // This hook handles auth callbacks on any page
-  useAuthCallback();
+  // Auth callback handling is now managed by the auth provider itself
+  // This component now only handles the visual loading state during auth
   
   const searchParams = useSearchParams();
   

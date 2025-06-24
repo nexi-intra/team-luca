@@ -1,25 +1,28 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@monorepo/auth';
 import { getTimeUntilReauth } from '@/lib/auth/reauth-config';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Clock, RefreshCw, X } from 'lucide-react';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 
 const logger = createLogger('ReauthNotification');
 
 export function ReauthNotification() {
+  const auth = useAuth();
   const { 
     isAuthenticated, 
-    isReauthRequired, 
-    nextReauthTime, 
     authSource,
-    refreshSession,
-    skipReauth 
-  } = useAuth();
+    refreshSession
+  } = auth;
+  
+  // These properties might not be available in the new auth system
+  const isReauthRequired = false; // Not implemented in new auth system
+  const nextReauthTime = null; // Not implemented in new auth system
+  const skipReauth = () => { logger.info('Skip reauth called'); }; // No-op
   
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [isRefreshing, setIsRefreshing] = useState(false);

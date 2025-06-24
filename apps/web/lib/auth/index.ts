@@ -13,7 +13,6 @@ export type {
 } from './types';
 
 // Utils
-export * from './jwt-utils';
 export * from './magic-auth';
 
 // Components

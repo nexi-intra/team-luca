@@ -1,5 +1,5 @@
 import { BaseFactory } from './base.factory';
-import { Feature, FeatureRing } from '@/lib/features/constants';
+import { Feature, FeatureRing } from '@monorepo/features';
 import { faker } from '@faker-js/faker';
 
 export class FeatureFactory extends BaseFactory<Feature> {

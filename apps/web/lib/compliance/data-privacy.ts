@@ -1,4 +1,4 @@
-import { SessionPayload } from '@/lib/auth/session';
+import { SessionPayload } from '@monorepo/auth';
 import { auditLogger } from './audit-logger';
 
 export interface DataExportRequest {

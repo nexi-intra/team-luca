@@ -86,7 +86,7 @@ export default function AccessibilityPage() {
                   <div className="flex-1">
                     <Slider
                       value={[fontSize]}
-                      onValueChange={([value]) => setFontSize(value)}
+                      onValueChange={([value]) => value !== undefined && setFontSize(value)}
                       min={12}
                       max={24}
                       step={1}

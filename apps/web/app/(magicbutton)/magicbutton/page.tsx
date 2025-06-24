@@ -9,8 +9,7 @@ import { useWhitelabel } from '@/components/providers/WhitelabelProvider';
 export const dynamic = 'force-dynamic';
 
 export default function MagicButtonPage() {
-  const { config, getContent } = useWhitelabel();
-  const { branding } = config;
+  const { getContent } = useWhitelabel();
   const landingContent = getContent('landing');
   return (
     <div className="max-w-6xl mx-auto space-y-12">

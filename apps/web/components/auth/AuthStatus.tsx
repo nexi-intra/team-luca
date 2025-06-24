@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@monorepo/auth';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { User, LogOut, ShieldCheck } from 'lucide-react';
+import { User, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,7 @@ import {
 import { withDevOverlay } from '@/lib/dev/with-dev-overlay';
 
 function AuthStatusBase() {
-  const { isAuthenticated, isLoading, user, logout } = useAuth();
+  const { isAuthenticated, isLoading, user, signOut, authSource } = useAuth();
 
   if (isLoading) {
     return <div className="animate-pulse h-10 w-32 bg-gray-200 rounded" />;
@@ -27,7 +27,7 @@ function AuthStatusBase() {
   }
 
   const getSourceBadgeVariant = () => {
-    switch (user?.source) {
+    switch (authSource) {
       case 'entraid':
         return 'default';
       case 'magic':
@@ -46,9 +46,9 @@ function AuthStatusBase() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="flex items-center gap-2">
           <User className="h-4 w-4" />
-          <span className="max-w-[150px] truncate">{user.displayName}</span>
+          <span className="max-w-[150px] truncate">{user.name}</span>
           <Badge variant={getSourceBadgeVariant()} className="text-xs">
-            {user?.source?.toUpperCase() || 'AUTH'}
+            {authSource?.toUpperCase() || 'AUTH'}
           </Badge>
         </Button>
       </DropdownMenuTrigger>
@@ -56,29 +56,12 @@ function AuthStatusBase() {
         <DropdownMenuLabel>Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="px-2 py-1.5 text-sm">
-          <div className="font-medium">{user.displayName}</div>
+          <div className="font-medium">{user.name}</div>
           <div className="text-muted-foreground">{user.email}</div>
         </div>
-        {user.roles && user.roles.length > 0 && (
-          <>
-            <DropdownMenuSeparator />
-            <div className="px-2 py-1.5">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                <ShieldCheck className="h-3 w-3" />
-                Roles
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {user.roles.map((role) => (
-                  <Badge key={role} variant="outline" className="text-xs">
-                    {role}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
+        {/* Roles are not implemented in the current auth system */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => logout()}>
+        <DropdownMenuItem onClick={() => signOut()}>
           <LogOut className="mr-2 h-4 w-4" />
           Sign out
         </DropdownMenuItem>

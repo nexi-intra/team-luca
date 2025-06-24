@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@monorepo/auth';
 import { useRouter } from 'next/navigation';
 
 interface SessionContextValue {
@@ -14,7 +14,7 @@ interface SessionContextValue {
 const SessionContext = createContext<SessionContextValue | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, getAccessToken } = useAuth();
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,17 +31,20 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       setError(null);
 
+      // Get the access token
+      const accessToken = await getAccessToken();
+
       // Exchange the auth token for a session cookie
       const response = await fetch('/api/auth/session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.accessToken || ''}`,
+          'Authorization': `Bearer ${accessToken || ''}`,
         },
         body: JSON.stringify({
           userId: user.id,
           email: user.email,
-          name: user.displayName,
+          name: user.name,
         }),
       });
 
@@ -61,7 +64,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, user, router, getAccessToken]);
 
   const refreshSession = useCallback(async () => {
     if (!isAuthenticated) {

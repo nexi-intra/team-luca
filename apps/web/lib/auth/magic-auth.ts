@@ -1,5 +1,5 @@
 import { AuthUser, AuthSession } from './types';
-import { extractUserFromToken, isTokenExpired, parseJWT } from './jwt-utils';
+import { parseJWT, isTokenExpired, extractClaims } from '@monorepo/utils';
 
 export interface MagicAuthConfig {
   allowedIssuers?: string[];
@@ -66,22 +66,35 @@ export class MagicAuthHandler {
         return null;
       }
 
-      // Extract user information
-      const userInfo = extractUserFromToken(token);
-      if (!userInfo) {
+      // Get token payload
+      const payload = parseJWT(token);
+      if (!payload) {
         return null;
       }
 
-      // Get token expiration
-      const payload = parseJWT(token);
-      const expiresAt = payload?.exp ? new Date(payload.exp * 1000) : undefined;
+      // Extract user information from token claims
+      const id = payload.sub || payload.oid || payload.user_id || '';
+      const email = payload.email || payload.preferred_username || payload.upn || '';
+      const displayName = payload.name || payload.given_name || payload.display_name || email;
+      
+      // Extract roles from various possible claims
+      let roles: string[] = [];
+      if (payload.roles) {
+        roles = Array.isArray(payload.roles) ? payload.roles : [payload.roles];
+      } else if (payload.role) {
+        roles = Array.isArray(payload.role) ? payload.role : [payload.role];
+      } else if (payload.groups) {
+        roles = Array.isArray(payload.groups) ? payload.groups : [payload.groups];
+      }
+
+      const expiresAt = payload.exp ? new Date(payload.exp * 1000) : undefined;
 
       // Create user object
       const user: AuthUser = {
-        id: userInfo.id,
-        email: userInfo.email,
-        displayName: userInfo.displayName,
-        roles: userInfo.roles,
+        id,
+        email,
+        displayName,
+        roles: roles.length > 0 ? roles : undefined,
         source: 'magic',
         metadata: {
           tokenClaims: payload

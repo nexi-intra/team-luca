@@ -61,4 +61,11 @@ export class NoAuthProvider implements IAuthProvider {
   requiresAuth(): boolean {
     return false;
   }
+
+  getAuthState(): { isLoading: boolean; error: Error | null } {
+    return {
+      isLoading: false,
+      error: null
+    };
+  }
 }

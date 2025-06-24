@@ -1,83 +1,35 @@
-import { ConfigFactory } from './factory';
-import { IConfigProvider } from './types';
+import { ConfigHelpers } from '@monorepo/config';
+import { configFactory } from './factory';
+import { AppConfig } from './types';
 
-// Create and export a singleton configuration instance
-const factory = ConfigFactory.getInstance();
-const configProvider = factory.create('env');
+// Create the configuration provider
+const provider = configFactory.create();
 
-/**
- * Main configuration object for the application
- */
+// Create helpers with our provider
+const helpers = new ConfigHelpers<AppConfig>(provider);
+
+// Export a unified config object with all methods
 export const config = {
-  /**
-   * Get a configuration value by path
-   * @example config.get('auth.clientId')
-   */
-  get<T = any>(path: string): T | undefined {
-    return configProvider.get<T>(path);
-  },
-
-  /**
-   * Get a configuration value with a default fallback
-   * @example config.getOrDefault('auth.scopes', ['openid'])
-   */
-  getOrDefault<T = any>(path: string, defaultValue: T): T {
-    const value = configProvider.get<T>(path);
-    return value !== undefined ? value : defaultValue;
-  },
-
-  /**
-   * Get a required configuration value (throws if not found)
-   * @example config.getRequired('auth.clientId')
-   */
-  getRequired<T = any>(path: string): T {
-    const value = configProvider.get<T>(path);
-    if (value === undefined) {
-      throw new Error(`Required configuration not found: ${path}`);
-    }
-    return value;
-  },
-
-  /**
-   * Get a configuration value with its metadata
-   * @example config.getWithMetadata('auth.clientId')
-   */
-  getWithMetadata: configProvider.getWithMetadata.bind(configProvider),
-
-  /**
-   * Get all configuration values
-   */
-  getAll: configProvider.getAll.bind(configProvider),
-
-  /**
-   * Check if a configuration exists
-   * @example config.has('auth.clientId')
-   */
-  has: configProvider.has.bind(configProvider),
-
-  /**
-   * Validate all required configurations
-   */
-  validate: configProvider.validate.bind(configProvider),
-
-  /**
-   * Get configurations by feature ring
-   */
-  getByFeatureRing: configProvider.getByFeatureRing.bind(configProvider),
-
-  /**
-   * Get configurations by category
-   */
-  getByCategory: configProvider.getByCategory.bind(configProvider),
-
-  /**
-   * Get the raw configuration provider
-   */
-  getProvider(): IConfigProvider {
-    return configProvider;
-  }
+  // Direct provider methods
+  get: provider.get.bind(provider),
+  getWithMetadata: provider.getWithMetadata.bind(provider),
+  getAll: provider.getAll.bind(provider),
+  has: provider.has.bind(provider),
+  validate: provider.validate.bind(provider),
+  getByFeatureRing: provider.getByFeatureRing.bind(provider),
+  getByCategory: provider.getByCategory.bind(provider),
+  
+  // Helper methods
+  getRequired: helpers.getRequired.bind(helpers),
+  getOrDefault: helpers.getOrDefault.bind(helpers),
+  getMany: helpers.getMany.bind(helpers),
+  hasAll: helpers.hasAll.bind(helpers),
+  hasAny: helpers.hasAny.bind(helpers),
+  getValidated: helpers.getValidated.bind(helpers),
+  getAllPaths: helpers.getAllPaths.bind(helpers),
+  getSummary: helpers.getSummary.bind(helpers),
 };
 
-// Export types and enums for external use
+// Export types for convenience
+export type { AppConfig } from './types';
 export { FeatureRing, ConfigCategory } from './types';
-export type { ConfigValue, AppConfig, IConfigProvider } from './types';

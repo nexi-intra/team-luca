@@ -1,6 +1,6 @@
 import { User } from '../types';
 import { config } from '@/lib/config';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 
 const logger = createLogger('EntraIDUtils');
 

@@ -25,11 +25,11 @@ import {
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import html2canvas from "html2canvas";
-import { cn } from "@/lib/utils";
-import { useFeatureRingContext } from "@/lib/features/context";
-import { getRingName, FEATURE_RINGS } from "@/lib/features/constants";
-import type { FeatureRing } from "@/lib/features/constants";
-import { createLogger } from "@/lib/logger";
+import { cn } from '@monorepo/utils';
+import { useFeatureRingContext } from '@monorepo/features';
+import { getRingName, FEATURE_RINGS } from '@monorepo/features';
+import type { FeatureRing } from '@monorepo/features';
+import { createLogger } from '@monorepo/logger';
 import { KoksmatCompanionStatus } from "./KoksmatCompanionStatus";
 import { withDevOverlay } from "@/lib/dev/with-dev-overlay";
 import { EnvWarningBanner } from "./EnvWarningBanner";
@@ -75,7 +75,7 @@ function DevPanelBase() {
   const { theme, setTheme } = useTheme();
   
   // Feature ring context
-  const { userRing, setUserRing } = useFeatureRingContext();
+  const { currentRing: userRing, setRing: setUserRing } = useFeatureRingContext();
   
   const router = useRouter();
   const dragRef = useRef<HTMLDivElement>(null);

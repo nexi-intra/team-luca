@@ -10,7 +10,7 @@ import { Calendar, DollarSign, Hash, Globe2 } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 export default function LanguageDemoPage() {
-  const { language, languageInfo, detectionResult, formatNumber, formatDate, formatCurrency } = useLanguage();
+  const { languageInfo, detectionResult, formatNumber, formatDate, formatCurrency } = useLanguage();
   const { t } = useTranslation();
   const plural = usePlural();
   

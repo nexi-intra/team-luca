@@ -19,7 +19,6 @@ import {
   Bell,
 } from 'lucide-react';
 import {
-  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -46,8 +45,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { FeatureGate } from '@/lib/features';
+import { FeatureGate } from '@monorepo/features';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,7 +79,7 @@ export default function SidebarLayoutExample() {
   const [activeItem, setActiveItem] = React.useState('Overview');
 
   return (
-    <FeatureGate featureId="sidebar-panel" fallback={
+    <FeatureGate feature="sidebar-panel" fallback={
       <div className="flex items-center justify-center min-h-[600px]">
         <Card className="max-w-md">
           <CardHeader>

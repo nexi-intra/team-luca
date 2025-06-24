@@ -1,5 +1,5 @@
 import { LucideIcon } from 'lucide-react';
-import type { FeatureRing } from '@/lib/features/constants';
+import type { FeatureRing } from '@monorepo/features';
 
 export interface CommandAction {
   id: string;

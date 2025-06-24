@@ -1,12 +1,12 @@
 'use client';
 
-import { useFeatureRingContext } from '@/lib/features/context';
-import { Feature, getFeatureById } from '@/lib/features/constants';
+import { useFeatureRingContext } from '@monorepo/features';
+import { Feature, getFeatureById } from '@monorepo/features';
 
 export function useFeatureAccess(featureId: string) {
-  const { hasAccessToFeature, getAccessibleFeatures } = useFeatureRingContext();
+  const { hasFeatureAccess, getAccessibleFeatures } = useFeatureRingContext();
   
-  const hasAccess = hasAccessToFeature(featureId);
+  const hasAccess = hasFeatureAccess(featureId);
   const feature = getFeatureById(featureId);
   
   return {
@@ -17,10 +17,10 @@ export function useFeatureAccess(featureId: string) {
 }
 
 export function useFeatures() {
-  const { getAccessibleFeatures, hasAccessToFeature } = useFeatureRingContext();
+  const { getAccessibleFeatures, hasFeatureAccess } = useFeatureRingContext();
   
   return {
     features: getAccessibleFeatures(),
-    hasAccess: hasAccessToFeature,
+    hasAccess: hasFeatureAccess,
   };
 }

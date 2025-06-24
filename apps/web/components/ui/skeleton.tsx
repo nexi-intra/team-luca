@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@monorepo/utils';
 
 function Skeleton({
   className,

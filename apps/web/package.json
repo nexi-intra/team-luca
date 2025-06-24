@@ -1,8 +1,7 @@
 {
-  "name": "magic-button-assistant-template",
+  "name": "@monorepo/web",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=9.0.0"
@@ -26,11 +25,14 @@
     "git:env-sync": "node scripts/env-sync.js",
     "git:env-sync:force": "node scripts/env-sync.js --force",
     "docker:env": "./scripts/setup-docker-env.sh",
-    "koksmat:dev": "cd koksmat-companion && pnpm run koksmat:dev",
-    "koksmat": "cd koksmat-companion && pnpm run koksmat",
-    "koksmat:install": "cd koksmat-companion && pnpm install"
+    "koksmat:dev": "cd ../koksmat-companion && pnpm run koksmat:dev",
+    "koksmat": "cd ../koksmat-companion && pnpm run koksmat",
+    "koksmat:install": "cd ../koksmat-companion && pnpm install"
   },
   "dependencies": {
+    "@monorepo/logger": "workspace:*",
+    "@monorepo/telemetry": "workspace:*",
+    "@monorepo/config": "workspace:*",
     "@ai-sdk/anthropic": "^1.2.12",
     "@anthropic-ai/sdk": "^0.27.0",
     "@hookform/resolvers": "^3.9.1",

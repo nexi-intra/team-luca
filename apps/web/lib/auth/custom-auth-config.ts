@@ -23,7 +23,7 @@ export const customAuthConfig: AuthConfig = {
 
 // Helper function to check if auth is configured
 export function isAuthConfigured(): boolean {
-  const provider = config.get<string>('auth.provider');
+  const provider = config.get('auth.provider') as string;
   
   // If provider is 'none', auth is not configured
   if (provider === 'none') {

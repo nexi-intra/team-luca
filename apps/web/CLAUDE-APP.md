@@ -1,6 +1,6 @@
-# CLAUDE.md
+# CLAUDE-APP.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with this Magic Button Assistant template.
+This file provides guidance to Claude Code (claude.ai/code) when working with the web app in this Magic Button Assistant monorepo template.
 
 ## Template Overview
 

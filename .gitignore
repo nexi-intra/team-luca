@@ -10,6 +10,8 @@ node_modules
 # next.js
 /.next/
 /out/
+apps/*/.next/
+apps/*/out/
 
 # production
 /build
@@ -108,3 +110,17 @@ test-results/
 
 # OpenTelemetry
 .instrumentation
+
+# Security scanning
+.gitleaks-report.json
+.gitleaks-report.sarif
+.pre-commit-cache/
+
+# Python (for detect-secrets)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+ENV/

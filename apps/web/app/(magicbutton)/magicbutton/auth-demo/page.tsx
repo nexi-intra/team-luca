@@ -7,14 +7,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@/lib/auth';
 import { AuthStatus } from '@/components/auth/AuthStatus';
 import { Copy, ExternalLink, Shield } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default function AuthDemoPage() {
-  const { isAuthenticated, user, loginWithPopup, logout, error } = useAuth();
+  const { isAuthenticated, user, signIn, signOut, error, authSource } = useAuth();
+  const loginWithPopup = signIn; // Alias for compatibility
+  const logout = signOut; // Alias for compatibility
   const [sampleToken, setSampleToken] = useState('');
   const [magicLink, setMagicLink] = useState('');
 
@@ -82,7 +84,7 @@ export default function AuthDemoPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Auth Source:</p>
-                  <p className="font-medium">{user.source?.toUpperCase() || 'CUSTOM'}</p>
+                  <p className="font-medium">{authSource?.toUpperCase() || 'CUSTOM'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Email:</p>
@@ -90,14 +92,9 @@ export default function AuthDemoPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Display Name:</p>
-                  <p className="font-medium">{user.displayName}</p>
+                  <p className="font-medium">{user.name}</p>
                 </div>
-                {user.roles && user.roles.length > 0 && (
-                  <div className="col-span-2">
-                    <p className="text-sm text-gray-600">Roles:</p>
-                    <p className="font-medium">{user.roles.join(', ')}</p>
-                  </div>
-                )}
+                {/* Roles are not implemented in the current auth system */}
               </div>
             )}
           </div>

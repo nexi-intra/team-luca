@@ -108,7 +108,7 @@ export function DemoRecorder() {
     setRecordedSteps(prev => [...prev, step]);
   };
 
-  const handleMutation = (mutations: MutationRecord[]) => {
+  const handleMutation = (_mutations: MutationRecord[]) => {
     // Could be used to detect dynamic content changes
   };
 

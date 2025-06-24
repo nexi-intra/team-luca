@@ -1,7 +1,7 @@
 'use client';
 
 import { useFeatures } from '@/hooks/useFeatureAccess';
-import { getRingName, getAllFeatures } from '@/lib/features/constants';
+import { getRingName, getAllFeatures } from '@monorepo/features';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -21,7 +21,7 @@ export function FeatureList() {
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-base">{feature.name}</CardTitle>
                   <Badge variant={isAccessible ? 'default' : 'secondary'}>
-                    {getRingName(feature.ring)}
+                    {getRingName(feature.minRing)}
                   </Badge>
                 </div>
                 <CardDescription>{feature.description}</CardDescription>
@@ -31,7 +31,7 @@ export function FeatureList() {
                   {isAccessible ? (
                     <span className="text-green-600">✓ Available</span>
                   ) : (
-                    <span className="text-muted-foreground">Requires Ring {feature.ring}</span>
+                    <span className="text-muted-foreground">Requires Ring {feature.minRing}</span>
                   )}
                 </div>
               </CardContent>

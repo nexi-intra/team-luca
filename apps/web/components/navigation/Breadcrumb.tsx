@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useBreadcrumb } from '@/lib/breadcrumb/context';
 import { Home, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@monorepo/utils';
 
 interface BreadcrumbProps {
   className?: string;

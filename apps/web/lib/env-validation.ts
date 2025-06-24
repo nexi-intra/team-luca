@@ -1,4 +1,4 @@
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 import chalk from 'chalk';
 
 const logger = createLogger('EnvValidation');

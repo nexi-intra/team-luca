@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { X, Search, AlertCircle, Info, AlertTriangle, Bug, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { cn } from '@monorepo/utils';
 import {
   Select,
   SelectContent,

@@ -2,8 +2,8 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import { isDevMode, requireDevMode } from '@/lib/utils/dev-mode';
-import { ENV_VARIABLES, type EnvVariable, type EnvCheckResult } from '@/lib/setup/types';
+import { isDevMode, requireDevMode } from '@monorepo/utils';
+import { ENV_VARIABLES, type EnvCheckResult } from '@/lib/setup/types';
 
 export async function checkEnvironment(): Promise<EnvCheckResult> {
   try {

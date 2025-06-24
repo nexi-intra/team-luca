@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { FeatureRing } from '@/lib/features/constants';
+import { FeatureRing } from '@monorepo/features';
 
 export class FeatureHelper {
   constructor(private page: Page) {}

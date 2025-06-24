@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { 
   ArrowLeft,
-  AlertCircle,
   Lock,
   FileText,
   GitBranch

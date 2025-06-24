@@ -1,7 +1,7 @@
 import { TelemetryTestHelpers } from './telemetry-helpers';
 import { execSync } from 'child_process';
 import axios from 'axios';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 
 const logger = createLogger('TelemetryTest');
 

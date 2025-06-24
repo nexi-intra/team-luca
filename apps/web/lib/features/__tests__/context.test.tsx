@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { FeatureRingProvider, useFeatureRingContext } from '@/lib/features/context';
+import { FeatureRingProvider, useFeatureRingContext } from '@monorepo/features';
 
 describe('FeatureRingContext', () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (

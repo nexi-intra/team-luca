@@ -3,7 +3,7 @@ import { NoAuthProvider } from './no-auth-provider';
 import { EntraIDAuthProvider } from './entraid-provider';
 import { SupabaseAuthProvider } from './supabase-provider';
 import { config } from '@/lib/config';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 
 const logger = createLogger('AuthProviderFactory');
 
@@ -15,7 +15,7 @@ export class AuthProviderFactory {
    * Create an auth provider based on configuration
    */
   static create(): IAuthProvider {
-    const providerType = config.get<string>('auth.provider') || 'entraid';
+    const providerType = config.get('auth.provider') as string || 'entraid';
     
     logger.info('Creating auth provider', { provider: providerType });
 

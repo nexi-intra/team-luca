@@ -1,7 +1,7 @@
 'use client';
 
 import { useFeatureRing } from '@/hooks/useFeatureRing';
-import { getRingName, FEATURE_RINGS, FeatureRing } from '@/lib/features/constants';
+import { getRingName, FEATURE_RINGS, FeatureRing } from '@monorepo/features';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function FeatureRingSelector() {

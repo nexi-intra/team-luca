@@ -2,9 +2,9 @@
 
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { AuthProviderFactory } from './providers/factory';
-import { IAuthProvider } from './providers/types';
+import type { IAuthProvider } from '@monorepo/auth';
 import { User } from './types';
-import { createLogger } from '@/lib/logger';
+import { createLogger } from '@monorepo/logger';
 
 const logger = createLogger('AuthProviderV2');
 
@@ -15,6 +15,27 @@ interface ExtendedUser extends User {
   source?: string;
   metadata?: Record<string, any>;
 }
+
+// Helper to convert package User to ExtendedUser
+const toExtendedUser = (user: any, providerName: string): ExtendedUser => {
+  return {
+    ...user,
+    displayName: user.name,
+    source: providerName,
+    roles: [],
+    metadata: {},
+    // Add missing properties with defaults
+    accessToken: null,
+    idToken: null,
+    refreshToken: null,
+    expiresAt: null,
+    givenName: user.givenName || '',
+    surname: user.surname || '',
+    jobTitle: user.jobTitle || '',
+    officeLocation: user.officeLocation || '',
+    preferredLanguage: user.preferredLanguage || 'en'
+  } as ExtendedUser;
+};
 
 interface AuthContextType {
   user: ExtendedUser | null;
@@ -74,13 +95,7 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
           logger.info('Auth state changed', { user: newUser?.email });
           
           // Extend user with compatibility fields
-          const extendedUser: ExtendedUser | null = newUser ? {
-            ...newUser,
-            displayName: newUser.name,
-            source: provider.name,
-            roles: [],
-            metadata: {}
-          } : null;
+          const extendedUser: ExtendedUser | null = newUser ? toExtendedUser(newUser, provider.name) : null;
           
           setUser(extendedUser);
           setError(null);
@@ -91,13 +106,7 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
         
         // Get initial user state
         const currentUser = provider.getUser();
-        const extendedUser: ExtendedUser | null = currentUser ? {
-          ...currentUser,
-          displayName: currentUser.name,
-          source: provider.name,
-          roles: [],
-          metadata: {}
-        } : null;
+        const extendedUser: ExtendedUser | null = currentUser ? toExtendedUser(currentUser, provider.name) : null;
         setUser(extendedUser);
         if (extendedUser) {
           setLastAuthTime(new Date());
@@ -156,13 +165,7 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
     if (providerRef.current) {
       const currentUser = providerRef.current.getUser();
       if (currentUser) {
-        const extendedUser: ExtendedUser = {
-          ...currentUser,
-          displayName: currentUser.name,
-          source: providerRef.current.name,
-          roles: [],
-          metadata: {}
-        };
+        const extendedUser = toExtendedUser(currentUser, providerRef.current.name);
         setUser(extendedUser);
         setLastAuthTime(new Date());
       }

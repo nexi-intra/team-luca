@@ -1,0 +1,41 @@
+{
+  "name": "@monorepo/root",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm run --parallel --filter='./apps/*' dev",
+    "dev:web": "pnpm --filter @monorepo/web dev",
+    "dev:companion": "pnpm --filter @monorepo/koksmat-companion dev",
+    "build": "pnpm run --filter='./apps/*' build",
+    "build:web": "pnpm --filter @monorepo/web build",
+    "build:packages": "pnpm run --filter='./packages/*' build",
+    "start": "pnpm --filter @monorepo/web start",
+    "lint": "pnpm run --filter='./apps/*' --filter='./packages/*' lint",
+    "typecheck": "pnpm run --filter='./apps/*' --filter='./packages/*' typecheck",
+    "test": "pnpm run --filter='./apps/*' --filter='./packages/*' test",
+    "test:unit": "pnpm run --filter='./apps/*' --filter='./packages/*' test:unit",
+    "test:e2e": "pnpm --filter @monorepo/web test:e2e",
+    "clean": "pnpm run --filter='./apps/*' --filter='./packages/*' --parallel clean",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,tsx,json,md}\"",
+    "install:all": "pnpm install",
+    "prepare": "husky install && pre-commit install",
+    "pre-commit": "pre-commit run --all-files",
+    "pre-commit:update": "pre-commit autoupdate",
+    "secrets:scan": "detect-secrets scan --baseline .secrets.baseline",
+    "secrets:audit": "detect-secrets audit .secrets.baseline"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.3",
+    "glob": "^11.0.3",
+    "husky": "^9.0.11",
+    "pre-commit": "^1.2.2",
+    "prettier": "^3.4.6",
+    "typescript": "^5.7.2"
+  }
+}

@@ -13,12 +13,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Extract the token
-    const token = authHeader.substring(7);
-
     // TODO: Validate the token with Azure AD
     // For now, we'll trust the client-provided data
     // In production, you should validate the token with Microsoft Graph or your backend
+    // const token = authHeader.substring(7);
 
     // Get user data from request body
     const body = await request.json();
@@ -58,7 +56,7 @@ export async function POST(request: NextRequest) {
 }
 
 // DELETE /api/auth/session - Clear session
-export async function DELETE(request: NextRequest) {
+export async function DELETE(_request: NextRequest) {
   try {
     const response = NextResponse.json(
       { success: true, message: 'Session cleared' },

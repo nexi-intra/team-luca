@@ -14,7 +14,7 @@ import {
   FileText
 } from 'lucide-react';
 import { koksmatCompanion, CompanionStatus } from '@/lib/koksmat/companion-client';
-import { cn } from '@/lib/utils';
+import { cn } from '@monorepo/utils';
 import {
   Popover,
   PopoverContent,

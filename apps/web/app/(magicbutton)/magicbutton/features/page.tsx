@@ -2,25 +2,25 @@
 
 import React, { useState } from 'react';
 import { useFeatureRingContext } from '@/lib/features/context';
-import { getAllFeatures, getRingName, getRingDescription, getFeaturesByRing } from '@/lib/features/constants';
-import type { FeatureRing } from '@/lib/features/constants';
+import { getAllFeatures, getRingName, getRingDescription, getFeaturesByRing } from '@monorepo/features';
+import type { FeatureRing } from '@monorepo/features';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CheckCircle, Circle, Settings, Sparkles, TestTube, Zap } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@monorepo/utils';
 
 export const dynamic = 'force-dynamic';
 
-const ringColors = {
+const ringColors: Record<FeatureRing, string> = {
   1: 'bg-red-500',
   2: 'bg-orange-500', 
   3: 'bg-yellow-500',
   4: 'bg-green-500',
 };
 
-const ringIcons = {
+const ringIcons: Record<FeatureRing, React.ComponentType<any>> = {
   1: TestTube,
   2: Sparkles, 
   3: Zap,
@@ -145,7 +145,7 @@ export default function FeaturesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredFeatures.map((feature) => {
           const hasAccess = hasAccessToFeature(feature.id);
-          const Icon = ringIcons[feature.ring];
+          const Icon = ringIcons[feature.minRing];
           
           return (
             <Card key={feature.id} className={cn(
@@ -162,8 +162,8 @@ export default function FeaturesPage() {
                     </CardTitle>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
-                        <div className={cn("w-2 h-2 rounded-full mr-1", ringColors[feature.ring])}></div>
-                        Ring {feature.ring}
+                        <div className={cn("w-2 h-2 rounded-full mr-1", ringColors[feature.minRing])}></div>
+                        Ring {feature.minRing}
                       </Badge>
                       {feature.category && (
                         <Badge variant="secondary" className="text-xs">
@@ -180,13 +180,13 @@ export default function FeaturesPage() {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="text-xs text-muted-foreground">
-                    {hasAccess ? 'Available' : `Requires Ring ${feature.ring} or higher`}
+                    {hasAccess ? 'Available' : `Requires Ring ${feature.minRing} or higher`}
                   </div>
-                  {!hasAccess && userRing > feature.ring && (
+                  {!hasAccess && userRing > feature.minRing && (
                     <Button 
                       size="sm" 
                       variant="outline"
-                      onClick={() => handleRingChange(feature.ring)}
+                      onClick={() => handleRingChange(feature.minRing)}
                     >
                       Enable Access
                     </Button>

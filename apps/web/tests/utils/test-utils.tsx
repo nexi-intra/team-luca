@@ -1,8 +1,9 @@
 import React, { ReactElement } from 'react';
 import { render as rtlRender, RenderOptions } from '@testing-library/react';
 import { ThemeProvider } from 'next-themes';
-import { FeatureRingProvider } from '@/lib/features';
-import { AuthProvider } from '@/lib/auth/auth-context';
+import { FeatureRingProvider } from '@monorepo/features';
+import { AuthProvider } from '@monorepo/auth';
+import { NoAuthProvider } from '@/lib/auth/providers/no-auth-provider';
 
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   initialFeatureRing?: 1 | 2 | 3 | 4;
@@ -14,9 +15,11 @@ interface AllTheProvidersProps {
 }
 
 function AllTheProviders({ children, options }: AllTheProvidersProps) {
+  const mockProvider = new NoAuthProvider();
+  
   return (
-    <AuthProvider>
-      <FeatureRingProvider defaultRing={options?.initialFeatureRing || 4}>
+    <AuthProvider provider={mockProvider}>
+      <FeatureRingProvider initialRing={options?.initialFeatureRing || 4}>
         <ThemeProvider attribute="class" defaultTheme="light">
           {children}
         </ThemeProvider>
@@ -28,7 +31,7 @@ function AllTheProviders({ children, options }: AllTheProvidersProps) {
 function customRender(
   ui: ReactElement,
   options?: CustomRenderOptions
-) {
+): ReturnType<typeof rtlRender> {
   const { initialFeatureRing, ...renderOptions } = options || {};
   
   return rtlRender(ui, {

@@ -1,16 +1,15 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@monorepo/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { UserAvatar } from '@/components/auth/UserAvatar';
-import { Mail, Shield, Calendar, Key, RefreshCw } from 'lucide-react';
-import { format } from 'date-fns';
+import { Mail, Key, RefreshCw } from 'lucide-react';
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, refreshSession } = useAuth();
+  const { user, isAuthenticated, refreshSession, authSource } = useAuth();
 
   if (!isAuthenticated || !user) {
     return (
@@ -20,11 +19,6 @@ export default function ProfilePage() {
     );
   }
 
-  const formatDate = (timestamp?: number | string | null) => {
-    if (!timestamp) return 'N/A';
-    const date = typeof timestamp === 'string' ? new Date(timestamp) : new Date(timestamp);
-    return format(date, 'PPpp');
-  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -46,7 +40,7 @@ export default function ProfilePage() {
             <UserAvatar user={user} size="lg" />
             <div className="flex-1 space-y-4">
               <div>
-                <h3 className="text-lg font-semibold">{user.displayName || user.name}</h3>
+                <h3 className="text-lg font-semibold">{user.name}</h3>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="h-4 w-4" />
                   <span>{user.email}</span>
@@ -57,9 +51,9 @@ export default function ProfilePage() {
                 <Badge variant="outline">
                   ID: {user.id}
                 </Badge>
-                {user.source && (
+                {authSource && (
                   <Badge variant="secondary">
-                    {user.source === 'entraid' ? 'Microsoft Entra ID' : user.source.toUpperCase()}
+                    {authSource === 'entraid' ? 'Microsoft Entra ID' : authSource.toUpperCase()}
                   </Badge>
                 )}
               </div>
@@ -68,27 +62,7 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Roles and Permissions */}
-      {user.roles && user.roles.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              Roles & Permissions
-            </CardTitle>
-            <CardDescription>Your assigned roles in the system</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {user.roles.map((role) => (
-                <Badge key={role} variant="default">
-                  {role}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Roles are not implemented in the current auth system */}
 
       {/* Session Information */}
       <Card>
@@ -109,14 +83,7 @@ export default function ProfilePage() {
               </div>
             </div>
             
-            {user.expiresAt && (
-              <div>
-                <p className="text-sm text-muted-foreground">Session Expires</p>
-                <p className="font-medium mt-1">
-                  {formatDate(user.expiresAt)}
-                </p>
-              </div>
-            )}
+            {/* Session expiry is not exposed in the current auth system */}
           </div>
 
           <div className="flex items-center gap-2">
@@ -133,27 +100,7 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Additional Metadata */}
-      {user.metadata && Object.keys(user.metadata).length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Additional Information</CardTitle>
-            <CardDescription>Extra metadata associated with your account</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Object.entries(user.metadata).map(([key, value]) => (
-                <div key={key}>
-                  <dt className="text-sm text-muted-foreground capitalize">
-                    {key.replace(/_/g, ' ')}
-                  </dt>
-                  <dd className="font-medium mt-1">{String(value)}</dd>
-                </div>
-              ))}
-            </dl>
-          </CardContent>
-        </Card>
-      )}
+      {/* Additional metadata is not exposed in the current auth system */}
     </div>
   );
 }

@@ -53,6 +53,14 @@ export interface IAuthProvider {
    * Check if the provider requires authentication
    */
   requiresAuth(): boolean;
+
+  /**
+   * Get the current authentication state
+   */
+  getAuthState(): {
+    isLoading: boolean;
+    error: Error | null;
+  };
 }
 
 /**

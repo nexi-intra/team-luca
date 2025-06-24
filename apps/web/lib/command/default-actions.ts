@@ -1,5 +1,5 @@
 import { CommandAction } from './types';
-import type { FeatureRing } from '@/lib/features/constants';
+import type { FeatureRing } from '@monorepo/features';
 import { 
   Home, 
   Settings, 
