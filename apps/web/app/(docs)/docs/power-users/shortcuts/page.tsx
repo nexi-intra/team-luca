@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function ShortcutsPage() {
   return (
@@ -7,5 +7,5 @@ export default function ShortcutsPage() {
       description="Learn keyboard shortcuts and quick actions to boost your productivity"
       ring="power-users"
     />
-  )
+  );
 }

@@ -5,6 +5,7 @@ This project uses multiple layers of security scanning to prevent secrets and se
 ## Overview
 
 We use the following tools:
+
 - **pre-commit**: Manages and runs git hooks
 - **detect-secrets**: Scans for various types of secrets using entropy analysis and pattern matching
 - **gitleaks**: Additional secret scanning with custom rules
@@ -15,6 +16,7 @@ We use the following tools:
 When you run `pnpm install`, the pre-commit hooks will be automatically installed via the `prepare` script.
 
 If you need to install them manually:
+
 ```bash
 pnpm run prepare
 ```
@@ -22,9 +24,11 @@ pnpm run prepare
 ## Usage
 
 ### Automatic Scanning
+
 The pre-commit hooks will automatically run when you attempt to commit code. If any secrets are detected, the commit will be blocked.
 
 ### Manual Scanning
+
 You can manually run the security scans:
 
 ```bash
@@ -39,7 +43,9 @@ pnpm run secrets:audit
 ```
 
 ### Update Tools
+
 To update the pre-commit hooks to their latest versions:
+
 ```bash
 pnpm run pre-commit:update
 ```
@@ -47,7 +53,9 @@ pnpm run pre-commit:update
 ## Configuration
 
 ### Pre-commit Configuration
+
 The main configuration is in `.pre-commit-config.yaml`. It includes:
+
 - General file checks (trailing whitespace, file size, etc.)
 - Secret detection with detect-secrets and gitleaks
 - Code quality checks (ESLint, TypeScript)
@@ -55,14 +63,18 @@ The main configuration is in `.pre-commit-config.yaml`. It includes:
 - Dependency auditing
 
 ### Gitleaks Configuration
+
 Custom rules and allowlists are defined in `.gitleaks.toml`. This includes:
+
 - Magic Button specific API key patterns
 - Database connection string detection
 - JWT secret detection
 - Paths to exclude from scanning
 
 ### Detect-secrets Baseline
+
 The `.secrets.baseline` file contains:
+
 - Known false positives that should be ignored
 - Configuration for which secret detectors to use
 - Entropy thresholds for detection
@@ -80,16 +92,21 @@ If a legitimate file is flagged as containing secrets:
 ## Common Issues
 
 ### "Command not found: pre-commit"
+
 Make sure you've run `pnpm install` to install all dependencies.
 
 ### Hooks not running
+
 Ensure husky is properly installed:
+
 ```bash
 npx husky install
 ```
 
 ### Too many false positives
+
 You may need to adjust the entropy thresholds in:
+
 - `.gitleaks.toml` for gitleaks
 - `.pre-commit-config.yaml` for detect-secrets
 
@@ -104,6 +121,7 @@ You may need to adjust the entropy thresholds in:
 ## Bypassing Checks (Emergency Only)
 
 If you absolutely need to bypass the checks (not recommended):
+
 ```bash
 git commit --no-verify -m "your message"
 ```

@@ -1,6 +1,6 @@
-import { BaseFactory } from './base.factory';
-import { Feature, FeatureRing } from '@monorepo/features';
-import { faker } from '@faker-js/faker';
+import { BaseFactory } from "./base.factory";
+import { Feature, FeatureRing } from "@monorepo/features";
+import { faker } from "@faker-js/faker";
 
 export class FeatureFactory extends BaseFactory<Feature> {
   protected getDefaults(): Feature {
@@ -9,43 +9,43 @@ export class FeatureFactory extends BaseFactory<Feature> {
       name: faker.commerce.productName(),
       description: faker.lorem.sentence(),
       ring: faker.helpers.arrayElement([1, 2, 3, 4] as FeatureRing[]),
-      category: faker.helpers.arrayElement(['UI', 'API', 'Analytics', 'AI']),
+      category: faker.helpers.arrayElement(["UI", "API", "Analytics", "AI"]),
     };
   }
 
   experimental(): this {
-    return this.state('experimental', {
+    return this.state("experimental", {
       ring: 1,
     } as Partial<Feature>);
   }
 
   preview(): this {
-    return this.state('preview', {
+    return this.state("preview", {
       ring: 2,
     } as Partial<Feature>);
   }
 
   beta(): this {
-    return this.state('beta', {
+    return this.state("beta", {
       ring: 3,
     } as Partial<Feature>);
   }
 
   stable(): this {
-    return this.state('stable', {
+    return this.state("stable", {
       ring: 4,
     } as Partial<Feature>);
   }
 
   ui(): this {
-    return this.state('ui', {
-      category: 'UI',
+    return this.state("ui", {
+      category: "UI",
     } as Partial<Feature>);
   }
 
   ai(): this {
-    return this.state('ai', {
-      category: 'AI',
+    return this.state("ai", {
+      category: "AI",
     } as Partial<Feature>);
   }
 }

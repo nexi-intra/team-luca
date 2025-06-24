@@ -17,39 +17,39 @@ export const FEATURE_RINGS = {
 
 export const FEATURES: Record<string, Feature> = {
   DARK_MODE: {
-    id: 'dark-mode',
-    name: 'Dark Mode',
-    description: 'Toggle between light and dark theme',
+    id: "dark-mode",
+    name: "Dark Mode",
+    description: "Toggle between light and dark theme",
     ring: 4,
-    category: 'UI',
+    category: "UI",
   },
   AI_SUGGESTIONS: {
-    id: 'ai-suggestions',
-    name: 'AI Suggestions',
-    description: 'Get AI-powered suggestions and recommendations',
+    id: "ai-suggestions",
+    name: "AI Suggestions",
+    description: "Get AI-powered suggestions and recommendations",
     ring: 3,
-    category: 'AI',
+    category: "AI",
   },
   ADVANCED_ANALYTICS: {
-    id: 'advanced-analytics',
-    name: 'Advanced Analytics',
-    description: 'Access detailed analytics and insights',
+    id: "advanced-analytics",
+    name: "Advanced Analytics",
+    description: "Access detailed analytics and insights",
     ring: 2,
-    category: 'Analytics',
+    category: "Analytics",
   },
   EXPERIMENTAL_CHAT: {
-    id: 'experimental-chat',
-    name: 'Experimental Chat Interface',
-    description: 'New experimental chat UI with advanced features',
+    id: "experimental-chat",
+    name: "Experimental Chat Interface",
+    description: "New experimental chat UI with advanced features",
     ring: 1,
-    category: 'UI',
+    category: "UI",
   },
   SIDEBAR_PANEL: {
-    id: 'sidebar-panel',
-    name: 'Sidebar Panel',
-    description: 'Collapsible sidebar navigation with mobile support',
+    id: "sidebar-panel",
+    name: "Sidebar Panel",
+    description: "Collapsible sidebar navigation with mobile support",
     ring: 1,
-    category: 'UI',
+    category: "UI",
   },
 };
 
@@ -58,43 +58,43 @@ export function getAllFeatures(): Feature[] {
 }
 
 export function getFeaturesByRing(ring: FeatureRing): Feature[] {
-  return getAllFeatures().filter(feature => feature.ring === ring);
+  return getAllFeatures().filter((feature) => feature.ring === ring);
 }
 
 export function getFeaturesByCategory(category: string): Feature[] {
-  return getAllFeatures().filter(feature => feature.category === category);
+  return getAllFeatures().filter((feature) => feature.category === category);
 }
 
 export function getFeatureById(id: string): Feature | undefined {
-  return Object.values(FEATURES).find(feature => feature.id === id);
+  return Object.values(FEATURES).find((feature) => feature.id === id);
 }
 
 export function getRingName(ring: FeatureRing): string {
   switch (ring) {
     case 1:
-      return 'Experimental';
+      return "Experimental";
     case 2:
-      return 'Preview';
+      return "Preview";
     case 3:
-      return 'Beta';
+      return "Beta";
     case 4:
-      return 'Stable';
+      return "Stable";
     default:
-      return 'Unknown';
+      return "Unknown";
   }
 }
 
 export function getRingDescription(ring: FeatureRing): string {
   switch (ring) {
     case 1:
-      return 'Highly experimental features that may change or be removed';
+      return "Highly experimental features that may change or be removed";
     case 2:
-      return 'Preview features that are being tested and refined';
+      return "Preview features that are being tested and refined";
     case 3:
-      return 'Beta features that are nearly ready for general availability';
+      return "Beta features that are nearly ready for general availability";
     case 4:
-      return 'Stable features available to all users';
+      return "Stable features available to all users";
     default:
-      return 'Unknown ring level';
+      return "Unknown ring level";
   }
 }

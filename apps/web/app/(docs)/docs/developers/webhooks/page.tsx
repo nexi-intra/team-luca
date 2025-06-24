@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function WebhooksPage() {
   return (
@@ -7,5 +7,5 @@ export default function WebhooksPage() {
       description="Configure and manage webhooks for real-time event notifications"
       ring="developers"
     />
-  )
+  );
 }

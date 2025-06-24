@@ -1,15 +1,29 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useDemoContext } from '@/lib/demo/context';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { Play, Pause, Square, SkipForward, SkipBack, ChevronRight, ChevronLeft } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React from "react";
+import { useDemoContext } from "@/lib/demo/context";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import {
+  Play,
+  Pause,
+  Square,
+  SkipForward,
+  SkipBack,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function DemoController() {
   const {
@@ -27,11 +41,11 @@ export function DemoController() {
     previousStep,
     goToStep,
     setSpeed,
-    loadScript
+    loadScript,
   } = useDemoContext();
 
-  const progress = currentScript 
-    ? ((currentStepIndex + 1) / currentScript.steps.length) * 100 
+  const progress = currentScript
+    ? ((currentStepIndex + 1) / currentScript.steps.length) * 100
     : 0;
 
   const currentStep = currentScript?.steps[currentStepIndex];
@@ -52,8 +66,8 @@ export function DemoController() {
         {/* Script Selection */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Select Demo</label>
-          <Select 
-            value={currentScript?.id} 
+          <Select
+            value={currentScript?.id}
             onValueChange={loadScript}
             disabled={isPlaying}
           >
@@ -61,7 +75,7 @@ export function DemoController() {
               <SelectValue placeholder="Choose a demo script" />
             </SelectTrigger>
             <SelectContent>
-              {scripts.map(script => (
+              {scripts.map((script) => (
                 <SelectItem key={script.id} value={script.id}>
                   {script.title}
                 </SelectItem>
@@ -75,7 +89,9 @@ export function DemoController() {
             {/* Script Info */}
             <div className="space-y-1">
               <h4 className="text-sm font-medium">{currentScript.title}</h4>
-              <p className="text-sm text-muted-foreground">{currentScript.description}</p>
+              <p className="text-sm text-muted-foreground">
+                {currentScript.description}
+              </p>
             </div>
 
             {/* Progress */}
@@ -95,11 +111,15 @@ export function DemoController() {
                     {currentStep.type.toUpperCase()}
                   </Badge>
                   {currentStep.target && (
-                    <span className="text-sm font-mono">{currentStep.target}</span>
+                    <span className="text-sm font-mono">
+                      {currentStep.target}
+                    </span>
                   )}
                 </div>
                 {currentStep.description && (
-                  <p className="text-sm text-muted-foreground">{currentStep.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {currentStep.description}
+                  </p>
                 )}
               </div>
             )}
@@ -154,7 +174,10 @@ export function DemoController() {
                 size="icon"
                 variant="outline"
                 onClick={() => goToStep(currentStepIndex + 1)}
-                disabled={isPlaying || currentStepIndex >= currentScript.steps.length - 1}
+                disabled={
+                  isPlaying ||
+                  currentStepIndex >= currentScript.steps.length - 1
+                }
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -163,7 +186,10 @@ export function DemoController() {
                 size="icon"
                 variant="outline"
                 onClick={nextStep}
-                disabled={isPlaying || currentStepIndex >= currentScript.steps.length - 1}
+                disabled={
+                  isPlaying ||
+                  currentStepIndex >= currentScript.steps.length - 1
+                }
               >
                 <SkipForward className="h-4 w-4" />
               </Button>

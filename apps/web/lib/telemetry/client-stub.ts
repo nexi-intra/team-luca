@@ -17,7 +17,7 @@ export const tracer = {
 export function startSpan<T>(
   name: string,
   fn: (span: any) => T,
-  attributes?: Record<string, any>
+  attributes?: Record<string, any>,
 ): T {
   return fn({
     setStatus: () => {},

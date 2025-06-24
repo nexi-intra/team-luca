@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { LanguageSelector } from './language-selector';
-import { Button } from './ui/button';
-import { Menu } from 'lucide-react';
-import { CommandTrigger } from './command/CommandTrigger';
-import { ThemeToggle } from './theme-toggle';
-import { AccessibilityQuickControls } from './accessibility/quick-controls';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { LanguageSelector } from "./language-selector";
+import { Button } from "./ui/button";
+import { Menu } from "lucide-react";
+import { CommandTrigger } from "./command/CommandTrigger";
+import { ThemeToggle } from "./theme-toggle";
+import { AccessibilityQuickControls } from "./accessibility/quick-controls";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from "@/components/ui/sheet";
 
 export function MainHeader() {
   return (
@@ -68,13 +68,13 @@ export function MainHeader() {
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <CommandTrigger 
+          <CommandTrigger
             variant="ghost"
             size="sm"
             className="hidden sm:flex"
           />
-          <LanguageSelector 
-            variant="ghost" 
+          <LanguageSelector
+            variant="ghost"
             size="sm"
             showName={false}
             className="hidden sm:flex"
@@ -83,11 +83,7 @@ export function MainHeader() {
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                className="md:hidden"
-                size="icon"
-              >
+              <Button variant="ghost" className="md:hidden" size="icon">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>

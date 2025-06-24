@@ -12,10 +12,10 @@ const originalConsole = {
 function formatMessage(level: string, args: any[]): string {
   const timestamp = new Date().toISOString();
   const prefix = `[${timestamp}] [${level}]`;
-  
+
   // Handle different argument types
-  const messages = args.map(arg => {
-    if (typeof arg === 'object') {
+  const messages = args.map((arg) => {
+    if (typeof arg === "object") {
       try {
         return JSON.stringify(arg, null, 2);
       } catch (e) {
@@ -24,35 +24,37 @@ function formatMessage(level: string, args: any[]): string {
     }
     return String(arg);
   });
-  
-  return `${prefix} ${messages.join(' ')}`;
+
+  return `${prefix} ${messages.join(" ")}`;
 }
 
 export function initializeConsoleWrapper() {
   // Only wrap console in development
-  const { config } = require('@/lib/config');
-  if (config.getOrDefault('general.environment', 'development') !== 'development') {
+  const { config } = require("@/lib/config");
+  if (
+    config.getOrDefault("general.environment", "development") !== "development"
+  ) {
     return;
   }
 
   console.log = (...args: any[]) => {
-    originalConsole.log(formatMessage('LOG', args));
+    originalConsole.log(formatMessage("LOG", args));
   };
 
   console.info = (...args: any[]) => {
-    originalConsole.info(formatMessage('INFO', args));
+    originalConsole.info(formatMessage("INFO", args));
   };
 
   console.warn = (...args: any[]) => {
-    originalConsole.warn(formatMessage('WARN', args));
+    originalConsole.warn(formatMessage("WARN", args));
   };
 
   console.error = (...args: any[]) => {
-    originalConsole.error(formatMessage('ERROR', args));
+    originalConsole.error(formatMessage("ERROR", args));
   };
 
   console.debug = (...args: any[]) => {
-    originalConsole.debug(formatMessage('DEBUG', args));
+    originalConsole.debug(formatMessage("DEBUG", args));
   };
 
   // Add a method to restore original console
@@ -65,5 +67,7 @@ export function initializeConsoleWrapper() {
   };
 
   // Log that console wrapper is active
-  console.info('Console wrapper initialized - all logs will include timestamps and levels');
+  console.info(
+    "Console wrapper initialized - all logs will include timestamps and levels",
+  );
 }

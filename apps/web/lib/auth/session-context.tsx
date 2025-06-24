@@ -1,8 +1,14 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { useAuth } from '@monorepo/auth';
-import { useRouter } from 'next/navigation';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
+import { useAuth } from "@monorepo/auth";
+import { useRouter } from "next/navigation";
 
 interface SessionContextValue {
   isSessionActive: boolean;
@@ -11,7 +17,9 @@ interface SessionContextValue {
   refreshSession: () => Promise<void>;
 }
 
-const SessionContext = createContext<SessionContextValue | undefined>(undefined);
+const SessionContext = createContext<SessionContextValue | undefined>(
+  undefined,
+);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user, getAccessToken } = useAuth();
@@ -35,11 +43,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       const accessToken = await getAccessToken();
 
       // Exchange the auth token for a session cookie
-      const response = await fetch('/api/auth/session', {
-        method: 'POST',
+      const response = await fetch("/api/auth/session", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken || ''}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken || ""}`,
         },
         body: JSON.stringify({
           userId: user.id,
@@ -49,7 +57,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to establish session');
+        throw new Error("Failed to establish session");
       }
 
       const data = await response.json();
@@ -58,8 +66,10 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       // Refresh the page to ensure cookies are properly set
       router.refresh();
     } catch (err) {
-      console.error('Session establishment error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to establish session');
+      console.error("Session establishment error:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to establish session",
+      );
       setIsSessionActive(false);
     } finally {
       setIsLoading(false);
@@ -73,9 +83,9 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
     try {
       setError(null);
-      
-      const response = await fetch('/api/auth/session/refresh', {
-        method: 'POST',
+
+      const response = await fetch("/api/auth/session/refresh", {
+        method: "POST",
       });
 
       if (!response.ok) {
@@ -83,12 +93,14 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
           // Session expired, re-establish
           await establishSession();
         } else {
-          throw new Error('Failed to refresh session');
+          throw new Error("Failed to refresh session");
         }
       }
     } catch (err) {
-      console.error('Session refresh error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to refresh session');
+      console.error("Session refresh error:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to refresh session",
+      );
     }
   }, [isAuthenticated, establishSession]);
 
@@ -108,9 +120,12 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const interval = setInterval(() => {
-      refreshSession();
-    }, 30 * 60 * 1000); // 30 minutes
+    const interval = setInterval(
+      () => {
+        refreshSession();
+      },
+      30 * 60 * 1000,
+    ); // 30 minutes
 
     return () => clearInterval(interval);
   }, [isSessionActive, refreshSession]);
@@ -118,8 +133,8 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   // Clear session on logout
   useEffect(() => {
     if (!isAuthenticated && isSessionActive) {
-      fetch('/api/auth/session', {
-        method: 'DELETE',
+      fetch("/api/auth/session", {
+        method: "DELETE",
       }).catch(console.error);
       setIsSessionActive(false);
     }
@@ -133,16 +148,14 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <SessionContext.Provider value={value}>
-      {children}
-    </SessionContext.Provider>
+    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
   );
 }
 
 export function useSession() {
   const context = useContext(SessionContext);
   if (!context) {
-    throw new Error('useSession must be used within a SessionProvider');
+    throw new Error("useSession must be used within a SessionProvider");
   }
   return context;
 }
@@ -156,10 +169,10 @@ export function useRequireSession() {
   useEffect(() => {
     if (!isLoading && !isSessionActive && isAuthenticated) {
       // Session failed to establish but user is authenticated
-      console.error('Session establishment failed:', error);
+      console.error("Session establishment failed:", error);
     } else if (!isLoading && !isAuthenticated) {
       // User is not authenticated, redirect to home
-      router.push('/');
+      router.push("/");
     }
   }, [isSessionActive, isLoading, isAuthenticated, error, router]);
 

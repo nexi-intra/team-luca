@@ -1,12 +1,12 @@
 "use client";
 
-import * as React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { BreadcrumbContainer } from '@/components/navigation/BreadcrumbContainer';
-import { MagicButtonFooter } from '@/app/(magicbutton)/components/MagicButtonFooter';
-import { ThemeToggle } from '@/components/theme-toggle';
+import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BreadcrumbContainer } from "@/components/navigation/BreadcrumbContainer";
+import { MagicButtonFooter } from "@/app/(magicbutton)/components/MagicButtonFooter";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function MagicButtonLayout({
   children,
@@ -34,61 +34,61 @@ export default function MagicButtonLayout({
                 Magic Button
               </span>
             </Link>
-            
+
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
-              <Link 
+              <Link
                 href="/magicbutton"
                 className={`transition-colors font-medium ${
-                  pathname === '/magicbutton' 
-                    ? 'text-[#233862] dark:text-gray-100 font-semibold' 
-                    : 'text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100'
+                  pathname === "/magicbutton"
+                    ? "text-[#233862] dark:text-gray-100 font-semibold"
+                    : "text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100"
                 }`}
               >
                 Overview
               </Link>
-              <Link 
+              <Link
                 href="/magicbutton/features"
                 className={`transition-colors font-medium ${
-                  pathname === '/magicbutton/features' 
-                    ? 'text-[#233862] dark:text-gray-100 font-semibold' 
-                    : 'text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100'
+                  pathname === "/magicbutton/features"
+                    ? "text-[#233862] dark:text-gray-100 font-semibold"
+                    : "text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100"
                 }`}
               >
                 Features
               </Link>
-              <Link 
+              <Link
                 href="/magicbutton/demo"
                 className={`transition-colors font-medium ${
-                  pathname === '/magicbutton/demo' 
-                    ? 'text-[#233862] dark:text-gray-100 font-semibold' 
-                    : 'text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100'
+                  pathname === "/magicbutton/demo"
+                    ? "text-[#233862] dark:text-gray-100 font-semibold"
+                    : "text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100"
                 }`}
               >
                 Demo
               </Link>
-              <Link 
+              <Link
                 href="/magicbutton/language"
                 className={`transition-colors font-medium ${
-                  pathname === '/magicbutton/language' 
-                    ? 'text-[#233862] dark:text-gray-100 font-semibold' 
-                    : 'text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100'
+                  pathname === "/magicbutton/language"
+                    ? "text-[#233862] dark:text-gray-100 font-semibold"
+                    : "text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100"
                 }`}
               >
                 Languages
               </Link>
-              <Link 
+              <Link
                 href="/magicbutton/auth-demo"
                 className={`transition-colors font-medium ${
-                  pathname === '/magicbutton/auth-demo' 
-                    ? 'text-[#233862] dark:text-gray-100 font-semibold' 
-                    : 'text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100'
+                  pathname === "/magicbutton/auth-demo"
+                    ? "text-[#233862] dark:text-gray-100 font-semibold"
+                    : "text-[#233862]/70 dark:text-gray-400 hover:text-[#233862] dark:hover:text-gray-100"
                 }`}
               >
                 Authentication
               </Link>
               <div className="h-4 w-px bg-[#233862]/20 dark:bg-gray-600" />
-              <Link 
+              <Link
                 href="/"
                 className="text-[#233862]/60 dark:text-gray-500 hover:text-[#233862] dark:hover:text-gray-300 transition-colors font-medium"
               >
@@ -107,12 +107,32 @@ export default function MagicButtonLayout({
             >
               <span className="sr-only">Open menu</span>
               {!mobileMenuOpen ? (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               ) : (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               )}
             </button>
@@ -125,9 +145,9 @@ export default function MagicButtonLayout({
                 <Link
                   href="/magicbutton"
                   className={`block px-3 py-2 rounded-md font-medium ${
-                    pathname === '/magicbutton'
-                      ? 'bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold'
-                      : 'text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100'
+                    pathname === "/magicbutton"
+                      ? "bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold"
+                      : "text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -136,9 +156,9 @@ export default function MagicButtonLayout({
                 <Link
                   href="/magicbutton/features"
                   className={`block px-3 py-2 rounded-md font-medium ${
-                    pathname === '/magicbutton/features'
-                      ? 'bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold'
-                      : 'text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100'
+                    pathname === "/magicbutton/features"
+                      ? "bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold"
+                      : "text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -147,9 +167,9 @@ export default function MagicButtonLayout({
                 <Link
                   href="/magicbutton/demo"
                   className={`block px-3 py-2 rounded-md font-medium ${
-                    pathname === '/magicbutton/demo'
-                      ? 'bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold'
-                      : 'text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100'
+                    pathname === "/magicbutton/demo"
+                      ? "bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold"
+                      : "text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -158,9 +178,9 @@ export default function MagicButtonLayout({
                 <Link
                   href="/magicbutton/language"
                   className={`block px-3 py-2 rounded-md font-medium ${
-                    pathname === '/magicbutton/language'
-                      ? 'bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold'
-                      : 'text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100'
+                    pathname === "/magicbutton/language"
+                      ? "bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold"
+                      : "text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -169,9 +189,9 @@ export default function MagicButtonLayout({
                 <Link
                   href="/magicbutton/auth-demo"
                   className={`block px-3 py-2 rounded-md font-medium ${
-                    pathname === '/magicbutton/auth-demo'
-                      ? 'bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold'
-                      : 'text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100'
+                    pathname === "/magicbutton/auth-demo"
+                      ? "bg-[#233862]/10 dark:bg-gray-800 text-[#233862] dark:text-gray-100 font-semibold"
+                      : "text-[#233862]/70 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#233862] dark:hover:text-gray-100"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -187,7 +207,9 @@ export default function MagicButtonLayout({
                 </Link>
                 <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                 <div className="flex items-center justify-between px-3 py-2">
-                  <span className="text-sm font-medium text-[#233862] dark:text-gray-100">Theme</span>
+                  <span className="text-sm font-medium text-[#233862] dark:text-gray-100">
+                    Theme
+                  </span>
                   <ThemeToggle />
                 </div>
               </div>

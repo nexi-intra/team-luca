@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { 
+import React from "react";
+import {
   Home,
   Users,
   Settings,
@@ -17,7 +17,7 @@ import {
   CreditCard,
   Keyboard,
   Bell,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   SidebarContent,
   SidebarFooter,
@@ -34,7 +34,7 @@ import {
   SidebarTrigger,
   SidebarMenuBadge,
   SidebarWithFeatureGate,
-} from '@/components/ui/sidebar';
+} from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,56 +42,65 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { FeatureGate } from '@monorepo/features';
+} from "@/components/ui/dropdown-menu";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { FeatureGate } from "@monorepo/features";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const navigation = [
   {
-    title: 'Dashboard',
+    title: "Dashboard",
     items: [
-      { title: 'Overview', icon: Home, url: '#', badge: null },
-      { title: 'Analytics', icon: BarChart3, url: '#', badge: 'New' },
-      { title: 'Reports', icon: FileText, url: '#', badge: '3' },
+      { title: "Overview", icon: Home, url: "#", badge: null },
+      { title: "Analytics", icon: BarChart3, url: "#", badge: "New" },
+      { title: "Reports", icon: FileText, url: "#", badge: "3" },
     ],
   },
   {
-    title: 'Management',
+    title: "Management",
     items: [
-      { title: 'Users', icon: Users, url: '#', badge: null },
-      { title: 'Calendar', icon: Calendar, url: '#', badge: null },
-      { title: 'Settings', icon: Settings, url: '#', badge: null },
+      { title: "Users", icon: Users, url: "#", badge: null },
+      { title: "Calendar", icon: Calendar, url: "#", badge: null },
+      { title: "Settings", icon: Settings, url: "#", badge: null },
     ],
   },
   {
-    title: 'Communication',
+    title: "Communication",
     items: [
-      { title: 'Messages', icon: MessageSquare, url: '#', badge: '12' },
-      { title: 'Email', icon: Mail, url: '#', badge: '5' },
+      { title: "Messages", icon: MessageSquare, url: "#", badge: "12" },
+      { title: "Email", icon: Mail, url: "#", badge: "5" },
     ],
   },
 ];
 
 export default function SidebarLayoutExample() {
-  const [activeItem, setActiveItem] = React.useState('Overview');
+  const [activeItem, setActiveItem] = React.useState("Overview");
 
   return (
-    <FeatureGate feature="sidebar-panel" fallback={
-      <div className="flex items-center justify-center min-h-[600px]">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Feature Not Available</CardTitle>
-            <CardDescription>
-              This layout example requires Ring 1 access to view the sidebar component.
-              Please adjust your feature ring in the demo page.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    }>
+    <FeatureGate
+      feature="sidebar-panel"
+      fallback={
+        <div className="flex items-center justify-center min-h-[600px]">
+          <Card className="max-w-md">
+            <CardHeader>
+              <CardTitle>Feature Not Available</CardTitle>
+              <CardDescription>
+                This layout example requires Ring 1 access to view the sidebar
+                component. Please adjust your feature ring in the demo page.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      }
+    >
       <div className="h-screen overflow-hidden">
         <SidebarProvider>
           <SidebarWithFeatureGate>
@@ -104,15 +113,19 @@ export default function SidebarLayoutExample() {
                         <BarChart3 className="size-4" />
                       </div>
                       <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-semibold">Acme Dashboard</span>
-                        <span className="truncate text-xs">Ring 1 Feature Demo</span>
+                        <span className="truncate font-semibold">
+                          Acme Dashboard
+                        </span>
+                        <span className="truncate text-xs">
+                          Ring 1 Feature Demo
+                        </span>
                       </div>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarHeader>
-            
+
             <SidebarContent>
               {navigation.map((group) => (
                 <SidebarGroup key={group.title}>
@@ -121,12 +134,12 @@ export default function SidebarLayoutExample() {
                     <SidebarMenu>
                       {group.items.map((item) => (
                         <SidebarMenuItem key={item.title}>
-                          <SidebarMenuButton 
-                            asChild 
+                          <SidebarMenuButton
+                            asChild
                             isActive={activeItem === item.title}
                             tooltip={item.title}
                           >
-                            <a 
+                            <a
                               href={item.url}
                               onClick={(e) => {
                                 e.preventDefault();
@@ -138,9 +151,7 @@ export default function SidebarLayoutExample() {
                             </a>
                           </SidebarMenuButton>
                           {item.badge && (
-                            <SidebarMenuBadge>
-                              {item.badge}
-                            </SidebarMenuBadge>
+                            <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
                           )}
                         </SidebarMenuItem>
                       ))}
@@ -148,7 +159,7 @@ export default function SidebarLayoutExample() {
                   </SidebarGroupContent>
                 </SidebarGroup>
               ))}
-              
+
               <SidebarGroup>
                 <SidebarGroupLabel>Support</SidebarGroupLabel>
                 <SidebarGroupContent>
@@ -165,7 +176,7 @@ export default function SidebarLayoutExample() {
                 </SidebarGroupContent>
               </SidebarGroup>
             </SidebarContent>
-            
+
             <SidebarFooter>
               <SidebarMenu>
                 <SidebarMenuItem>
@@ -177,8 +188,12 @@ export default function SidebarLayoutExample() {
                       >
                         <User2 className="size-8 rounded-lg" />
                         <div className="grid flex-1 text-left text-sm leading-tight">
-                          <span className="truncate font-semibold">Demo User</span>
-                          <span className="truncate text-xs">demo@example.com</span>
+                          <span className="truncate font-semibold">
+                            Demo User
+                          </span>
+                          <span className="truncate text-xs">
+                            demo@example.com
+                          </span>
                         </div>
                         <ChevronUp className="ml-auto size-4" />
                       </SidebarMenuButton>
@@ -193,8 +208,12 @@ export default function SidebarLayoutExample() {
                         <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                           <User2 className="size-8 rounded-lg" />
                           <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-semibold">Demo User</span>
-                            <span className="truncate text-xs">demo@example.com</span>
+                            <span className="truncate font-semibold">
+                              Demo User
+                            </span>
+                            <span className="truncate text-xs">
+                              demo@example.com
+                            </span>
                           </div>
                         </div>
                       </DropdownMenuLabel>
@@ -227,7 +246,7 @@ export default function SidebarLayoutExample() {
             </SidebarFooter>
             <SidebarRail />
           </SidebarWithFeatureGate>
-          
+
           <SidebarInset>
             <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
               <SidebarTrigger className="-ml-1" />
@@ -236,26 +255,28 @@ export default function SidebarLayoutExample() {
                 <Badge variant="secondary">Ring 1 Feature</Badge>
               </div>
             </header>
-            
+
             <main className="flex-1 overflow-y-auto p-4">
               <div className="grid gap-4">
                 <Card>
                   <CardHeader>
                     <CardTitle>Welcome to {activeItem}</CardTitle>
                     <CardDescription>
-                      This is a full layout example using the sidebar as a Ring 1 feature.
-                      The sidebar provides navigation for your entire application.
+                      This is a full layout example using the sidebar as a Ring
+                      1 feature. The sidebar provides navigation for your entire
+                      application.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
-                      Try clicking different menu items to see the active state change.
-                      The sidebar can be collapsed to icon-only mode on desktop, and transforms
-                      into a sheet overlay on mobile devices.
+                      Try clicking different menu items to see the active state
+                      change. The sidebar can be collapsed to icon-only mode on
+                      desktop, and transforms into a sheet overlay on mobile
+                      devices.
                     </p>
                   </CardContent>
                 </Card>
-                
+
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   <Card>
                     <CardHeader>
@@ -263,29 +284,32 @@ export default function SidebarLayoutExample() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
-                        The sidebar is protected by feature gating and only available to Ring 1 users.
+                        The sidebar is protected by feature gating and only
+                        available to Ring 1 users.
                       </p>
                     </CardContent>
                   </Card>
-                  
+
                   <Card>
                     <CardHeader>
                       <CardTitle>Mobile Friendly</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
-                        Resize your browser to see the mobile-optimized sheet overlay.
+                        Resize your browser to see the mobile-optimized sheet
+                        overlay.
                       </p>
                     </CardContent>
                   </Card>
-                  
+
                   <Card>
                     <CardHeader>
                       <CardTitle>Persistent State</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
-                        The sidebar remembers its collapsed/expanded state across sessions.
+                        The sidebar remembers its collapsed/expanded state
+                        across sessions.
                       </p>
                     </CardContent>
                   </Card>

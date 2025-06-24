@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function GraphQLPage() {
   return (
@@ -7,5 +7,5 @@ export default function GraphQLPage() {
       description="GraphQL schema, queries, mutations, and subscriptions reference"
       ring="developers"
     />
-  )
+  );
 }

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 interface FocusTrapProps {
   children: React.ReactNode;
@@ -9,11 +9,11 @@ interface FocusTrapProps {
   className?: string;
 }
 
-export function FocusTrap({ 
-  children, 
-  active = true, 
+export function FocusTrap({
+  children,
+  active = true,
   returnFocus = true,
-  className 
+  className,
 }: FocusTrapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const previousActiveElementRef = useRef<Element | null>(null);
@@ -27,22 +27,22 @@ export function FocusTrap({
     // Get all focusable elements
     const getFocusableElements = () => {
       if (!containerRef.current) return [];
-      
+
       const focusableSelectors = [
-        'a[href]:not([disabled])',
-        'button:not([disabled])',
-        'textarea:not([disabled])',
-        'input:not([disabled])',
-        'select:not([disabled])',
+        "a[href]:not([disabled])",
+        "button:not([disabled])",
+        "textarea:not([disabled])",
+        "input:not([disabled])",
+        "select:not([disabled])",
         '[tabindex]:not([tabindex="-1"])',
-      ].join(',');
+      ].join(",");
 
       return Array.from(
-        containerRef.current.querySelectorAll<HTMLElement>(focusableSelectors)
-      ).filter(el => {
+        containerRef.current.querySelectorAll<HTMLElement>(focusableSelectors),
+      ).filter((el) => {
         // Check if element is visible
         const style = window.getComputedStyle(el);
-        return style.display !== 'none' && style.visibility !== 'hidden';
+        return style.display !== "none" && style.visibility !== "hidden";
       });
     };
 
@@ -54,7 +54,7 @@ export function FocusTrap({
 
     // Handle tab key
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== "Tab") return;
 
       const focusableElements = getFocusableElements();
       if (focusableElements.length === 0) return;
@@ -79,13 +79,16 @@ export function FocusTrap({
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      
+      document.removeEventListener("keydown", handleKeyDown);
+
       // Return focus to previous element
-      if (returnFocus && previousActiveElementRef.current instanceof HTMLElement) {
+      if (
+        returnFocus &&
+        previousActiveElementRef.current instanceof HTMLElement
+      ) {
         previousActiveElementRef.current.focus();
       }
     };
@@ -104,29 +107,35 @@ export function useFocusManagement() {
     const element = document.querySelector<HTMLElement>(selector);
     if (element) {
       element.focus();
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, []);
 
-  const moveFocus = useCallback((direction: 'next' | 'previous') => {
+  const moveFocus = useCallback((direction: "next" | "previous") => {
     const focusable = Array.from(
       document.querySelectorAll<HTMLElement>(
-        'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
-      )
-    ).filter(el => {
+        'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => {
       const style = window.getComputedStyle(el);
-      return style.display !== 'none' && style.visibility !== 'hidden' && !el.hasAttribute('disabled');
+      return (
+        style.display !== "none" &&
+        style.visibility !== "hidden" &&
+        !el.hasAttribute("disabled")
+      );
     });
 
-    const currentIndex = focusable.indexOf(document.activeElement as HTMLElement);
-    
+    const currentIndex = focusable.indexOf(
+      document.activeElement as HTMLElement,
+    );
+
     if (currentIndex === -1) {
       focusable[0]?.focus();
       return;
     }
 
     let nextIndex: number;
-    if (direction === 'next') {
+    if (direction === "next") {
       nextIndex = (currentIndex + 1) % focusable.length;
     } else {
       nextIndex = currentIndex - 1;
@@ -139,4 +148,4 @@ export function useFocusManagement() {
   return { focusElement, moveFocus };
 }
 
-import { useCallback } from 'react';
+import { useCallback } from "react";

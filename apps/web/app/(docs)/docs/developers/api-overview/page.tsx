@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function ApiOverviewPage() {
   return (
@@ -7,5 +7,5 @@ export default function ApiOverviewPage() {
       description="Introduction to the API architecture, authentication, and best practices"
       ring="developers"
     />
-  )
+  );
 }

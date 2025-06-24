@@ -10,19 +10,24 @@ Demo scripts are written in markdown with the following structure:
 # Script Title
 
 ## Metadata
+
 - id: unique-script-id
 - author: Author Name
 - version: 1.0.0
 - tags: comma, separated, tags
 
 ## Description
+
 Brief description of what the demo shows
 
 ## Steps
 ```
+
 action "target"
 property: value
+
 ```
+
 ```
 
 ## Available Actions
@@ -41,30 +46,30 @@ property: value
 ### In Components
 
 ```tsx
-import { DemoElement } from '@/components/demo';
+import { DemoElement } from "@/components/demo";
 
 // Wrap any element to make it demo-aware
 <DemoElement id="my-button">
   <Button>Click Me</Button>
-</DemoElement>
+</DemoElement>;
 ```
 
 ### Demo Controller
 
 ```tsx
-import { DemoController } from '@/components/demo';
+import { DemoController } from "@/components/demo";
 
 // Add the controller to your page
-<DemoController />
+<DemoController />;
 ```
 
 ### Demo Recorder
 
 ```tsx
-import { DemoRecorder } from '@/components/demo';
+import { DemoRecorder } from "@/components/demo";
 
 // Add the recorder to create new scripts
-<DemoRecorder />
+<DemoRecorder />;
 ```
 
 ## Creating New Scripts

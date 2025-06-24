@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Trash2, RefreshCw, AlertTriangle } from 'lucide-react';
+import React, { useState } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Trash2, RefreshCw, AlertTriangle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,11 +14,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@monorepo/auth';
-import { useBranding, useWhitelabel } from '@/components/providers/WhitelabelProvider';
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@monorepo/auth";
+import {
+  useBranding,
+  useWhitelabel,
+} from "@/components/providers/WhitelabelProvider";
 
 export function MagicButtonFooter() {
   const router = useRouter();
@@ -26,11 +29,11 @@ export function MagicButtonFooter() {
   const [isClearing, setIsClearing] = useState(false);
   const branding = useBranding();
   const { getContent } = useWhitelabel();
-  const footerContent = getContent('footer');
+  const footerContent = getContent("footer");
 
   const handleClearAll = async () => {
     setIsClearing(true);
-    
+
     try {
       // Clear all cookies
       document.cookie.split(";").forEach((c) => {
@@ -46,9 +49,9 @@ export function MagicButtonFooter() {
       sessionStorage.clear();
 
       // Clear IndexedDB (if used)
-      if ('indexedDB' in window) {
+      if ("indexedDB" in window) {
         const databases = await indexedDB.databases();
-        databases.forEach(db => {
+        databases.forEach((db) => {
           if (db.name) {
             indexedDB.deleteDatabase(db.name);
           }
@@ -56,30 +59,29 @@ export function MagicButtonFooter() {
       }
 
       // Clear service worker caches
-      if ('caches' in window) {
+      if ("caches" in window) {
         const cacheNames = await caches.keys();
         await Promise.all(
-          cacheNames.map(cacheName => caches.delete(cacheName))
+          cacheNames.map((cacheName) => caches.delete(cacheName)),
         );
       }
 
       // Logout user
       await signOut();
 
-      toast.success('All data cleared successfully', {
-        description: 'Cookies, session, and local storage have been reset.'
+      toast.success("All data cleared successfully", {
+        description: "Cookies, session, and local storage have been reset.",
       });
 
       // Redirect to home after a short delay
       setTimeout(() => {
-        router.push('/');
+        router.push("/");
         router.refresh();
       }, 1000);
-
     } catch (error) {
-      console.error('Error clearing data:', error);
-      toast.error('Failed to clear all data', {
-        description: 'Some data might not have been cleared properly.'
+      console.error("Error clearing data:", error);
+      toast.error("Failed to clear all data", {
+        description: "Some data might not have been cleared properly.",
       });
     } finally {
       setIsClearing(false);
@@ -120,8 +122,8 @@ export function MagicButtonFooter() {
           {/* Reset Button */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
@@ -136,9 +138,7 @@ export function MagicButtonFooter() {
                   Clear All Browser Data
                 </AlertDialogTitle>
                 <AlertDialogDescription className="space-y-2">
-                  <p>
-                    This action will permanently delete:
-                  </p>
+                  <p>This action will permanently delete:</p>
                   <ul className="list-disc list-inside space-y-1 text-sm">
                     <li>All cookies</li>
                     <li>Local storage data</li>
@@ -147,7 +147,8 @@ export function MagicButtonFooter() {
                     <li>Your current authentication session</li>
                   </ul>
                   <p className="font-semibold pt-2">
-                    This action cannot be undone. You will be logged out and redirected to the home page.
+                    This action cannot be undone. You will be logged out and
+                    redirected to the home page.
                   </p>
                 </AlertDialogDescription>
               </AlertDialogHeader>
@@ -164,7 +165,7 @@ export function MagicButtonFooter() {
                       Clearing...
                     </>
                   ) : (
-                    'Clear All Data'
+                    "Clear All Data"
                   )}
                 </AlertDialogAction>
               </AlertDialogFooter>

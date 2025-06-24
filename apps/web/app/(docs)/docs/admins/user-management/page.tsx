@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function UserManagementPage() {
   return (
@@ -7,5 +7,5 @@ export default function UserManagementPage() {
       description="Create, manage, and organize users and groups within the system"
       ring="admins"
     />
-  )
+  );
 }

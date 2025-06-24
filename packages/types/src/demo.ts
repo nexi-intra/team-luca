@@ -3,7 +3,15 @@
  */
 export interface DemoStep {
   id: string;
-  type: 'click' | 'type' | 'wait' | 'navigate' | 'assert' | 'highlight' | 'scroll' | 'hover';
+  type:
+    | "click"
+    | "type"
+    | "wait"
+    | "navigate"
+    | "assert"
+    | "highlight"
+    | "scroll"
+    | "hover";
   target?: string;
   value?: string;
   delay?: number;

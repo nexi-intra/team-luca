@@ -5,6 +5,7 @@ This project includes automated Kubernetes deployment via GitHub Actions.
 ## Overview
 
 The deployment system:
+
 - Builds Docker images and pushes to GitHub Container Registry (ghcr.io)
 - Deploys to Kubernetes with environment-specific configurations
 - Manages secrets securely through GitHub Secrets
@@ -13,11 +14,13 @@ The deployment system:
 ## Deployment Naming Convention
 
 Deployments are named by combining:
+
 - GitHub organization name
 - Repository name
 - Branch name (omitted for main branch)
 
 Examples:
+
 - `main` branch: `myorg-myrepo`
 - `feature/auth` branch: `myorg-myrepo-feature-auth`
 
@@ -32,6 +35,7 @@ Examples:
 ### 1. Configure GitHub Variables and Secrets
 
 Run the setup script:
+
 ```bash
 ./scripts/k8s-env-setup.sh
 ```
@@ -39,6 +43,7 @@ Run the setup script:
 Or manually set in GitHub repository settings:
 
 **Variables** (Settings > Secrets and variables > Actions > Variables):
+
 - `K8S_NAMESPACE`: Target Kubernetes namespace
 - `REPLICAS`: Number of pod replicas (default: 2)
 - `APP_URL`: Full application URL
@@ -53,6 +58,7 @@ Or manually set in GitHub repository settings:
 - `OTEL_SAMPLING_RATE`: Trace sampling rate (0.0-1.0)
 
 **Secrets** (Settings > Secrets and variables > Actions > Secrets):
+
 - `KUBECONFIG`: Base64-encoded kubeconfig file
 - `ANTHROPIC_API_KEY`: Anthropic API key
 - `SESSION_SECRET`: Session encryption secret (min 32 chars)
@@ -63,6 +69,7 @@ Or manually set in GitHub repository settings:
 ### 2. Prepare Kubeconfig
 
 Encode your kubeconfig file:
+
 ```bash
 cat ~/.kube/config | base64 | pbcopy  # macOS
 cat ~/.kube/config | base64 | xclip -selection clipboard  # Linux
@@ -73,11 +80,12 @@ Add as `KUBECONFIG` secret in GitHub.
 ### 3. Configure Next.js for Standalone Output
 
 Ensure `next.config.js` includes:
+
 ```javascript
 module.exports = {
-  output: 'standalone',
+  output: "standalone",
   // ... other config
-}
+};
 ```
 
 ## Deployment
@@ -85,6 +93,7 @@ module.exports = {
 ### Automatic Deployment
 
 Pushes to these branches trigger automatic deployment:
+
 - `main`
 - `develop`
 - `feature/**`
@@ -93,6 +102,7 @@ Pushes to these branches trigger automatic deployment:
 ### Manual Deployment
 
 Via GitHub CLI:
+
 ```bash
 gh workflow run build-deploy-k8s.yml
 ```
@@ -117,13 +127,14 @@ The application must implement `/api/health` endpoint:
 ```typescript
 // app/api/health/route.ts
 export async function GET() {
-  return Response.json({ status: 'ok' }, { status: 200 })
+  return Response.json({ status: "ok" }, { status: 200 });
 }
 ```
 
 ## Monitoring
 
 View deployment status:
+
 ```bash
 kubectl get deployments -n YOUR_NAMESPACE
 kubectl get pods -n YOUR_NAMESPACE
@@ -158,6 +169,7 @@ kubectl port-forward deployment/DEPLOYMENT_NAME 3000:3000 -n NAMESPACE
 ## Rollback
 
 To rollback a deployment:
+
 ```bash
 kubectl rollout undo deployment/DEPLOYMENT_NAME -n NAMESPACE
 ```
@@ -165,6 +177,7 @@ kubectl rollout undo deployment/DEPLOYMENT_NAME -n NAMESPACE
 ## Cleanup
 
 To remove all resources:
+
 ```bash
 kubectl delete deployment,service,ingress,configmap,secret -l app=DEPLOYMENT_NAME -n NAMESPACE
 ```

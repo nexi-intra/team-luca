@@ -1,4 +1,4 @@
-import type { User, IAuthProvider as IAuthProviderBase } from '@monorepo/types';
+import type { User, IAuthProvider as IAuthProviderBase } from "@monorepo/types";
 
 /**
  * Extended authentication provider interface with additional methods
@@ -8,7 +8,7 @@ export interface IAuthProvider extends IAuthProviderBase {
    * Refresh the authentication token
    */
   refreshToken?(): Promise<void>;
-  
+
   /**
    * Get the current authentication state
    */
@@ -16,7 +16,7 @@ export interface IAuthProvider extends IAuthProviderBase {
     isLoading: boolean;
     error: Error | null;
   };
-  
+
   /**
    * Set custom headers for API requests
    */

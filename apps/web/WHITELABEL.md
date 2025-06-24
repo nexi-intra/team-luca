@@ -12,6 +12,7 @@ This template is designed to be easily white-labeled while maintaining the abili
 ## Configuration Structure
 
 ### Branding
+
 ```typescript
 branding: {
   appName: 'Your App Name',
@@ -33,7 +34,9 @@ branding: {
 ```
 
 ### Features
+
 Control which features are enabled:
+
 ```typescript
 features: {
   auth: {
@@ -56,7 +59,9 @@ features: {
 ```
 
 ### Routes
+
 Enable/disable specific routes:
+
 ```typescript
 routes: {
   home: true,
@@ -69,7 +74,9 @@ routes: {
 ```
 
 ### Content
+
 Customize landing page and footer content:
+
 ```typescript
 content: {
   landing: {
@@ -93,6 +100,7 @@ content: {
 ## Template Variables
 
 The following variables can be used in content strings and will be automatically replaced:
+
 - `{appName}` - Your application name
 - `{appNameShort}` - Short version of app name
 - `{companyName}` - Your company name
@@ -125,9 +133,11 @@ git merge upstream/main
 ## Advanced Customization
 
 ### Adding Custom Pages
+
 Create new pages in the `/app` directory. They will automatically use your whitelabel configuration.
 
 ### Custom Components
+
 Create custom components that use the whitelabel configuration:
 
 ```typescript
@@ -135,7 +145,7 @@ import { useBranding } from '@/components/providers/WhitelabelProvider';
 
 export function MyComponent() {
   const branding = useBranding();
-  
+
   return (
     <div>
       <h1>{branding.appName}</h1>
@@ -148,14 +158,15 @@ export function MyComponent() {
 ```
 
 ### Environment-Specific Configuration
+
 You can extend the whitelabel configuration to support different environments:
 
 ```typescript
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isDevelopment = process.env.NODE_ENV === "development";
 
 export const whitelabel = {
   branding: {
-    appName: isDevelopment ? 'Dev - My App' : 'My App',
+    appName: isDevelopment ? "Dev - My App" : "My App",
     // ...
   },
   // ...
@@ -165,13 +176,17 @@ export const whitelabel = {
 ## Troubleshooting
 
 ### Merge Conflicts
+
 Most merge conflicts will occur in `/config/whitelabel.ts`. To resolve:
+
 1. Keep your custom configuration
 2. Add any new configuration options from upstream
 3. Test thoroughly after merging
 
 ### Missing Features
+
 If a new feature from upstream isn't working:
+
 1. Check if it requires new configuration in `whitelabel.ts`
 2. Ensure all required dependencies are installed
 3. Check the upstream changelog for breaking changes

@@ -67,4 +67,7 @@ function ThemeToggleSimpleBase() {
 }
 
 export const ThemeToggle = withDevOverlay(ThemeToggleBase, "ThemeToggle");
-export const ThemeToggleSimple = withDevOverlay(ThemeToggleSimpleBase, "ThemeToggleSimple");
+export const ThemeToggleSimple = withDevOverlay(
+  ThemeToggleSimpleBase,
+  "ThemeToggleSimple",
+);

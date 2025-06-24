@@ -1,4 +1,4 @@
-import { generateState, generatePKCE } from '@monorepo/utils';
+import { generateState, generatePKCE } from "@monorepo/utils";
 
 /**
  * OAuth state management
@@ -31,7 +31,7 @@ export async function generateOAuthParams(): Promise<{
 }> {
   const state = generateState();
   const { verifier, challenge } = await generatePKCE();
-  
+
   return {
     state,
     codeChallenge: challenge,
@@ -47,19 +47,19 @@ export function buildAuthorizationUrl(
   params: {
     state: string;
     codeChallenge: string;
-  }
+  },
 ): string {
   const url = new URL(`${config.authority}/oauth2/v2.0/authorize`);
-  
-  url.searchParams.append('client_id', config.clientId);
-  url.searchParams.append('response_type', 'code');
-  url.searchParams.append('redirect_uri', config.redirectUri);
-  url.searchParams.append('scope', config.scopes.join(' '));
-  url.searchParams.append('state', params.state);
-  url.searchParams.append('code_challenge', params.codeChallenge);
-  url.searchParams.append('code_challenge_method', 'S256');
-  url.searchParams.append('response_mode', 'query');
-  
+
+  url.searchParams.append("client_id", config.clientId);
+  url.searchParams.append("response_type", "code");
+  url.searchParams.append("redirect_uri", config.redirectUri);
+  url.searchParams.append("scope", config.scopes.join(" "));
+  url.searchParams.append("state", params.state);
+  url.searchParams.append("code_challenge", params.codeChallenge);
+  url.searchParams.append("code_challenge_method", "S256");
+  url.searchParams.append("response_mode", "query");
+
   return url.toString();
 }
 
@@ -68,17 +68,17 @@ export function buildAuthorizationUrl(
  */
 export function buildLogoutUrl(
   config: OAuthConfig,
-  postLogoutRedirectUri?: string
+  postLogoutRedirectUri?: string,
 ): string {
   const url = new URL(`${config.authority}/oauth2/v2.0/logout`);
-  
+
   if (postLogoutRedirectUri || config.postLogoutRedirectUri) {
     url.searchParams.append(
-      'post_logout_redirect_uri',
-      postLogoutRedirectUri || config.postLogoutRedirectUri!
+      "post_logout_redirect_uri",
+      postLogoutRedirectUri || config.postLogoutRedirectUri!,
     );
   }
-  
+
   return url.toString();
 }
 
@@ -88,7 +88,7 @@ export function buildLogoutUrl(
 export async function exchangeCodeForTokens(
   config: OAuthConfig,
   code: string,
-  codeVerifier: string
+  codeVerifier: string,
 ): Promise<{
   accessToken: string;
   idToken?: string;
@@ -96,31 +96,31 @@ export async function exchangeCodeForTokens(
   expiresIn: number;
 }> {
   const tokenUrl = `${config.authority}/oauth2/v2.0/token`;
-  
+
   const params = new URLSearchParams({
     client_id: config.clientId,
-    grant_type: 'authorization_code',
+    grant_type: "authorization_code",
     code,
     redirect_uri: config.redirectUri,
     code_verifier: codeVerifier,
-    scope: config.scopes.join(' '),
+    scope: config.scopes.join(" "),
   });
-  
+
   const response = await fetch(tokenUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: params.toString(),
   });
-  
+
   if (!response.ok) {
     const error = await response.text();
     throw new Error(`Token exchange failed: ${error}`);
   }
-  
+
   const data = await response.json();
-  
+
   return {
     accessToken: data.access_token,
     idToken: data.id_token,
@@ -134,36 +134,36 @@ export async function exchangeCodeForTokens(
  */
 export async function refreshAccessToken(
   config: OAuthConfig,
-  refreshToken: string
+  refreshToken: string,
 ): Promise<{
   accessToken: string;
   refreshToken?: string;
   expiresIn: number;
 }> {
   const tokenUrl = `${config.authority}/oauth2/v2.0/token`;
-  
+
   const params = new URLSearchParams({
     client_id: config.clientId,
-    grant_type: 'refresh_token',
+    grant_type: "refresh_token",
     refresh_token: refreshToken,
-    scope: config.scopes.join(' '),
+    scope: config.scopes.join(" "),
   });
-  
+
   const response = await fetch(tokenUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: params.toString(),
   });
-  
+
   if (!response.ok) {
     const error = await response.text();
     throw new Error(`Token refresh failed: ${error}`);
   }
-  
+
   const data = await response.json();
-  
+
   return {
     accessToken: data.access_token,
     refreshToken: data.refresh_token,

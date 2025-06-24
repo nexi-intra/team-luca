@@ -1,8 +1,14 @@
-'use client';
+"use client";
 
-import { useFeatureRing } from '@/hooks/useFeatureRing';
-import { getRingName, FEATURE_RINGS, FeatureRing } from '@monorepo/features';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useFeatureRing } from "@/hooks/useFeatureRing";
+import { getRingName, FEATURE_RINGS, FeatureRing } from "@monorepo/features";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function FeatureRingSelector() {
   const { currentRing, setRing } = useFeatureRing();
@@ -10,7 +16,12 @@ export function FeatureRingSelector() {
   return (
     <div className="flex items-center gap-2">
       <span className="text-sm text-muted-foreground">Feature Ring:</span>
-      <Select value={currentRing.toString()} onValueChange={(value: string) => setRing(parseInt(value) as FeatureRing)}>
+      <Select
+        value={currentRing.toString()}
+        onValueChange={(value: string) =>
+          setRing(parseInt(value) as FeatureRing)
+        }
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue />
         </SelectTrigger>

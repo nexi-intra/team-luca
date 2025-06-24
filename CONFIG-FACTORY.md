@@ -39,28 +39,33 @@ The configuration factory pattern provides a centralized, type-safe way to manag
 ## Configuration Structure
 
 ### ConfigValue Type
+
 Each configuration value includes:
+
 ```typescript
 interface ConfigValue<T> {
-  value: T;                    // The actual value
-  name: string;                // User-friendly name
-  description: string;         // Detailed description
-  featureRing: FeatureRing;    // When this becomes available
-  required: boolean;           // Is this required?
-  defaultValue?: T;            // Default if not provided
-  example?: string;            // Example for documentation
-  validate?: (value: T) => boolean | string;  // Validation function
+  value: T; // The actual value
+  name: string; // User-friendly name
+  description: string; // Detailed description
+  featureRing: FeatureRing; // When this becomes available
+  required: boolean; // Is this required?
+  defaultValue?: T; // Default if not provided
+  example?: string; // Example for documentation
+  validate?: (value: T) => boolean | string; // Validation function
 }
 ```
 
 ### Feature Rings
+
 Configuration values are associated with feature rings for gradual rollout:
+
 - `Internal`: Internal testing only
 - `Beta`: Early adopters and beta testers
 - `GA`: General availability
 - `Public`: Available to all users
 
 ### Configuration Categories
+
 - `Authentication`: OAuth/MSAL settings
 - `API`: External service keys
 - `General`: App-wide settings
@@ -74,19 +79,19 @@ Configuration values are associated with feature rings for gradual rollout:
 ### Basic Usage
 
 ```typescript
-import { config } from '@/lib/config';
+import { config } from "@/lib/config";
 
 // Get a value (returns undefined if not found)
-const clientId = config.get<string>('auth.clientId');
+const clientId = config.get<string>("auth.clientId");
 
 // Get with default fallback
-const port = config.getOrDefault('general.port', 3000);
+const port = config.getOrDefault("general.port", 3000);
 
 // Get required value (throws if not found)
-const apiKey = config.getRequired<string>('api.anthropicKey');
+const apiKey = config.getRequired<string>("api.anthropicKey");
 
 // Check if configuration exists
-if (config.has('telemetry.tracesEndpoint')) {
+if (config.has("telemetry.tracesEndpoint")) {
   // Enable telemetry
 }
 ```
@@ -95,15 +100,15 @@ if (config.has('telemetry.tracesEndpoint')) {
 
 ```typescript
 // Get value with metadata
-const authConfig = config.getWithMetadata('auth.clientId');
-console.log(authConfig?.name);        // "Client ID"
+const authConfig = config.getWithMetadata("auth.clientId");
+console.log(authConfig?.name); // "Client ID"
 console.log(authConfig?.description); // "Microsoft Entra ID application..."
 console.log(authConfig?.featureRing); // "GA"
 
 // Validate all required configurations
 const { valid, errors } = config.validate();
 if (!valid) {
-  console.error('Configuration errors:', errors);
+  console.error("Configuration errors:", errors);
 }
 
 // Get configurations by feature ring
@@ -117,24 +122,25 @@ const authConfigs = config.getByCategory(ConfigCategory.Authentication);
 
 The system automatically maps configuration paths to environment variables:
 
-| Config Path | Environment Variable |
-|------------|---------------------|
-| `auth.clientId` | `NEXT_PUBLIC_AUTH_CLIENT_ID` |
-| `auth.sessionSecret` | `SESSION_SECRET` |
-| `api.anthropicKey` | `ANTHROPIC_API_KEY` |
-| `general.appUrl` | `NEXT_PUBLIC_APP_URL` |
-| `telemetry.serviceName` | `OTEL_SERVICE_NAME` |
-| `features.enableTelemetry` | `ENABLE_TELEMETRY` |
+| Config Path                | Environment Variable         |
+| -------------------------- | ---------------------------- |
+| `auth.clientId`            | `NEXT_PUBLIC_AUTH_CLIENT_ID` |
+| `auth.sessionSecret`       | `SESSION_SECRET`             |
+| `api.anthropicKey`         | `ANTHROPIC_API_KEY`          |
+| `general.appUrl`           | `NEXT_PUBLIC_APP_URL`        |
+| `telemetry.serviceName`    | `OTEL_SERVICE_NAME`          |
+| `features.enableTelemetry` | `ENABLE_TELEMETRY`           |
 
 ## Adding New Configuration
 
 ### 1. Update the TypeScript Types
 
 Add to `/lib/config/types.ts`:
+
 ```typescript
 export interface AppConfig {
   // ... existing sections ...
-  
+
   mySection: {
     myNewConfig: ConfigValue<string>;
   };
@@ -144,39 +150,42 @@ export interface AppConfig {
 ### 2. Define the Schema
 
 Add to `/lib/config/schema.ts`:
+
 ```typescript
 export const CONFIG_SCHEMA: AppConfig = {
   // ... existing config ...
-  
+
   mySection: {
     myNewConfig: {
-      value: '',
-      name: 'My New Configuration',
-      description: 'Description of what this does',
+      value: "",
+      name: "My New Configuration",
+      description: "Description of what this does",
       featureRing: FeatureRing.GA,
       required: true,
-      example: 'example-value',
-      validate: (value) => value.length > 0 || 'Cannot be empty'
-    }
-  }
+      example: "example-value",
+      validate: (value) => value.length > 0 || "Cannot be empty",
+    },
+  },
 };
 ```
 
 ### 3. Map Environment Variable
 
 Add to `/lib/config/providers/env-provider.ts`:
+
 ```typescript
 const ENV_MAPPING: Record<string, string> = {
   // ... existing mappings ...
-  'mySection.myNewConfig': 'MY_NEW_CONFIG_ENV_VAR'
+  "mySection.myNewConfig": "MY_NEW_CONFIG_ENV_VAR",
 };
 ```
 
 ### 4. Update Provider Loading
 
 Ensure the provider loads your section in `loadConfiguration()`:
+
 ```typescript
-this.loadConfigSection(config.mySection, 'mySection');
+this.loadConfigSection(config.mySection, "mySection");
 ```
 
 ## Validation
@@ -188,19 +197,21 @@ The configuration system includes built-in validation:
 validate: (value) => {
   // Return true for valid
   if (isValid(value)) return true;
-  
+
   // Return error message for invalid
-  return 'Error message explaining the issue';
-}
+  return "Error message explaining the issue";
+};
 ```
 
 Common validation patterns:
+
 ```typescript
 // UUID validation
 validate: (value) => {
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(value) || 'Must be a valid UUID';
-}
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(value) || "Must be a valid UUID";
+};
 
 // URL validation
 validate: (value) => {
@@ -208,12 +219,12 @@ validate: (value) => {
     new URL(value);
     return true;
   } catch {
-    return 'Must be a valid URL';
+    return "Must be a valid URL";
   }
-}
+};
 
 // Range validation
-validate: (value) => value >= 0 && value <= 1 || 'Must be between 0 and 1'
+validate: (value) => (value >= 0 && value <= 1) || "Must be between 0 and 1";
 ```
 
 ## Testing
@@ -221,22 +232,24 @@ validate: (value) => value >= 0 && value <= 1 || 'Must be between 0 and 1'
 The template includes test factories for creating test data:
 
 ### Base Factory Pattern
+
 ```typescript
 // /tests/factories/base.factory.ts
 export abstract class BaseFactory<T, P = Partial<T>> {
   protected abstract getDefaults(): T;
-  
+
   async create(overrides?: P): Promise<T>;
   build(overrides?: P): T;
   async createMany(count: number, overrides?: P): Promise<T[]>;
   buildMany(count: number, overrides?: P): T[];
-  
+
   // Create named states for common variations
   state(name: string, overrides: P): this;
 }
 ```
 
 ### Example Test Factory
+
 ```typescript
 // /tests/factories/user.factory.ts
 export class UserFactory extends BaseFactory<User> {
@@ -244,14 +257,14 @@ export class UserFactory extends BaseFactory<User> {
     return {
       id: faker.string.uuid(),
       email: faker.internet.email(),
-      role: 'user',
+      role: "user",
       // ... other defaults
     };
   }
-  
+
   // Named states for common variations
   admin(): this {
-    return this.state('admin', { role: 'admin' });
+    return this.state("admin", { role: "admin" });
   }
 }
 
@@ -264,44 +277,49 @@ const users = await userFactory.createMany(5);
 ## Best Practices
 
 1. **Always Use Type Parameters**: Specify the expected type when getting values
+
    ```typescript
-   config.get<string>('auth.clientId');  // ✓ Good
-   config.get('auth.clientId');          // ✗ Avoid
+   config.get<string>("auth.clientId"); // ✓ Good
+   config.get("auth.clientId"); // ✗ Avoid
    ```
 
 2. **Handle Missing Values**: Use appropriate methods based on requirements
+
    ```typescript
    // Optional value
-   const endpoint = config.get('telemetry.endpoint');
-   
+   const endpoint = config.get("telemetry.endpoint");
+
    // With fallback
-   const port = config.getOrDefault('general.port', 3000);
-   
+   const port = config.getOrDefault("general.port", 3000);
+
    // Required (will throw)
-   const apiKey = config.getRequired('api.anthropicKey');
+   const apiKey = config.getRequired("api.anthropicKey");
    ```
 
 3. **Validate Early**: Run validation during application startup
+
    ```typescript
    const { valid, errors } = config.validate();
    if (!valid) {
-     throw new Error(`Configuration errors: ${errors.join(', ')}`);
+     throw new Error(`Configuration errors: ${errors.join(", ")}`);
    }
    ```
 
 4. **Use Feature Rings**: Associate new features with appropriate rings
+
    ```typescript
-   featureRing: FeatureRing.Beta  // Start in beta
+   featureRing: FeatureRing.Beta; // Start in beta
    ```
 
 5. **Provide Good Defaults**: Include sensible defaults where possible
+
    ```typescript
-   defaultValue: 'http://localhost:3000'
+   defaultValue: "http://localhost:3000";
    ```
 
 6. **Write Clear Descriptions**: Help developers understand each setting
    ```typescript
-   description: 'OAuth redirect URI for authentication callbacks'
+   description: "OAuth redirect URI for authentication callbacks";
    ```
 
 ## Future Enhancements

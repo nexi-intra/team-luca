@@ -1,5 +1,5 @@
-import { SessionPayload } from '@monorepo/auth';
-import { config } from '@/lib/config';
+import { SessionPayload } from "@monorepo/auth";
+import { config } from "@/lib/config";
 
 export interface AuditEvent {
   id: string;
@@ -10,9 +10,9 @@ export interface AuditEvent {
   userAgent?: string;
   action: string;
   resource?: string;
-  result: 'success' | 'failure' | 'error';
+  result: "success" | "failure" | "error";
   metadata?: Record<string, any>;
-  severity: 'info' | 'warning' | 'error' | 'critical';
+  severity: "info" | "warning" | "error" | "critical";
 }
 
 export class AuditLogger {
@@ -27,7 +27,7 @@ export class AuditLogger {
     return AuditLogger.instance;
   }
 
-  async log(event: Omit<AuditEvent, 'id' | 'timestamp'>): Promise<void> {
+  async log(event: Omit<AuditEvent, "id" | "timestamp">): Promise<void> {
     const auditEvent: AuditEvent = {
       ...event,
       id: this.generateEventId(),
@@ -36,8 +36,11 @@ export class AuditLogger {
 
     // In production, send to your audit logging service
     // For now, just log to console in development
-    if (config.getOrDefault('general.environment', 'development') === 'development') {
-      console.log('[AUDIT]', JSON.stringify(auditEvent, null, 2));
+    if (
+      config.getOrDefault("general.environment", "development") ===
+      "development"
+    ) {
+      console.log("[AUDIT]", JSON.stringify(auditEvent, null, 2));
     } else {
       // TODO: Send to audit logging service (e.g., Datadog, Splunk, ELK)
       await this.sendToAuditService(auditEvent);
@@ -45,56 +48,70 @@ export class AuditLogger {
   }
 
   async logAuthEvent(
-    action: 'login' | 'logout' | 'session_created' | 'session_expired' | 'permission_denied',
+    action:
+      | "login"
+      | "logout"
+      | "session_created"
+      | "session_expired"
+      | "permission_denied",
     user?: SessionPayload,
     request?: Request,
-    result: 'success' | 'failure' = 'success',
-    metadata?: Record<string, any>
+    result: "success" | "failure" = "success",
+    metadata?: Record<string, any>,
   ): Promise<void> {
     await this.log({
       userId: user?.userId,
       userEmail: user?.email,
-      ipAddress: request?.headers.get('x-forwarded-for') || request?.headers.get('x-real-ip') || undefined,
-      userAgent: request?.headers.get('user-agent') || undefined,
+      ipAddress:
+        request?.headers.get("x-forwarded-for") ||
+        request?.headers.get("x-real-ip") ||
+        undefined,
+      userAgent: request?.headers.get("user-agent") || undefined,
       action: `auth.${action}`,
       result,
       metadata,
-      severity: result === 'failure' ? 'warning' : 'info',
+      severity: result === "failure" ? "warning" : "info",
     });
   }
 
   async logDataAccess(
-    action: 'read' | 'write' | 'delete',
+    action: "read" | "write" | "delete",
     resource: string,
     user?: SessionPayload,
     request?: Request,
-    result: 'success' | 'failure' = 'success',
-    metadata?: Record<string, any>
+    result: "success" | "failure" = "success",
+    metadata?: Record<string, any>,
   ): Promise<void> {
     await this.log({
       userId: user?.userId,
       userEmail: user?.email,
-      ipAddress: request?.headers.get('x-forwarded-for') || request?.headers.get('x-real-ip') || undefined,
-      userAgent: request?.headers.get('user-agent') || undefined,
+      ipAddress:
+        request?.headers.get("x-forwarded-for") ||
+        request?.headers.get("x-real-ip") ||
+        undefined,
+      userAgent: request?.headers.get("user-agent") || undefined,
       action: `data.${action}`,
       resource,
       result,
       metadata,
-      severity: action === 'delete' ? 'warning' : 'info',
+      severity: action === "delete" ? "warning" : "info",
     });
   }
 
   async logSecurityEvent(
     action: string,
-    severity: 'warning' | 'error' | 'critical',
+    severity: "warning" | "error" | "critical",
     request?: Request,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<void> {
     await this.log({
-      ipAddress: request?.headers.get('x-forwarded-for') || request?.headers.get('x-real-ip') || undefined,
-      userAgent: request?.headers.get('user-agent') || undefined,
+      ipAddress:
+        request?.headers.get("x-forwarded-for") ||
+        request?.headers.get("x-real-ip") ||
+        undefined,
+      userAgent: request?.headers.get("user-agent") || undefined,
       action: `security.${action}`,
-      result: 'failure',
+      result: "failure",
       metadata,
       severity,
     });
@@ -112,9 +129,9 @@ export class AuditLogger {
     // - Google Cloud Audit Logs
     // - Datadog
     // - Splunk
-    
+
     // For now, just write to console
-    console.log('[AUDIT]', JSON.stringify(event));
+    console.log("[AUDIT]", JSON.stringify(event));
   }
 }
 

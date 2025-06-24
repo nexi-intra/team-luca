@@ -1,14 +1,26 @@
-import { DIContainer, ServiceTokens, IAuthService, IApiClient, IFeatureService, IUserService, ILogger, IStorage } from '@/lib/di/container';
+import {
+  DIContainer,
+  ServiceTokens,
+  IAuthService,
+  IApiClient,
+  IFeatureService,
+  IUserService,
+  ILogger,
+  IStorage,
+} from "@/lib/di/container";
 
 export class MockAuthService implements IAuthService {
   private _isAuthenticated = false;
   private _currentUser: any = null;
 
-  async login(email: string, password: string): Promise<{ token: string; user: any }> {
+  async login(
+    email: string,
+    password: string,
+  ): Promise<{ token: string; user: any }> {
     this._isAuthenticated = true;
-    this._currentUser = { id: '1', email, name: 'Test User' };
+    this._currentUser = { id: "1", email, name: "Test User" };
     return {
-      token: 'mock-token',
+      token: "mock-token",
       user: this._currentUser,
     };
   }
@@ -38,25 +50,25 @@ export class MockApiClient implements IApiClient {
   async get<T>(url: string): Promise<T> {
     const response = this.responses.get(`GET:${url}`);
     if (response instanceof Error) throw response;
-    return response || {} as T;
+    return response || ({} as T);
   }
 
   async post<T>(url: string, data: any): Promise<T> {
     const response = this.responses.get(`POST:${url}`);
     if (response instanceof Error) throw response;
-    return response || data as T;
+    return response || (data as T);
   }
 
   async put<T>(url: string, data: any): Promise<T> {
     const response = this.responses.get(`PUT:${url}`);
     if (response instanceof Error) throw response;
-    return response || data as T;
+    return response || (data as T);
   }
 
   async delete<T>(url: string): Promise<T> {
     const response = this.responses.get(`DELETE:${url}`);
     if (response instanceof Error) throw response;
-    return response || {} as T;
+    return response || ({} as T);
   }
 
   mockResponse(method: string, url: string, response: any): void {
@@ -100,19 +112,19 @@ export class MockLogger implements ILogger {
   logs: Array<{ level: string; message: string; args: any[] }> = [];
 
   log(message: string, ...args: any[]): void {
-    this.logs.push({ level: 'log', message, args });
+    this.logs.push({ level: "log", message, args });
   }
 
   error(message: string, error?: Error, ...args: any[]): void {
-    this.logs.push({ level: 'error', message, args: [error, ...args] });
+    this.logs.push({ level: "error", message, args: [error, ...args] });
   }
 
   warn(message: string, ...args: any[]): void {
-    this.logs.push({ level: 'warn', message, args });
+    this.logs.push({ level: "warn", message, args });
   }
 
   debug(message: string, ...args: any[]): void {
-    this.logs.push({ level: 'debug', message, args });
+    this.logs.push({ level: "debug", message, args });
   }
 
   clear(): void {
@@ -142,13 +154,13 @@ export class MockStorage implements IStorage {
 
 export function createMockContainer(): DIContainer {
   const container = DIContainer.createTestContainer();
-  
+
   container.register(ServiceTokens.AuthService, new MockAuthService());
   container.register(ServiceTokens.ApiClient, new MockApiClient());
   container.register(ServiceTokens.FeatureService, new MockFeatureService());
   container.register(ServiceTokens.Logger, new MockLogger());
   container.register(ServiceTokens.Storage, new MockStorage());
-  
+
   return container;
 }
 

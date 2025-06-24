@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function PerformancePage() {
   return (
@@ -7,5 +7,5 @@ export default function PerformancePage() {
       description="Optimize system performance and resource utilization"
       ring="admins"
     />
-  )
+  );
 }

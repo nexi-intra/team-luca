@@ -1,23 +1,23 @@
-'use server';
+"use server";
 
-import { promises as fs } from 'fs';
-import path from 'path';
-import { isDevMode, requireDevMode } from '@monorepo/utils';
-import { ENV_VARIABLES, type EnvCheckResult } from '@/lib/setup/types';
+import { promises as fs } from "fs";
+import path from "path";
+import { isDevMode, requireDevMode } from "@monorepo/utils";
+import { ENV_VARIABLES, type EnvCheckResult } from "@/lib/setup/types";
 
 export async function checkEnvironment(): Promise<EnvCheckResult> {
   try {
-    requireDevMode('Environment checking');
+    requireDevMode("Environment checking");
 
-    const envFiles = ['.env.local', '.env.development.local', '.env'];
+    const envFiles = [".env.local", ".env.development.local", ".env"];
     let currentEnvFile: string | null = null;
-    let envContent = '';
+    let envContent = "";
 
     // Find which env file exists
     for (const file of envFiles) {
       try {
         const filePath = path.join(process.cwd(), file);
-        envContent = await fs.readFile(filePath, 'utf-8');
+        envContent = await fs.readFile(filePath, "utf-8");
         currentEnvFile = file;
         break;
       } catch {
@@ -28,12 +28,12 @@ export async function checkEnvironment(): Promise<EnvCheckResult> {
     // Parse current environment variables
     const currentEnv: Record<string, string> = {};
     if (envContent) {
-      envContent.split('\n').forEach(line => {
+      envContent.split("\n").forEach((line) => {
         const trimmed = line.trim();
-        if (trimmed && !trimmed.startsWith('#')) {
-          const [key, ...valueParts] = trimmed.split('=');
+        if (trimmed && !trimmed.startsWith("#")) {
+          const [key, ...valueParts] = trimmed.split("=");
           if (key) {
-            const value = valueParts.join('=').replace(/^["']|["']$/g, '');
+            const value = valueParts.join("=").replace(/^["']|["']$/g, "");
             currentEnv[key] = value;
           }
         }
@@ -41,15 +41,20 @@ export async function checkEnvironment(): Promise<EnvCheckResult> {
     }
 
     // Check each variable
-    const variables = ENV_VARIABLES.map(variable => {
-      const currentValue = process.env[variable.key] || currentEnv[variable.key];
+    const variables = ENV_VARIABLES.map((variable) => {
+      const currentValue =
+        process.env[variable.key] || currentEnv[variable.key];
       let isValid = true;
       let error: string | undefined;
 
       if (variable.required && !currentValue) {
         isValid = false;
-        error = 'Required variable is not set';
-      } else if (currentValue && variable.validation && variable.validation.pattern) {
+        error = "Required variable is not set";
+      } else if (
+        currentValue &&
+        variable.validation &&
+        variable.validation.pattern
+      ) {
         const regex = new RegExp(variable.validation.pattern);
         if (!regex.test(currentValue)) {
           isValid = false;
@@ -59,18 +64,19 @@ export async function checkEnvironment(): Promise<EnvCheckResult> {
 
       return {
         ...variable,
-        currentValue: currentValue?.includes('secret') || currentValue?.includes('key') 
-          ? currentValue.substring(0, 10) + '...' 
-          : currentValue,
+        currentValue:
+          currentValue?.includes("secret") || currentValue?.includes("key")
+            ? currentValue.substring(0, 10) + "..."
+            : currentValue,
         isValid,
-        error
+        error,
       };
     });
 
     // Check if we can write to env files
     let canWrite = true;
     try {
-      const testFilePath = path.join(process.cwd(), '.env.local');
+      const testFilePath = path.join(process.cwd(), ".env.local");
       await fs.access(path.dirname(testFilePath), fs.constants.W_OK);
     } catch {
       canWrite = false;
@@ -80,27 +86,27 @@ export async function checkEnvironment(): Promise<EnvCheckResult> {
       isDevMode: isDevMode(),
       envFile: currentEnvFile,
       variables,
-      canWrite
+      canWrite,
     };
   } catch (error) {
-    console.error('Environment check failed:', error);
-    throw new Error('Failed to check environment configuration');
+    console.error("Environment check failed:", error);
+    throw new Error("Failed to check environment configuration");
   }
 }
 
 export async function updateEnvironmentVariable(
   key: string,
-  value: string
+  value: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    requireDevMode('Environment variable updates');
+    requireDevMode("Environment variable updates");
 
     // Validate the key
-    const variable = ENV_VARIABLES.find(v => v.key === key);
+    const variable = ENV_VARIABLES.find((v) => v.key === key);
     if (!variable) {
       return {
         success: false,
-        message: `Unknown environment variable: ${key}`
+        message: `Unknown environment variable: ${key}`,
       };
     }
 
@@ -110,25 +116,25 @@ export async function updateEnvironmentVariable(
       if (!regex.test(value)) {
         return {
           success: false,
-          message: variable.validation.message || 'Invalid value format'
+          message: variable.validation.message || "Invalid value format",
         };
       }
     }
 
     // Choose which env file to update (prefer .env.local)
-    const envFile = '.env.local';
+    const envFile = ".env.local";
     const envPath = path.join(process.cwd(), envFile);
 
     // Read existing content
-    let existingContent = '';
+    let existingContent = "";
     try {
-      existingContent = await fs.readFile(envPath, 'utf-8');
+      existingContent = await fs.readFile(envPath, "utf-8");
     } catch {
       // File doesn't exist, that's okay
     }
 
     // Parse existing variables
-    const lines = existingContent.split('\n');
+    const lines = existingContent.split("\n");
     const updatedLines: string[] = [];
     let variableUpdated = false;
 
@@ -145,57 +151,64 @@ export async function updateEnvironmentVariable(
 
     // If variable wasn't found, add it
     if (!variableUpdated) {
-      if (updatedLines.length > 0 && updatedLines[updatedLines.length - 1] !== '') {
-        updatedLines.push(''); // Add blank line
+      if (
+        updatedLines.length > 0 &&
+        updatedLines[updatedLines.length - 1] !== ""
+      ) {
+        updatedLines.push(""); // Add blank line
       }
       updatedLines.push(`${key}=${value}`);
     }
 
     // Write back to file
-    await fs.writeFile(envPath, updatedLines.join('\n'), 'utf-8');
+    await fs.writeFile(envPath, updatedLines.join("\n"), "utf-8");
 
     return {
       success: true,
-      message: `Successfully updated ${key} in ${envFile}`
+      message: `Successfully updated ${key} in ${envFile}`,
     };
   } catch (error) {
-    console.error('Failed to update environment variable:', error);
+    console.error("Failed to update environment variable:", error);
     return {
       success: false,
-      message: 'Failed to update environment variable'
+      message: "Failed to update environment variable",
     };
   }
 }
 
-export async function generateEnvTemplateFile(): Promise<{ success: boolean; message: string; content?: string }> {
+export async function generateEnvTemplateFile(): Promise<{
+  success: boolean;
+  message: string;
+  content?: string;
+}> {
   try {
-    requireDevMode('Template generation');
+    requireDevMode("Template generation");
 
     const lines: string[] = [
-      '# Magic Button Assistant Environment Configuration',
-      '# Copy this file to .env.local and fill in your values',
-      '',
-      '# ===========================================',
-      '# REQUIRED CONFIGURATION',
-      '# ===========================================',
-      ''
+      "# Magic Button Assistant Environment Configuration",
+      "# Copy this file to .env.local and fill in your values",
+      "",
+      "# ===========================================",
+      "# REQUIRED CONFIGURATION",
+      "# ===========================================",
+      "",
     ];
 
     // Group variables by category
     const categories = {
-      auth: 'Authentication',
-      general: 'General Application Settings',
-      api: 'API Keys & External Services',
-      telemetry: 'Telemetry & Monitoring'
+      auth: "Authentication",
+      general: "General Application Settings",
+      api: "API Keys & External Services",
+      telemetry: "Telemetry & Monitoring",
     };
 
     Object.entries(categories).forEach(([category, title]) => {
-      const categoryVars = ENV_VARIABLES.filter(v => v.category === category);
-      
+      const categoryVars = ENV_VARIABLES.filter((v) => v.category === category);
+
       if (categoryVars.length > 0) {
         lines.push(`# ${title}`);
-        
-        categoryVars.forEach(variable => {
+
+        categoryVars.forEach((variable) => {
           lines.push(`# ${variable.description}`);
           if (variable.example) {
             lines.push(`# Example: ${variable.example}`);
@@ -205,23 +218,23 @@ export async function generateEnvTemplateFile(): Promise<{ success: boolean; mes
           } else {
             lines.push(`# ${variable.key}=`);
           }
-          lines.push('');
+          lines.push("");
         });
       }
     });
 
-    const content = lines.join('\n');
+    const content = lines.join("\n");
 
     return {
       success: true,
-      message: 'Environment template generated successfully',
-      content
+      message: "Environment template generated successfully",
+      content,
     };
   } catch (error) {
-    console.error('Failed to generate template:', error);
+    console.error("Failed to generate template:", error);
     return {
       success: false,
-      message: 'Failed to generate environment template'
+      message: "Failed to generate environment template",
     };
   }
 }

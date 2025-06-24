@@ -1,16 +1,24 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { usePathname } from 'next/navigation';
-import { BreadcrumbContextType, BreadcrumbItem } from './types';
-import { generateBreadcrumbs, getPageTitle } from './route-metadata';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import { usePathname } from "next/navigation";
+import { BreadcrumbContextType, BreadcrumbItem } from "./types";
+import { generateBreadcrumbs, getPageTitle } from "./route-metadata";
 
-const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(undefined);
+const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(
+  undefined,
+);
 
 export function useBreadcrumb() {
   const context = useContext(BreadcrumbContext);
   if (!context) {
-    throw new Error('useBreadcrumb must be used within BreadcrumbProvider');
+    throw new Error("useBreadcrumb must be used within BreadcrumbProvider");
   }
   return context;
 }
@@ -27,11 +35,11 @@ export function BreadcrumbProvider({ children }: BreadcrumbProviderProps) {
   // Generate breadcrumb items based on current path
   const items: BreadcrumbItem[] = React.useMemo(() => {
     const pathItems = generateBreadcrumbs(pathname);
-    
+
     // Mark the last item as current page
     const breadcrumbs = pathItems.map((item, index) => ({
       ...item,
-      isCurrentPage: index === pathItems.length - 1
+      isCurrentPage: index === pathItems.length - 1,
     }));
 
     // If we have a custom page title for the current page, update it
@@ -54,7 +62,7 @@ export function BreadcrumbProvider({ children }: BreadcrumbProviderProps) {
   }, [pathname]);
 
   const addCustomBreadcrumb = useCallback((item: BreadcrumbItem) => {
-    setCustomItems(prev => [...prev, item]);
+    setCustomItems((prev) => [...prev, item]);
   }, []);
 
   const clearCustomBreadcrumbs = useCallback(() => {
@@ -65,7 +73,7 @@ export function BreadcrumbProvider({ children }: BreadcrumbProviderProps) {
     items,
     setPageTitle,
     addCustomBreadcrumb,
-    clearCustomBreadcrumbs
+    clearCustomBreadcrumbs,
   };
 
   return (

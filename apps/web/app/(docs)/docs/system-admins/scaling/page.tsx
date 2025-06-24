@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function ScalingPage() {
   return (
@@ -7,5 +7,5 @@ export default function ScalingPage() {
       description="Scale systems horizontally and vertically to meet demand"
       ring="system-admins"
     />
-  )
+  );
 }

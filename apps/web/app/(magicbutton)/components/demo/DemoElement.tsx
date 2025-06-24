@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef } from 'react';
-import { useDemoContext } from '@/lib/demo/context';
-import { cn } from '@monorepo/utils';
+import React, { useEffect, useRef } from "react";
+import { useDemoContext } from "@/lib/demo/context";
+import { cn } from "@monorepo/utils";
 
 interface DemoElementProps {
   id: string;
@@ -29,11 +29,12 @@ export function DemoElement({ id, children, className }: DemoElementProps) {
 
   return React.cloneElement(child, {
     ref: elementRef,
-    'data-demo-id': id,
+    "data-demo-id": id,
     className: cn(
       child.props.className,
       className,
-      isHighlighted && 'ring-2 ring-primary ring-offset-2 transition-all duration-300'
-    )
+      isHighlighted &&
+        "ring-2 ring-primary ring-offset-2 transition-all duration-300",
+    ),
   } as any);
 }

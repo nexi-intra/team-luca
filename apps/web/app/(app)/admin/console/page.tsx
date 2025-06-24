@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { RingGate } from '@/components/features/RingGate';
-import { Terminal, Shield, AlertTriangle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { RingGate } from "@/components/features/RingGate";
+import { Terminal, Shield, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function SystemConsolePage() {
   return (
@@ -16,11 +22,12 @@ export default function SystemConsolePage() {
             <Terminal className="h-8 w-8 text-[#233862]" />
             <h1 className="text-3xl font-bold">System Console</h1>
           </div>
-          
+
           <Alert className="mb-6 border-orange-200 bg-orange-50">
             <AlertTriangle className="h-4 w-4 text-orange-600" />
             <AlertDescription className="text-orange-800">
-              <strong>Ring 1 Access Only:</strong> This area contains sensitive system controls and is restricted to super administrators.
+              <strong>Ring 1 Access Only:</strong> This area contains sensitive
+              system controls and is restricted to super administrators.
             </AlertDescription>
           </Alert>
 
@@ -44,9 +51,10 @@ export default function SystemConsolePage() {
                 <p>Active Connections: 1,234</p>
                 <p className="mt-2 text-gray-500">$ _</p>
               </div>
-              
+
               <p className="text-sm text-muted-foreground">
-                This is a demonstration of Ring 1 feature gating. Only users with Ring 1 access can view this page.
+                This is a demonstration of Ring 1 feature gating. Only users
+                with Ring 1 access can view this page.
               </p>
             </CardContent>
           </Card>

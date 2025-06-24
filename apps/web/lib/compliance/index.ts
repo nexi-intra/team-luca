@@ -9,7 +9,7 @@ export interface ComplianceConfig {
     doNotSellUrl?: string;
   };
   accessibility: {
-    wcagLevel: 'A' | 'AA' | 'AAA';
+    wcagLevel: "A" | "AA" | "AAA";
     skipLinks: boolean;
     highContrastMode: boolean;
   };
@@ -28,14 +28,14 @@ export interface ComplianceConfig {
 export const defaultComplianceConfig: ComplianceConfig = {
   gdpr: {
     enabled: true,
-    privacyPolicyUrl: '/privacy',
+    privacyPolicyUrl: "/privacy",
   },
   ccpa: {
     enabled: true,
-    doNotSellUrl: '/privacy#do-not-sell',
+    doNotSellUrl: "/privacy#do-not-sell",
   },
   accessibility: {
-    wcagLevel: 'AA',
+    wcagLevel: "AA",
     skipLinks: true,
     highContrastMode: true,
   },
@@ -46,7 +46,7 @@ export const defaultComplianceConfig: ComplianceConfig = {
     auditLogging: true,
   },
   dataResidency: {
-    allowedRegions: ['us', 'eu', 'ca'],
+    allowedRegions: ["us", "eu", "ca"],
     blockRestrictedCountries: true,
   },
 };
@@ -54,35 +54,61 @@ export const defaultComplianceConfig: ComplianceConfig = {
 // Determine user's jurisdiction based on various signals
 export function getUserJurisdiction(request: Request): string {
   // Check CloudFlare CF-IPCountry header
-  const country = request.headers.get('cf-ipcountry');
+  const country = request.headers.get("cf-ipcountry");
   if (country) return country.toLowerCase();
 
   // Check Accept-Language header
-  const language = request.headers.get('accept-language');
+  const language = request.headers.get("accept-language");
   if (language) {
-    const locale = language.split(',')[0].split('-')[1];
+    const locale = language.split(",")[0].split("-")[1];
     if (locale) return locale.toLowerCase();
   }
 
   // Default to US
-  return 'us';
+  return "us";
 }
 
 // Check if GDPR applies to user
 export function isGdprApplicable(jurisdiction: string): boolean {
   const gdprCountries = [
-    'at', 'be', 'bg', 'hr', 'cy', 'cz', 'dk', 'ee', 'fi', 'fr',
-    'de', 'gr', 'hu', 'ie', 'it', 'lv', 'lt', 'lu', 'mt', 'nl',
-    'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se', // EU countries
-    'is', 'li', 'no', // EEA countries
-    'gb', // UK has UK GDPR
+    "at",
+    "be",
+    "bg",
+    "hr",
+    "cy",
+    "cz",
+    "dk",
+    "ee",
+    "fi",
+    "fr",
+    "de",
+    "gr",
+    "hu",
+    "ie",
+    "it",
+    "lv",
+    "lt",
+    "lu",
+    "mt",
+    "nl",
+    "pl",
+    "pt",
+    "ro",
+    "sk",
+    "si",
+    "es",
+    "se", // EU countries
+    "is",
+    "li",
+    "no", // EEA countries
+    "gb", // UK has UK GDPR
   ];
   return gdprCountries.includes(jurisdiction);
 }
 
 // Check if CCPA applies to user
 export function isCcpaApplicable(jurisdiction: string): boolean {
-  return jurisdiction === 'ca' || jurisdiction === 'us-ca';
+  return jurisdiction === "ca" || jurisdiction === "us-ca";
 }
 
 // Generate privacy rights based on jurisdiction

@@ -1,24 +1,32 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { X, Search, AlertCircle, Info, AlertTriangle, Bug, Filter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { cn } from '@monorepo/utils';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  X,
+  Search,
+  AlertCircle,
+  Info,
+  AlertTriangle,
+  Bug,
+  Filter,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@monorepo/utils";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { koksmatCompanion } from '@/lib/koksmat/companion-client';
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { koksmatCompanion } from "@/lib/koksmat/companion-client";
 
 export interface LogEntry {
   id: string;
   timestamp: string;
-  level: 'verbose' | 'info' | 'warn' | 'error';
+  level: "verbose" | "info" | "warn" | "error";
   message: string;
   source?: string;
 }
@@ -29,21 +37,43 @@ interface KoksmatLogViewerProps {
 }
 
 const logLevelConfig = {
-  verbose: { icon: Bug, color: 'text-gray-500', bgColor: 'bg-gray-100 dark:bg-gray-800' },
-  info: { icon: Info, color: 'text-blue-500', bgColor: 'bg-blue-100 dark:bg-blue-900' },
-  warn: { icon: AlertTriangle, color: 'text-yellow-500', bgColor: 'bg-yellow-100 dark:bg-yellow-900' },
-  error: { icon: AlertCircle, color: 'text-red-500', bgColor: 'bg-red-100 dark:bg-red-900' },
+  verbose: {
+    icon: Bug,
+    color: "text-gray-500",
+    bgColor: "bg-gray-100 dark:bg-gray-800",
+  },
+  info: {
+    icon: Info,
+    color: "text-blue-500",
+    bgColor: "bg-blue-100 dark:bg-blue-900",
+  },
+  warn: {
+    icon: AlertTriangle,
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-100 dark:bg-yellow-900",
+  },
+  error: {
+    icon: AlertCircle,
+    color: "text-red-500",
+    bgColor: "bg-red-100 dark:bg-red-900",
+  },
 };
 
 export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
-  const [position, setPosition] = useState({ x: window.innerWidth * 0.1, y: window.innerHeight * 0.1 });
-  const [size, setSize] = useState({ width: window.innerWidth * 0.8, height: window.innerHeight * 0.8 });
+  const [position, setPosition] = useState({
+    x: window.innerWidth * 0.1,
+    y: window.innerHeight * 0.1,
+  });
+  const [size, setSize] = useState({
+    width: window.innerWidth * 0.8,
+    height: window.innerHeight * 0.8,
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [filteredLogs, setFilteredLogs] = useState<LogEntry[]>([]);
-  const [selectedLevel, setSelectedLevel] = useState<string>('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [autoScroll, setAutoScroll] = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
   const logsEndRef = useRef<HTMLDivElement>(null);
@@ -54,14 +84,26 @@ export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
 
     // Add some initial mock logs for demo
     const mockLogs: LogEntry[] = [
-      { id: '1', timestamp: new Date().toISOString(), level: 'info', message: 'Log viewer opened', source: 'log-viewer' },
-      { id: '2', timestamp: new Date().toISOString(), level: 'verbose', message: 'Subscribing to companion logs...', source: 'log-viewer' },
+      {
+        id: "1",
+        timestamp: new Date().toISOString(),
+        level: "info",
+        message: "Log viewer opened",
+        source: "log-viewer",
+      },
+      {
+        id: "2",
+        timestamp: new Date().toISOString(),
+        level: "verbose",
+        message: "Subscribing to companion logs...",
+        source: "log-viewer",
+      },
     ];
     setLogs(mockLogs);
 
     // Subscribe to real logs from companion
     const unsubscribe = koksmatCompanion.onLogEntry((log) => {
-      setLogs(prev => [...prev, log]);
+      setLogs((prev) => [...prev, log]);
     });
 
     return () => {
@@ -74,15 +116,16 @@ export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
     let filtered = logs;
 
     // Filter by level
-    if (selectedLevel !== 'all') {
-      filtered = filtered.filter(log => log.level === selectedLevel);
+    if (selectedLevel !== "all") {
+      filtered = filtered.filter((log) => log.level === selectedLevel);
     }
 
     // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(log => 
-        log.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.source?.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (log) =>
+          log.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          log.source?.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -92,12 +135,12 @@ export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
   // Auto-scroll to bottom when new logs arrive
   useEffect(() => {
     if (autoScroll && logsEndRef.current) {
-      logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      logsEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [filteredLogs, autoScroll]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.log-viewer-header')) {
+    if ((e.target as HTMLElement).closest(".log-viewer-header")) {
       setIsDragging(true);
       setDragStart({
         x: e.clientX - position.x,
@@ -120,12 +163,12 @@ export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
       setIsDragging(false);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging, dragStart]);
 
@@ -133,12 +176,12 @@ export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
 
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', { 
+    return date.toLocaleTimeString("en-US", {
       hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      fractionalSecondDigits: 3
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      fractionalSecondDigits: 3,
     });
   };
 
@@ -188,7 +231,7 @@ export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
               <SelectItem value="error">Error</SelectItem>
             </SelectContent>
           </Select>
-          
+
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -221,7 +264,10 @@ export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
       </div>
 
       {/* Logs */}
-      <div className="flex-1 overflow-auto p-4" style={{ height: 'calc(100% - 8rem)' }}>
+      <div
+        className="flex-1 overflow-auto p-4"
+        style={{ height: "calc(100% - 8rem)" }}
+      >
         {filteredLogs.length === 0 ? (
           <div className="flex h-full items-center justify-center text-muted-foreground">
             <p className="text-sm">No logs to display</p>
@@ -231,16 +277,18 @@ export function KoksmatLogViewer({ isOpen, onClose }: KoksmatLogViewerProps) {
             {filteredLogs.map((log) => {
               const config = logLevelConfig[log.level];
               const Icon = config.icon;
-              
+
               return (
                 <div
                   key={log.id}
                   className={cn(
                     "flex items-start gap-2 rounded px-2 py-1",
-                    config.bgColor
+                    config.bgColor,
                   )}
                 >
-                  <Icon className={cn("h-3 w-3 mt-0.5 shrink-0", config.color)} />
+                  <Icon
+                    className={cn("h-3 w-3 mt-0.5 shrink-0", config.color)}
+                  />
                   <span className="text-muted-foreground shrink-0">
                     {formatTimestamp(log.timestamp)}
                   </span>

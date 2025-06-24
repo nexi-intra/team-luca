@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function NetworkPage() {
   return (
@@ -7,5 +7,5 @@ export default function NetworkPage() {
       description="Design and manage network architecture, security, and connectivity"
       ring="system-admins"
     />
-  )
+  );
 }

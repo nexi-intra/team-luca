@@ -1,40 +1,49 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useAuth } from '@/lib/auth';
-import { AuthStatus } from '@/components/auth/AuthStatus';
-import { Copy, ExternalLink, Shield } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from "@/lib/auth";
+import { AuthStatus } from "@/components/auth/AuthStatus";
+import { Copy, ExternalLink, Shield } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function AuthDemoPage() {
-  const { isAuthenticated, user, signIn, signOut, error, authSource } = useAuth();
+  const { isAuthenticated, user, signIn, signOut, error, authSource } =
+    useAuth();
   const loginWithPopup = signIn; // Alias for compatibility
   const logout = signOut; // Alias for compatibility
-  const [sampleToken, setSampleToken] = useState('');
-  const [magicLink, setMagicLink] = useState('');
+  const [sampleToken, setSampleToken] = useState("");
+  const [magicLink, setMagicLink] = useState("");
 
   // Generate a sample JWT token for demo
   const generateSampleToken = () => {
-    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-    const payload = btoa(JSON.stringify({
-      sub: '12345',
-      email: 'demo@magicbutton.cloud',
-      name: 'Demo User',
-      roles: ['user', 'admin'],
-      exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
-      iat: Math.floor(Date.now() / 1000)
-    }));
-    const signature = btoa('demo-signature');
+    const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+    const payload = btoa(
+      JSON.stringify({
+        sub: "12345",
+        email: "demo@magicbutton.cloud",
+        name: "Demo User",
+        roles: ["user", "admin"],
+        exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
+        iat: Math.floor(Date.now() / 1000),
+      }),
+    );
+    const signature = btoa("demo-signature");
     const token = `${header}.${payload}.${signature}`;
     setSampleToken(token);
-    
+
     // Generate magic link
     const baseUrl = window.location.origin;
     const link = `${baseUrl}?magicauth=true&token=${token}&route=/magicbutton`;
@@ -70,12 +79,12 @@ export default function AuthDemoPage() {
               <div>
                 <p className="text-sm text-gray-600">Status:</p>
                 <p className="font-medium">
-                  {isAuthenticated ? 'Authenticated' : 'Not Authenticated'}
+                  {isAuthenticated ? "Authenticated" : "Not Authenticated"}
                 </p>
               </div>
               {isAuthenticated && <AuthStatus />}
             </div>
-            
+
             {user && (
               <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                 <div>
@@ -84,7 +93,9 @@ export default function AuthDemoPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Auth Source:</p>
-                  <p className="font-medium">{authSource?.toUpperCase() || 'CUSTOM'}</p>
+                  <p className="font-medium">
+                    {authSource?.toUpperCase() || "CUSTOM"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Email:</p>
@@ -107,7 +118,7 @@ export default function AuthDemoPage() {
           <TabsTrigger value="entraid">Entra ID</TabsTrigger>
           <TabsTrigger value="magic">Magic Auth</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="entraid">
           <Card>
             <CardHeader>
@@ -119,19 +130,17 @@ export default function AuthDemoPage() {
             <CardContent className="space-y-4">
               <Alert>
                 <AlertDescription>
-                  This uses popup authentication with Microsoft Entra ID. 
-                  User roles and metadata are extracted from the ID token.
+                  This uses popup authentication with Microsoft Entra ID. User
+                  roles and metadata are extracted from the ID token.
                 </AlertDescription>
               </Alert>
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>
-                    Error: {error.message}
-                  </AlertDescription>
+                  <AlertDescription>Error: {error.message}</AlertDescription>
                 </Alert>
               )}
               <div className="space-y-2">
-                <Button 
+                <Button
                   onClick={() => loginWithPopup()}
                   disabled={isAuthenticated}
                   className="w-full"
@@ -139,7 +148,7 @@ export default function AuthDemoPage() {
                   Sign in with Entra ID (Popup)
                 </Button>
                 {isAuthenticated && (
-                  <Button 
+                  <Button
                     onClick={() => logout()}
                     variant="outline"
                     className="w-full"
@@ -151,7 +160,7 @@ export default function AuthDemoPage() {
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="magic">
           <Card>
             <CardHeader>
@@ -163,7 +172,11 @@ export default function AuthDemoPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Generate Demo Token</Label>
-                <Button onClick={generateSampleToken} variant="outline" className="w-full">
+                <Button
+                  onClick={generateSampleToken}
+                  variant="outline"
+                  className="w-full"
+                >
                   Generate Sample JWT Token
                 </Button>
               </div>
@@ -173,9 +186,9 @@ export default function AuthDemoPage() {
                   <div className="space-y-2">
                     <Label>JWT Token</Label>
                     <div className="relative">
-                      <Input 
-                        value={sampleToken} 
-                        readOnly 
+                      <Input
+                        value={sampleToken}
+                        readOnly
                         className="pr-10 font-mono text-xs"
                       />
                       <Button
@@ -192,9 +205,9 @@ export default function AuthDemoPage() {
                   <div className="space-y-2">
                     <Label>Magic Link</Label>
                     <div className="relative">
-                      <Input 
-                        value={magicLink} 
-                        readOnly 
+                      <Input
+                        value={magicLink}
+                        readOnly
                         className="pr-20 text-xs"
                       />
                       <div className="absolute right-1 top-1 flex gap-1">
@@ -210,7 +223,7 @@ export default function AuthDemoPage() {
                           size="icon"
                           variant="ghost"
                           className="h-7 w-7"
-                          onClick={() => window.open(magicLink, '_blank')}
+                          onClick={() => window.open(magicLink, "_blank")}
                         >
                           <ExternalLink className="h-3 w-3" />
                         </Button>
@@ -220,8 +233,9 @@ export default function AuthDemoPage() {
 
                   <Alert>
                     <AlertDescription>
-                      Open the magic link in a new browser tab to test authentication. 
-                      The token contains user info and will authenticate as &quot;Demo User&quot;.
+                      Open the magic link in a new browser tab to test
+                      authentication. The token contains user info and will
+                      authenticate as &quot;Demo User&quot;.
                     </AlertDescription>
                   </Alert>
                 </>

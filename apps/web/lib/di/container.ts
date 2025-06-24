@@ -1,5 +1,5 @@
-import 'reflect-metadata';
-import { container, DependencyContainer, InjectionToken } from 'tsyringe';
+import "reflect-metadata";
+import { container, DependencyContainer, InjectionToken } from "tsyringe";
 
 export interface ServiceIdentifier<T> {
   token: InjectionToken<T>;
@@ -29,11 +29,17 @@ export class DIContainer {
     this.container.registerInstance(token, value);
   }
 
-  registerSingleton<T>(token: InjectionToken<T>, constructor: new (...args: any[]) => T): void {
+  registerSingleton<T>(
+    token: InjectionToken<T>,
+    constructor: new (...args: any[]) => T,
+  ): void {
     this.container.registerSingleton(token, constructor);
   }
 
-  registerTransient<T>(token: InjectionToken<T>, constructor: new (...args: any[]) => T): void {
+  registerTransient<T>(
+    token: InjectionToken<T>,
+    constructor: new (...args: any[]) => T,
+  ): void {
     this.container.register(token, { useClass: constructor });
   }
 
@@ -63,13 +69,13 @@ export class DIContainer {
 }
 
 export const ServiceTokens = {
-  AuthService: Symbol('AuthService'),
-  ApiClient: Symbol('ApiClient'),
-  FeatureService: Symbol('FeatureService'),
-  UserService: Symbol('UserService'),
-  Logger: Symbol('Logger'),
-  Storage: Symbol('Storage'),
-  ConfigService: Symbol('ConfigService'),
+  AuthService: Symbol("AuthService"),
+  ApiClient: Symbol("ApiClient"),
+  FeatureService: Symbol("FeatureService"),
+  UserService: Symbol("UserService"),
+  Logger: Symbol("Logger"),
+  Storage: Symbol("Storage"),
+  ConfigService: Symbol("ConfigService"),
 } as const;
 
 export interface IAuthService {

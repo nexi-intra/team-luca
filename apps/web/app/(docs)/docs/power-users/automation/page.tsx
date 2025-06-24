@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function AutomationPage() {
   return (
@@ -7,5 +7,5 @@ export default function AutomationPage() {
       description="Automate repetitive tasks and create custom automation scripts"
       ring="power-users"
     />
-  )
+  );
 }

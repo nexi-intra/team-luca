@@ -20,26 +20,31 @@ A powerful command palette system that respects feature ring access levels, prov
 ### Default Commands by Ring
 
 #### Ring 5 (Public)
+
 - Home navigation
 - Magic Button demo
 - Search
 
 #### Ring 4 (Basic User)
+
 - Profile management
 - Settings
 - Dashboard
 
 #### Ring 3 (Power User)
+
 - Analytics
 - API Documentation
 - Developer Tools
 
 #### Ring 2 (Admin)
+
 - User Management
 - System Configuration
 - Security Settings
 
 #### Ring 1 (Super Admin)
+
 - Database Administration
 - API Key Management
 - System Console
@@ -47,25 +52,25 @@ A powerful command palette system that respects feature ring access levels, prov
 ### Adding Custom Commands
 
 ```tsx
-import { useCommandPalette } from '@/lib/command/context';
-import { FileText } from 'lucide-react';
+import { useCommandPalette } from "@/lib/command/context";
+import { FileText } from "lucide-react";
 
 function MyComponent() {
   const { registerAction } = useCommandPalette();
 
   useEffect(() => {
     registerAction({
-      id: 'my-custom-action',
-      title: 'My Custom Action',
-      description: 'Does something special',
+      id: "my-custom-action",
+      title: "My Custom Action",
+      description: "Does something special",
       icon: FileText,
-      shortcut: 'cmd+shift+m',
+      shortcut: "cmd+shift+m",
       requiredRing: 3, // Only Ring 3+ users can see this
-      category: 'Custom',
+      category: "Custom",
       action: () => {
-        console.log('Custom action executed!');
+        console.log("Custom action executed!");
       },
-      keywords: ['custom', 'special']
+      keywords: ["custom", "special"],
     });
   }, [registerAction]);
 }
@@ -75,15 +80,15 @@ function MyComponent() {
 
 ```typescript
 interface CommandAction {
-  id: string;              // Unique identifier
-  title: string;           // Display name
-  description?: string;    // Optional description
-  icon?: LucideIcon;      // Optional icon
-  shortcut?: string;      // Keyboard shortcut (e.g., 'cmd+k')
-  requiredRing: number;   // Minimum ring level required
-  category?: string;      // Category for grouping
-  action: () => void;     // Function to execute
-  keywords?: string[];    // Search keywords
+  id: string; // Unique identifier
+  title: string; // Display name
+  description?: string; // Optional description
+  icon?: LucideIcon; // Optional icon
+  shortcut?: string; // Keyboard shortcut (e.g., 'cmd+k')
+  requiredRing: number; // Minimum ring level required
+  category?: string; // Category for grouping
+  action: () => void; // Function to execute
+  keywords?: string[]; // Search keywords
 }
 ```
 

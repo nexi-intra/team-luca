@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useAuth } from '@monorepo/auth';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { User, LogOut } from 'lucide-react';
+import React from "react";
+import { useAuth } from "@monorepo/auth";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { User, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { withDevOverlay } from '@/lib/dev/with-dev-overlay';
+} from "@/components/ui/dropdown-menu";
+import { withDevOverlay } from "@/lib/dev/with-dev-overlay";
 
 function AuthStatusBase() {
   const { isAuthenticated, isLoading, user, signOut, authSource } = useAuth();
@@ -28,16 +28,16 @@ function AuthStatusBase() {
 
   const getSourceBadgeVariant = () => {
     switch (authSource) {
-      case 'entraid':
-        return 'default';
-      case 'magic':
-        return 'secondary';
-      case 'sso':
-        return 'outline';
-      case 'custom':
-        return 'secondary';
+      case "entraid":
+        return "default";
+      case "magic":
+        return "secondary";
+      case "sso":
+        return "outline";
+      case "custom":
+        return "secondary";
       default:
-        return 'default';
+        return "default";
     }
   };
 
@@ -48,7 +48,7 @@ function AuthStatusBase() {
           <User className="h-4 w-4" />
           <span className="max-w-[150px] truncate">{user.name}</span>
           <Badge variant={getSourceBadgeVariant()} className="text-xs">
-            {authSource?.toUpperCase() || 'AUTH'}
+            {authSource?.toUpperCase() || "AUTH"}
           </Badge>
         </Button>
       </DropdownMenuTrigger>

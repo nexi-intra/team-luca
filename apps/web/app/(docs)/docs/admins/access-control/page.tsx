@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function AccessControlPage() {
   return (
@@ -7,5 +7,5 @@ export default function AccessControlPage() {
       description="Manage permissions, roles, and access policies across the platform"
       ring="admins"
     />
-  )
+  );
 }

@@ -1,23 +1,26 @@
-'use client';
+"use client";
 
-import { useAccessibility } from '@/lib/accessibility/context';
-import { Button } from '@/components/ui/button';
-import { Type, Minus, Plus, Eye } from 'lucide-react';
+import { useAccessibility } from "@/lib/accessibility/context";
+import { Button } from "@/components/ui/button";
+import { Type, Minus, Plus, Eye } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 
 export function AccessibilityQuickControls() {
-  const { fontSize, setFontSize, highContrast, setHighContrast } = useAccessibility();
+  const { fontSize, setFontSize, highContrast, setHighContrast } =
+    useAccessibility();
 
   return (
     <TooltipProvider>
       <div className="flex items-center gap-1">
         {/* Font size controls */}
-        <span className="text-xs text-muted-foreground mr-1 hidden sm:inline">{fontSize}px</span>
+        <span className="text-xs text-muted-foreground mr-1 hidden sm:inline">
+          {fontSize}px
+        </span>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -62,7 +65,7 @@ export function AccessibilityQuickControls() {
             <Button
               variant="ghost"
               size="icon"
-              className={`h-8 w-8 ${highContrast ? 'bg-accent' : ''}`}
+              className={`h-8 w-8 ${highContrast ? "bg-accent" : ""}`}
               onClick={() => setHighContrast(!highContrast)}
               aria-label="Toggle high contrast"
               data-active={highContrast}
@@ -71,7 +74,7 @@ export function AccessibilityQuickControls() {
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{highContrast ? 'Disable' : 'Enable'} high contrast</p>
+            <p>{highContrast ? "Disable" : "Enable"} high contrast</p>
           </TooltipContent>
         </Tooltip>
       </div>

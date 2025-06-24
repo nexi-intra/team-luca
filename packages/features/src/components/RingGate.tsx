@@ -1,6 +1,6 @@
-import React from 'react';
-import { useFeatureRing } from '../hooks/useFeatureRing';
-import { FeatureRing } from '../types';
+import React from "react";
+import { useFeatureRing } from "../hooks/useFeatureRing";
+import { FeatureRing } from "../types";
 
 /**
  * Props for RingGate component
@@ -23,9 +23,13 @@ export interface RingGateProps {
 /**
  * Component that conditionally renders content based on feature ring level
  */
-export function RingGate({ minRing, children, fallback = null }: RingGateProps) {
+export function RingGate({
+  minRing,
+  children,
+  fallback = null,
+}: RingGateProps) {
   const { currentRing } = useFeatureRing();
   const hasAccess = currentRing <= minRing;
-  
+
   return <>{hasAccess ? children : fallback}</>;
 }

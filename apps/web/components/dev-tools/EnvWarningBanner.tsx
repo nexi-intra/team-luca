@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { AlertTriangle, X } from 'lucide-react';
-import Link from 'next/link';
+import { useEffect, useState } from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, X } from "lucide-react";
+import Link from "next/link";
 
 interface EnvStatus {
   hasErrors: boolean;
@@ -19,13 +19,13 @@ export function EnvWarningBanner() {
 
   useEffect(() => {
     // Only show in development
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV !== "development") {
       setIsLoading(false);
       return;
     }
 
     // Check if already dismissed this session
-    if (sessionStorage.getItem('env-warning-dismissed') === 'true') {
+    if (sessionStorage.getItem("env-warning-dismissed") === "true") {
       setIsDismissed(true);
       setIsLoading(false);
       return;
@@ -37,14 +37,14 @@ export function EnvWarningBanner() {
 
   const checkEnvStatus = async () => {
     try {
-      const response = await fetch('/api/setup/check-env');
+      const response = await fetch("/api/setup/check-env");
       if (response.ok) {
         const data = await response.json();
-        
+
         const missingRequired = data.variables
           .filter((v: any) => v.required && !v.currentValue)
           .map((v: any) => v.key);
-          
+
         const missingOptional = data.variables
           .filter((v: any) => !v.required && !v.currentValue)
           .map((v: any) => v.key);
@@ -56,7 +56,7 @@ export function EnvWarningBanner() {
         });
       }
     } catch (error) {
-      console.error('Failed to check environment status:', error);
+      console.error("Failed to check environment status:", error);
     } finally {
       setIsLoading(false);
     }
@@ -64,12 +64,12 @@ export function EnvWarningBanner() {
 
   const handleDismiss = () => {
     setIsDismissed(true);
-    sessionStorage.setItem('env-warning-dismissed', 'true');
+    sessionStorage.setItem("env-warning-dismissed", "true");
   };
 
   // Don't render if not in development, loading, dismissed, or no errors
   if (
-    process.env.NODE_ENV !== 'development' ||
+    process.env.NODE_ENV !== "development" ||
     isLoading ||
     isDismissed ||
     !envStatus?.hasErrors
@@ -84,7 +84,9 @@ export function EnvWarningBanner() {
         <AlertTitle>Missing Environment Variables</AlertTitle>
         <AlertDescription className="space-y-2">
           <p>
-            {envStatus.missingRequired.length} required environment variable{envStatus.missingRequired.length === 1 ? ' is' : 's are'} not configured.
+            {envStatus.missingRequired.length} required environment variable
+            {envStatus.missingRequired.length === 1 ? " is" : "s are"} not
+            configured.
           </p>
           <div className="flex gap-2">
             <Link href="/setup">

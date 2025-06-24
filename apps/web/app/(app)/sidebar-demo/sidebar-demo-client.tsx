@@ -1,15 +1,21 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { useSidebar } from '@/components/ui/sidebar';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useSidebar } from "@/components/ui/sidebar";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function SidebarDemoClient() {
   const { state, toggleSidebar, width } = useSidebar();
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -37,7 +43,7 @@ export default function SidebarDemoClient() {
               onClick={toggleSidebar}
               className="gap-2"
             >
-              {state === 'expanded' ? (
+              {state === "expanded" ? (
                 <>
                   <ChevronLeft className="h-4 w-4" />
                   Collapse Sidebar
@@ -49,7 +55,7 @@ export default function SidebarDemoClient() {
                 </>
               )}
             </Button>
-            
+
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>or press</span>
               <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100">
@@ -57,8 +63,8 @@ export default function SidebarDemoClient() {
               </kbd>
             </div>
           </div>
-          
-          {state === 'expanded' && (
+
+          {state === "expanded" && (
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
                 Current width: <span className="font-mono">{width}px</span>
@@ -78,7 +84,8 @@ export default function SidebarDemoClient() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              The sidebar now renders alongside the main content instead of overlaying it.
+              The sidebar now renders alongside the main content instead of
+              overlaying it.
             </p>
           </CardContent>
         </Card>
@@ -89,7 +96,8 @@ export default function SidebarDemoClient() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Drag the sidebar edge to resize between 200px and 500px. Width is saved to cookies.
+              Drag the sidebar edge to resize between 200px and 500px. Width is
+              saved to cookies.
             </p>
           </CardContent>
         </Card>
@@ -100,7 +108,8 @@ export default function SidebarDemoClient() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Click the rail or use ⌘B to toggle between expanded and collapsed states.
+              Click the rail or use ⌘B to toggle between expanded and collapsed
+              states.
             </p>
           </CardContent>
         </Card>
@@ -111,7 +120,8 @@ export default function SidebarDemoClient() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Both collapsed state and width are saved to cookies and persist across sessions.
+              Both collapsed state and width are saved to cookies and persist
+              across sessions.
             </p>
           </CardContent>
         </Card>
@@ -122,7 +132,8 @@ export default function SidebarDemoClient() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              On mobile devices, the sidebar becomes a sheet overlay for better UX.
+              On mobile devices, the sidebar becomes a sheet overlay for better
+              UX.
             </p>
           </CardContent>
         </Card>
@@ -133,7 +144,8 @@ export default function SidebarDemoClient() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              The sidebar is protected by Ring 1 access. Users need experimental access to see it.
+              The sidebar is protected by Ring 1 access. Users need experimental
+              access to see it.
             </p>
           </CardContent>
         </Card>

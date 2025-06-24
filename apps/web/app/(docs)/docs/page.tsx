@@ -1,5 +1,5 @@
-import { Suspense } from 'react';
-import DocsClient from './docs-client';
+import { Suspense } from "react";
+import DocsClient from "./docs-client";
 
 export default function DocsPage() {
   return (

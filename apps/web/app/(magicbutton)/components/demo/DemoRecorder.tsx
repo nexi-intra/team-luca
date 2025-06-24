@@ -1,21 +1,27 @@
-'use client';
+"use client";
 
-import React, { useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Circle, Square, Download, Upload } from 'lucide-react';
-import { DemoStep, DemoScript } from '@/lib/demo/types';
-import { generateMarkdownScript } from '@/lib/demo/parser';
-import { useDemoContext } from '@/lib/demo/context';
+import React, { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Circle, Square, Download, Upload } from "lucide-react";
+import { DemoStep, DemoScript } from "@/lib/demo/types";
+import { generateMarkdownScript } from "@/lib/demo/parser";
+import { useDemoContext } from "@/lib/demo/context";
 
 export function DemoRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedSteps, setRecordedSteps] = useState<DemoStep[]>([]);
-  const [scriptTitle, setScriptTitle] = useState('');
-  const [scriptDescription, setScriptDescription] = useState('');
+  const [scriptTitle, setScriptTitle] = useState("");
+  const [scriptDescription, setScriptDescription] = useState("");
   const { loadScriptFromMarkdown } = useDemoContext();
   const observerRef = useRef<MutationObserver | null>(null);
 
@@ -24,13 +30,13 @@ export function DemoRecorder() {
     setRecordedSteps([]);
 
     // Add click listener
-    document.addEventListener('click', handleClick, true);
+    document.addEventListener("click", handleClick, true);
 
     // Add input listener
-    document.addEventListener('input', handleInput, true);
+    document.addEventListener("input", handleInput, true);
 
     // Add navigation listener
-    window.addEventListener('popstate', handleNavigation);
+    window.addEventListener("popstate", handleNavigation);
 
     // Create mutation observer for DOM changes
     observerRef.current = new MutationObserver(handleMutation);
@@ -38,7 +44,7 @@ export function DemoRecorder() {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['class', 'style']
+      attributeFilter: ["class", "style"],
     });
   };
 
@@ -46,9 +52,9 @@ export function DemoRecorder() {
     setIsRecording(false);
 
     // Remove listeners
-    document.removeEventListener('click', handleClick, true);
-    document.removeEventListener('input', handleInput, true);
-    window.removeEventListener('popstate', handleNavigation);
+    document.removeEventListener("click", handleClick, true);
+    document.removeEventListener("input", handleInput, true);
+    window.removeEventListener("popstate", handleNavigation);
 
     // Disconnect observer
     if (observerRef.current) {
@@ -59,38 +65,40 @@ export function DemoRecorder() {
 
   const handleClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-    const demoId = target.getAttribute('data-demo-id') || 
-                   target.closest('[data-demo-id]')?.getAttribute('data-demo-id');
-    
-    if (demoId && !target.closest('[data-demo-recorder]')) {
+    const demoId =
+      target.getAttribute("data-demo-id") ||
+      target.closest("[data-demo-id]")?.getAttribute("data-demo-id");
+
+    if (demoId && !target.closest("[data-demo-recorder]")) {
       const step: DemoStep = {
         id: `step-${Date.now()}`,
-        type: 'click',
+        type: "click",
         target: demoId,
-        description: `Click on ${demoId}`
+        description: `Click on ${demoId}`,
       };
-      setRecordedSteps(prev => [...prev, step]);
+      setRecordedSteps((prev) => [...prev, step]);
     }
   };
 
   const handleInput = (event: Event) => {
     const target = event.target as HTMLInputElement;
-    const demoId = target.getAttribute('data-demo-id') || 
-                   target.closest('[data-demo-id]')?.getAttribute('data-demo-id');
-    
-    if (demoId && !target.closest('[data-demo-recorder]')) {
+    const demoId =
+      target.getAttribute("data-demo-id") ||
+      target.closest("[data-demo-id]")?.getAttribute("data-demo-id");
+
+    if (demoId && !target.closest("[data-demo-recorder]")) {
       const step: DemoStep = {
         id: `step-${Date.now()}`,
-        type: 'type',
+        type: "type",
         target: demoId,
         value: target.value,
-        description: `Type "${target.value}" in ${demoId}`
+        description: `Type "${target.value}" in ${demoId}`,
       };
-      
+
       // Update last step if it's the same target
-      setRecordedSteps(prev => {
+      setRecordedSteps((prev) => {
         const last = prev[prev.length - 1];
-        if (last && last.type === 'type' && last.target === demoId) {
+        if (last && last.type === "type" && last.target === demoId) {
           return [...prev.slice(0, -1), step];
         }
         return [...prev, step];
@@ -101,11 +109,11 @@ export function DemoRecorder() {
   const handleNavigation = () => {
     const step: DemoStep = {
       id: `step-${Date.now()}`,
-      type: 'navigate',
+      type: "navigate",
       value: window.location.pathname,
-      description: `Navigate to ${window.location.pathname}`
+      description: `Navigate to ${window.location.pathname}`,
     };
-    setRecordedSteps(prev => [...prev, step]);
+    setRecordedSteps((prev) => [...prev, step]);
   };
 
   const handleMutation = (_mutations: MutationRecord[]) => {
@@ -114,23 +122,23 @@ export function DemoRecorder() {
 
   const saveScript = () => {
     const script: DemoScript = {
-      id: scriptTitle.toLowerCase().replace(/\s+/g, '-'),
+      id: scriptTitle.toLowerCase().replace(/\s+/g, "-"),
       title: scriptTitle,
       description: scriptDescription,
       steps: recordedSteps,
       metadata: {
-        author: 'Recorded',
-        version: '1.0.0',
-        tags: ['recorded']
-      }
+        author: "Recorded",
+        version: "1.0.0",
+        tags: ["recorded"],
+      },
     };
 
     const markdown = generateMarkdownScript(script);
-    
+
     // Download as file
-    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const blob = new Blob([markdown], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `${script.id}.md`;
     a.click();
@@ -139,15 +147,15 @@ export function DemoRecorder() {
 
   const loadInPlayer = () => {
     const script: DemoScript = {
-      id: scriptTitle.toLowerCase().replace(/\s+/g, '-'),
+      id: scriptTitle.toLowerCase().replace(/\s+/g, "-"),
       title: scriptTitle,
       description: scriptDescription,
       steps: recordedSteps,
       metadata: {
-        author: 'Recorded',
-        version: '1.0.0',
-        tags: ['recorded']
-      }
+        author: "Recorded",
+        version: "1.0.0",
+        tags: ["recorded"],
+      },
     };
 
     const markdown = generateMarkdownScript(script);
@@ -193,7 +201,11 @@ export function DemoRecorder() {
               Start Recording
             </Button>
           ) : (
-            <Button onClick={stopRecording} variant="destructive" className="flex-1">
+            <Button
+              onClick={stopRecording}
+              variant="destructive"
+              className="flex-1"
+            >
               <Square className="h-4 w-4 mr-2" />
               Stop Recording
             </Button>
@@ -211,22 +223,26 @@ export function DemoRecorder() {
                       {index + 1}. {step.type.toUpperCase()}
                     </span>
                     {step.target && <span className="ml-2">{step.target}</span>}
-                    {step.value && <span className="ml-2 text-muted-foreground">&quot;{step.value}&quot;</span>}
+                    {step.value && (
+                      <span className="ml-2 text-muted-foreground">
+                        &quot;{step.value}&quot;
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="flex gap-2">
-              <Button 
-                onClick={saveScript} 
+              <Button
+                onClick={saveScript}
                 variant="outline"
                 disabled={!scriptTitle}
               >
                 <Download className="h-4 w-4 mr-2" />
                 Save Script
               </Button>
-              <Button 
+              <Button
                 onClick={loadInPlayer}
                 variant="outline"
                 disabled={!scriptTitle}

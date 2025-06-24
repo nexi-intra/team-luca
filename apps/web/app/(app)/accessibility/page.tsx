@@ -1,29 +1,35 @@
-'use client';
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useBreadcrumbTitle } from '@/hooks/useBreadcrumbTitle';
-import { useAccessibility } from '@/lib/accessibility/context';
-import { 
-  Accessibility, 
-  Type, 
-  Palette, 
-  Volume2, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBreadcrumbTitle } from "@/hooks/useBreadcrumbTitle";
+import { useAccessibility } from "@/lib/accessibility/context";
+import {
+  Accessibility,
+  Type,
+  Palette,
+  Volume2,
   Eye,
   Minus,
   Plus,
-  RotateCcw
-} from 'lucide-react';
+  RotateCcw,
+} from "lucide-react";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function AccessibilityPage() {
-  useBreadcrumbTitle('Accessibility Settings');
-  
+  useBreadcrumbTitle("Accessibility Settings");
+
   const {
     fontSize,
     setFontSize,
@@ -35,11 +41,11 @@ export default function AccessibilityPage() {
     setScreenReaderOptimized,
     resetSettings,
   } = useAccessibility();
-  
+
   const increaseFontSize = () => {
     setFontSize(Math.min(fontSize + 2, 24));
   };
-  
+
   const decreaseFontSize = () => {
     setFontSize(Math.max(fontSize - 2, 12));
   };
@@ -49,16 +55,18 @@ export default function AccessibilityPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
           <Accessibility className="w-8 h-8 text-primary" />
-          <h1 className="text-3xl font-bold text-foreground">Accessibility Settings</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            Accessibility Settings
+          </h1>
         </div>
-        
+
         <Tabs defaultValue="visual" className="space-y-4">
           <TabsList>
             <TabsTrigger value="visual">Visual</TabsTrigger>
             <TabsTrigger value="interaction">Interaction</TabsTrigger>
             <TabsTrigger value="audio">Audio & Screen Readers</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="visual" className="space-y-6">
             {/* Font Size Control */}
             <Card>
@@ -73,8 +81,8 @@ export default function AccessibilityPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <Button 
-                    size="icon" 
+                  <Button
+                    size="icon"
                     variant="outline"
                     onClick={decreaseFontSize}
                     disabled={fontSize <= 12}
@@ -82,11 +90,13 @@ export default function AccessibilityPage() {
                   >
                     <Minus className="w-4 h-4" />
                   </Button>
-                  
+
                   <div className="flex-1">
                     <Slider
                       value={[fontSize]}
-                      onValueChange={([value]) => value !== undefined && setFontSize(value)}
+                      onValueChange={([value]) =>
+                        value !== undefined && setFontSize(value)
+                      }
                       min={12}
                       max={24}
                       step={1}
@@ -94,9 +104,9 @@ export default function AccessibilityPage() {
                       aria-label="Font size slider"
                     />
                   </div>
-                  
-                  <Button 
-                    size="icon" 
+
+                  <Button
+                    size="icon"
                     variant="outline"
                     onClick={increaseFontSize}
                     disabled={fontSize >= 24}
@@ -105,7 +115,7 @@ export default function AccessibilityPage() {
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
                     Current size: {fontSize}px
@@ -116,7 +126,7 @@ export default function AccessibilityPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* High Contrast Mode */}
             <Card>
               <CardHeader>
@@ -146,7 +156,7 @@ export default function AccessibilityPage() {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="interaction" className="space-y-6">
             {/* Reduce Motion */}
             <Card>
@@ -155,9 +165,7 @@ export default function AccessibilityPage() {
                   <Eye className="w-5 h-5" />
                   Motion & Animations
                 </CardTitle>
-                <CardDescription>
-                  Control animation preferences
-                </CardDescription>
+                <CardDescription>Control animation preferences</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
@@ -176,7 +184,7 @@ export default function AccessibilityPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Keyboard Navigation Info */}
             <Card>
               <CardHeader>
@@ -188,26 +196,36 @@ export default function AccessibilityPage() {
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <kbd className="px-2 py-1 text-sm bg-muted rounded">Tab</kbd>
+                    <kbd className="px-2 py-1 text-sm bg-muted rounded">
+                      Tab
+                    </kbd>
                     <span className="text-sm">Navigate between elements</span>
                   </div>
                   <div className="flex justify-between">
-                    <kbd className="px-2 py-1 text-sm bg-muted rounded">Enter</kbd>
+                    <kbd className="px-2 py-1 text-sm bg-muted rounded">
+                      Enter
+                    </kbd>
                     <span className="text-sm">Activate buttons and links</span>
                   </div>
                   <div className="flex justify-between">
-                    <kbd className="px-2 py-1 text-sm bg-muted rounded">Esc</kbd>
+                    <kbd className="px-2 py-1 text-sm bg-muted rounded">
+                      Esc
+                    </kbd>
                     <span className="text-sm">Close dialogs and menus</span>
                   </div>
                   <div className="flex justify-between">
-                    <kbd className="px-2 py-1 text-sm bg-muted rounded">Space</kbd>
-                    <span className="text-sm">Toggle checkboxes and buttons</span>
+                    <kbd className="px-2 py-1 text-sm bg-muted rounded">
+                      Space
+                    </kbd>
+                    <span className="text-sm">
+                      Toggle checkboxes and buttons
+                    </span>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="audio" className="space-y-6">
             {/* Screen Reader Optimization */}
             <Card>
@@ -223,7 +241,9 @@ export default function AccessibilityPage() {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label htmlFor="screen-reader">Screen Reader Optimization</Label>
+                    <Label htmlFor="screen-reader">
+                      Screen Reader Optimization
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Enhance compatibility with assistive technologies
                     </p>
@@ -237,7 +257,7 @@ export default function AccessibilityPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Screen Reader Tips */}
             <Card>
               <CardHeader>
@@ -248,7 +268,9 @@ export default function AccessibilityPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
-                  <li>• Use heading navigation (H key) to jump between sections</li>
+                  <li>
+                    • Use heading navigation (H key) to jump between sections
+                  </li>
                   <li>• Press B to navigate between buttons</li>
                   <li>• Use landmark navigation to find main content areas</li>
                   <li>• Tables include proper headers for context</li>
@@ -258,14 +280,10 @@ export default function AccessibilityPage() {
             </Card>
           </TabsContent>
         </Tabs>
-        
+
         {/* Reset Button */}
         <div className="mt-8 flex justify-end">
-          <Button 
-            variant="outline" 
-            onClick={resetSettings}
-            className="gap-2"
-          >
+          <Button variant="outline" onClick={resetSettings} className="gap-2">
             <RotateCcw className="w-4 h-4" />
             Reset All Settings
           </Button>

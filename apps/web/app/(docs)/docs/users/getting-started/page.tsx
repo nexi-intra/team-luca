@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function GettingStartedPage() {
   return (
@@ -7,5 +7,5 @@ export default function GettingStartedPage() {
       description="Learn how to get started with the platform as a general user. This guide will walk you through the basics of setting up your account, understanding the interface, and taking your first steps."
       ring="users"
     />
-  )
+  );
 }

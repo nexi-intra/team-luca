@@ -39,27 +39,25 @@ A comprehensive internationalization (i18n) solution with automatic language det
 The `LanguageProvider` is already integrated into the app's providers:
 
 ```tsx
-import { LanguageProvider } from '@/lib/i18n';
+import { LanguageProvider } from "@/lib/i18n";
 
-<LanguageProvider>
-  {children}
-</LanguageProvider>
+<LanguageProvider>{children}</LanguageProvider>;
 ```
 
 ### Using the Language Hook
 
 ```tsx
-import { useLanguage } from '@/lib/i18n';
+import { useLanguage } from "@/lib/i18n";
 
 function MyComponent() {
   const {
-    language,           // Current language code (e.g., 'en-US')
-    languageInfo,       // Full language information
+    language, // Current language code (e.g., 'en-US')
+    languageInfo, // Full language information
     availableLanguages, // List of all supported languages
-    setLanguage,        // Change language
-    formatNumber,       // Format numbers
-    formatDate,         // Format dates
-    formatCurrency,     // Format currency
+    setLanguage, // Change language
+    formatNumber, // Format numbers
+    formatDate, // Format dates
+    formatCurrency, // Format currency
   } = useLanguage();
 
   return (
@@ -67,7 +65,7 @@ function MyComponent() {
       <p>Current language: {languageInfo.nativeName}</p>
       <p>Number: {formatNumber(1234.56)}</p>
       <p>Date: {formatDate(new Date())}</p>
-      <p>Price: {formatCurrency(99.99, 'USD')}</p>
+      <p>Price: {formatCurrency(99.99, "USD")}</p>
     </div>
   );
 }
@@ -82,8 +80,8 @@ import { LanguageSelector } from '@/components/language-selector';
 <LanguageSelector />
 
 // Compact version
-<LanguageSelector 
-  variant="ghost" 
+<LanguageSelector
+  variant="ghost"
   size="sm"
   showName={false}
 />
@@ -95,16 +93,18 @@ import { LanguageSelector } from '@/components/language-selector';
 ### Translation Hook
 
 ```tsx
-import { useTranslation } from '@/lib/i18n';
+import { useTranslation } from "@/lib/i18n";
 
 function MyComponent() {
   const { t } = useTranslation();
 
   return (
-    <p>{t('Welcome {{name}}, you have {{count}} messages', {
-      name: 'John',
-      count: 5
-    })}</p>
+    <p>
+      {t("Welcome {{name}}, you have {{count}} messages", {
+        name: "John",
+        count: 5,
+      })}
+    </p>
   );
 }
 ```
@@ -112,17 +112,19 @@ function MyComponent() {
 ### Plural Rules
 
 ```tsx
-import { usePlural } from '@/lib/i18n';
+import { usePlural } from "@/lib/i18n";
 
 function ItemCount({ count }: { count: number }) {
   const plural = usePlural();
 
   return (
-    <p>{plural(count, {
-      zero: 'No items',
-      one: 'One item',
-      other: `${count} items`
-    })}</p>
+    <p>
+      {plural(count, {
+        zero: "No items",
+        one: "One item",
+        other: `${count} items`,
+      })}
+    </p>
   );
 }
 ```
@@ -147,37 +149,40 @@ The system uses multiple detection methods in priority order:
 ## Formatting Examples
 
 ### Numbers
+
 ```tsx
-formatNumber(1234567.89)
+formatNumber(1234567.89);
 // en-US: "1,234,567.89"
 // de-DE: "1.234.567,89"
 // fr-FR: "1 234 567,89"
 
-formatNumber(0.123, { style: 'percent' })
+formatNumber(0.123, { style: "percent" });
 // en-US: "12.3%"
 
-formatNumber(1234567, { notation: 'compact' })
+formatNumber(1234567, { notation: "compact" });
 // en-US: "1.2M"
 ```
 
 ### Dates
+
 ```tsx
-formatDate(new Date(), { dateStyle: 'full' })
+formatDate(new Date(), { dateStyle: "full" });
 // en-US: "Monday, January 15, 2024"
 // es-ES: "lunes, 15 de enero de 2024"
 
-formatDate(new Date(), { dateStyle: 'short' })
+formatDate(new Date(), { dateStyle: "short" });
 // en-US: "1/15/24"
 // de-DE: "15.01.24"
 ```
 
 ### Currency
+
 ```tsx
-formatCurrency(99.99, 'USD')
+formatCurrency(99.99, "USD");
 // en-US: "$99.99"
 // de-DE: "99,99 $"
 
-formatCurrency(99.99, 'EUR')
+formatCurrency(99.99, "EUR");
 // en-US: "€99.99"
 // de-DE: "99,99 €"
 ```

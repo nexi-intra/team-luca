@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function TroubleshootingPage() {
   return (
@@ -7,5 +7,5 @@ export default function TroubleshootingPage() {
       description="Find solutions to common issues and problems. This guide helps you diagnose and resolve typical challenges you might encounter while using the platform."
       ring="users"
     />
-  )
+  );
 }

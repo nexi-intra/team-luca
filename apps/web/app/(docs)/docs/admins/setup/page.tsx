@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function SetupPage() {
   return (
@@ -7,5 +7,5 @@ export default function SetupPage() {
       description="Complete guide for initial system setup and configuration"
       ring="admins"
     />
-  )
+  );
 }

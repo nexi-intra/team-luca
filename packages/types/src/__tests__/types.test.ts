@@ -9,7 +9,7 @@ import type {
   SessionPayload,
   IAuthProvider,
   AuthProviderConfig,
-  
+
   // API types
   ApiResponse,
   ApiError,
@@ -25,13 +25,13 @@ import type {
   FilterParams,
   SortParams,
   WebSocketMessage,
-  
+
   // Demo types
   DemoStep,
   DemoScript,
   DemoState,
   DemoContextType,
-  
+
   // UI types
   BreadcrumbItem,
   BreadcrumbContextType,
@@ -56,7 +56,7 @@ import type {
   WhitelabelContextType,
   Position,
   FocusTrapProps,
-  
+
   // Common types
   DeepPartial,
   DeepRequired,
@@ -78,68 +78,68 @@ import type {
   TreeNode,
   Metadata,
   CodedError,
-  FeatureFlag
-} from '../index';
+  FeatureFlag,
+} from "../index";
 
-describe('@monorepo/types', () => {
-  describe('Type exports', () => {
-    it('should export auth types', () => {
+describe("@monorepo/types", () => {
+  describe("Type exports", () => {
+    it("should export auth types", () => {
       // Type checking only - these tests ensure types are properly exported
-      const authSource: AuthSource = 'entraid';
+      const authSource: AuthSource = "entraid";
       const user: User = {
-        id: '1',
-        email: 'test@example.com',
-        name: 'Test User',
+        id: "1",
+        email: "test@example.com",
+        name: "Test User",
       };
       const authUser: AuthUser = {
-        id: '1',
-        email: 'test@example.com',
-        displayName: 'Test User',
-        source: 'entraid',
+        id: "1",
+        email: "test@example.com",
+        displayName: "Test User",
+        source: "entraid",
       };
       const session: AuthSession = {
         user: authUser,
-        token: 'token',
-        source: 'entraid',
+        token: "token",
+        source: "entraid",
       };
-      
-      expect(authSource).toBe('entraid');
-      expect(user.id).toBe('1');
-      expect(authUser.source).toBe('entraid');
-      expect(session.token).toBe('token');
+
+      expect(authSource).toBe("entraid");
+      expect(user.id).toBe("1");
+      expect(authUser.source).toBe("entraid");
+      expect(session.token).toBe("token");
     });
 
-    it('should export API types', () => {
+    it("should export API types", () => {
       const apiResponse: ApiResponse<{ id: number }> = {
         data: { id: 1 },
-        message: 'Success',
+        message: "Success",
       };
       const apiError: ApiError = {
-        error: 'Not found',
+        error: "Not found",
         status: 404,
       };
       const healthCheck: HealthCheckResponse = {
-        status: 'healthy',
+        status: "healthy",
         timestamp: new Date().toISOString(),
-        service: 'test',
-        requestId: '123',
+        service: "test",
+        requestId: "123",
       };
-      
+
       expect(apiResponse.data?.id).toBe(1);
       expect(apiError.status).toBe(404);
-      expect(healthCheck.status).toBe('healthy');
+      expect(healthCheck.status).toBe("healthy");
     });
 
-    it('should export demo types', () => {
+    it("should export demo types", () => {
       const demoStep: DemoStep = {
-        id: '1',
-        type: 'click',
-        target: '#button',
+        id: "1",
+        type: "click",
+        target: "#button",
       };
       const demoScript: DemoScript = {
-        id: '1',
-        title: 'Test Demo',
-        description: 'A test demo',
+        id: "1",
+        title: "Test Demo",
+        description: "A test demo",
         steps: [demoStep],
       };
       const demoState: DemoState = {
@@ -152,39 +152,39 @@ describe('@monorepo/types', () => {
         error: null,
         highlights: [],
       };
-      
-      expect(demoStep.type).toBe('click');
-      expect(demoScript.title).toBe('Test Demo');
+
+      expect(demoStep.type).toBe("click");
+      expect(demoScript.title).toBe("Test Demo");
       expect(demoState.isPlaying).toBe(false);
     });
 
-    it('should export UI types', () => {
+    it("should export UI types", () => {
       const breadcrumb: BreadcrumbItem = {
-        label: 'Home',
-        href: '/',
+        label: "Home",
+        href: "/",
       };
       const command: CommandAction = {
-        id: 'test',
-        name: 'Test Command',
-        category: 'actions',
+        id: "test",
+        name: "Test Command",
+        category: "actions",
         handler: () => {},
       };
-      const language: Language = 'en';
-      const theme: Theme = 'dark';
+      const language: Language = "en";
+      const theme: Theme = "dark";
       const cookiePrefs: CookiePreferences = {
         necessary: true,
         analytics: false,
         marketing: false,
       };
-      
-      expect(breadcrumb.label).toBe('Home');
-      expect(command.category).toBe('actions');
-      expect(language).toBe('en');
-      expect(theme).toBe('dark');
+
+      expect(breadcrumb.label).toBe("Home");
+      expect(command.category).toBe("actions");
+      expect(language).toBe("en");
+      expect(theme).toBe("dark");
       expect(cookiePrefs.necessary).toBe(true);
     });
 
-    it('should export common utility types', () => {
+    it("should export common utility types", () => {
       // Test DeepPartial
       interface TestInterface {
         a: string;
@@ -198,151 +198,183 @@ describe('@monorepo/types', () => {
           c: 42,
         },
       };
-      
+
       // Test RequireKeys
       interface OptionalInterface {
         a?: string;
         b?: number;
         c: boolean;
       }
-      const required: RequireKeys<OptionalInterface, 'a' | 'b'> = {
-        a: 'test',
+      const required: RequireKeys<OptionalInterface, "a" | "b"> = {
+        a: "test",
         b: 42,
         c: true,
       };
-      
+
       // Test common types
-      const env: Environment = 'production';
-      const method: HttpMethod = 'GET';
-      const status: Status = 'loading';
-      const order: SortOrder = 'desc';
-      
+      const env: Environment = "production";
+      const method: HttpMethod = "GET";
+      const status: Status = "loading";
+      const order: SortOrder = "desc";
+
       expect(partial.b?.c).toBe(42);
-      expect(required.a).toBe('test');
-      expect(env).toBe('production');
-      expect(method).toBe('GET');
-      expect(status).toBe('loading');
-      expect(order).toBe('desc');
+      expect(required.a).toBe("test");
+      expect(env).toBe("production");
+      expect(method).toBe("GET");
+      expect(status).toBe("loading");
+      expect(order).toBe("desc");
     });
 
-    it('should handle JsonValue types correctly', () => {
-      const primitive: JsonPrimitive = 'string';
-      const object: JsonObject = { key: 'value' };
+    it("should handle JsonValue types correctly", () => {
+      const primitive: JsonPrimitive = "string";
+      const object: JsonObject = { key: "value" };
       const array: JsonArray = [1, 2, 3];
       const mixed: JsonValue = {
-        string: 'value',
+        string: "value",
         number: 42,
         boolean: true,
         null: null,
         array: [1, 2, 3],
-        object: { nested: 'value' },
+        object: { nested: "value" },
       };
-      
-      expect(primitive).toBe('string');
-      expect(object.key).toBe('value');
+
+      expect(primitive).toBe("string");
+      expect(object.key).toBe("value");
       expect(array).toEqual([1, 2, 3]);
       expect(mixed).toBeDefined();
     });
 
-    it('should handle complex types correctly', () => {
+    it("should handle complex types correctly", () => {
       const dateRange: DateRange = {
-        start: '2024-01-01',
-        end: '2024-12-31',
+        start: "2024-01-01",
+        end: "2024-12-31",
       };
       const keyValue: KeyValue<number> = {
-        key: 'count',
+        key: "count",
         value: 42,
       };
       const option: Option<number> = {
-        label: 'Option 1',
+        label: "Option 1",
         value: 1,
       };
       const treeNode: TreeNode<{ id: string }> = {
-        id: '1',
-        label: 'Root',
-        data: { id: 'root' },
+        id: "1",
+        label: "Root",
+        data: { id: "root" },
         children: [
           {
-            id: '2',
-            label: 'Child',
-            data: { id: 'child' },
+            id: "2",
+            label: "Child",
+            data: { id: "child" },
           },
         ],
       };
-      
-      expect(dateRange.start).toBe('2024-01-01');
+
+      expect(dateRange.start).toBe("2024-01-01");
       expect(keyValue.value).toBe(42);
       expect(option.value).toBe(1);
-      expect(treeNode.children?.[0].label).toBe('Child');
+      expect(treeNode.children?.[0].label).toBe("Child");
     });
 
-    it('should handle error types correctly', () => {
+    it("should handle error types correctly", () => {
       class TestError extends Error implements CodedError {
         code: string;
         details?: any;
-        
+
         constructor(message: string, code: string, details?: any) {
           super(message);
           this.code = code;
           this.details = details;
         }
       }
-      
-      const error = new TestError('Test error', 'TEST_ERROR', { foo: 'bar' });
-      
-      expect(error.code).toBe('TEST_ERROR');
-      expect(error.details).toEqual({ foo: 'bar' });
+
+      const error = new TestError("Test error", "TEST_ERROR", { foo: "bar" });
+
+      expect(error.code).toBe("TEST_ERROR");
+      expect(error.details).toEqual({ foo: "bar" });
     });
 
-    it('should handle feature flag types', () => {
+    it("should handle feature flag types", () => {
       const flag: FeatureFlag = {
-        key: 'new-feature',
+        key: "new-feature",
         enabled: true,
-        description: 'A new feature',
+        description: "A new feature",
         rolloutPercentage: 50,
         metadata: {
-          owner: 'team-a',
-          jiraTicket: 'FEAT-123',
+          owner: "team-a",
+          jiraTicket: "FEAT-123",
         },
       };
-      
-      expect(flag.key).toBe('new-feature');
+
+      expect(flag.key).toBe("new-feature");
       expect(flag.enabled).toBe(true);
       expect(flag.rolloutPercentage).toBe(50);
-      expect(flag.metadata?.owner).toBe('team-a');
+      expect(flag.metadata?.owner).toBe("team-a");
     });
   });
 
-  describe('Type constraints', () => {
-    it('should enforce auth source constraints', () => {
-      const validSources: AuthSource[] = ['entraid', 'sso', 'supabase', 'magic', 'custom'];
-      validSources.forEach(source => {
-        expect(['entraid', 'sso', 'supabase', 'magic', 'custom']).toContain(source);
+  describe("Type constraints", () => {
+    it("should enforce auth source constraints", () => {
+      const validSources: AuthSource[] = [
+        "entraid",
+        "sso",
+        "supabase",
+        "magic",
+        "custom",
+      ];
+      validSources.forEach((source) => {
+        expect(["entraid", "sso", "supabase", "magic", "custom"]).toContain(
+          source,
+        );
       });
     });
 
-    it('should enforce command category constraints', () => {
+    it("should enforce command category constraints", () => {
       const validCategories: CommandCategory[] = [
-        'navigation', 'actions', 'search', 'help',
-        'theme', 'language', 'accessibility', 'debug'
+        "navigation",
+        "actions",
+        "search",
+        "help",
+        "theme",
+        "language",
+        "accessibility",
+        "debug",
       ];
-      validCategories.forEach(category => {
+      validCategories.forEach((category) => {
         expect([
-          'navigation', 'actions', 'search', 'help',
-          'theme', 'language', 'accessibility', 'debug'
+          "navigation",
+          "actions",
+          "search",
+          "help",
+          "theme",
+          "language",
+          "accessibility",
+          "debug",
         ]).toContain(category);
       });
     });
 
-    it('should enforce demo step type constraints', () => {
-      const validStepTypes: DemoStep['type'][] = [
-        'click', 'type', 'wait', 'navigate', 'assert',
-        'highlight', 'scroll', 'hover'
+    it("should enforce demo step type constraints", () => {
+      const validStepTypes: DemoStep["type"][] = [
+        "click",
+        "type",
+        "wait",
+        "navigate",
+        "assert",
+        "highlight",
+        "scroll",
+        "hover",
       ];
-      validStepTypes.forEach(type => {
+      validStepTypes.forEach((type) => {
         expect([
-          'click', 'type', 'wait', 'navigate', 'assert',
-          'highlight', 'scroll', 'hover'
+          "click",
+          "type",
+          "wait",
+          "navigate",
+          "assert",
+          "highlight",
+          "scroll",
+          "hover",
         ]).toContain(type);
       });
     });

@@ -1,5 +1,5 @@
-import type { Feature, FeatureCategory, IFeatureRegistry } from './types';
-import { FeatureRing } from './types';
+import type { Feature, FeatureCategory, IFeatureRegistry } from "./types";
+import { FeatureRing } from "./types";
 
 /**
  * Default feature registry implementation
@@ -28,13 +28,13 @@ export class FeatureRegistry implements IFeatureRegistry {
 
   getByCategory(category: FeatureCategory): Feature[] {
     return Array.from(this.features.values()).filter(
-      feature => feature.category === category
+      (feature) => feature.category === category,
     );
   }
 
   getByRing(ring: FeatureRing): Feature[] {
     return Array.from(this.features.values()).filter(
-      feature => feature.minRing >= ring
+      (feature) => feature.minRing >= ring,
     );
   }
 }
@@ -73,7 +73,7 @@ export function registerFeature(feature: Feature): void {
  */
 export function registerFeatures(features: Feature[]): void {
   const registry = getGlobalRegistry();
-  features.forEach(feature => registry.register(feature));
+  features.forEach((feature) => registry.register(feature));
 }
 
 /**

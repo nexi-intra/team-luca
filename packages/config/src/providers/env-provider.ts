@@ -1,10 +1,12 @@
-import { ConfigValue, ConfigSchema, EnvMapping } from '../types';
-import { BaseConfigProvider } from './base-provider';
+import { ConfigValue, ConfigSchema, EnvMapping } from "../types";
+import { BaseConfigProvider } from "./base-provider";
 
 /**
  * Configuration provider that reads from environment variables
  */
-export class EnvConfigProvider<TConfig = any> extends BaseConfigProvider<TConfig> {
+export class EnvConfigProvider<
+  TConfig = any,
+> extends BaseConfigProvider<TConfig> {
   private envMapping: EnvMapping;
 
   constructor(schema: ConfigSchema, envMapping: EnvMapping) {
@@ -16,14 +18,14 @@ export class EnvConfigProvider<TConfig = any> extends BaseConfigProvider<TConfig
   protected loadConfiguration(): TConfig {
     // Deep clone the schema to create the config
     const config = JSON.parse(JSON.stringify(this.schema)) as TConfig;
-    
+
     // Load values from environment for each section
     for (const sectionKey in this.schema) {
-      if (config && typeof config === 'object' && sectionKey in config) {
+      if (config && typeof config === "object" && sectionKey in config) {
         this.loadConfigSection((config as any)[sectionKey], sectionKey);
       }
     }
-    
+
     return config;
   }
 
@@ -31,15 +33,15 @@ export class EnvConfigProvider<TConfig = any> extends BaseConfigProvider<TConfig
     for (const key in section) {
       const path = `${prefix}.${key}`;
       const mapping = this.envMapping[path];
-      
+
       if (mapping) {
         const envValue = process.env[mapping.envVar];
-        
+
         if (envValue !== undefined) {
-          const value = mapping.transform 
+          const value = mapping.transform
             ? mapping.transform(envValue)
             : this.parseEnvValue(envValue, section[key]);
-            
+
           if (value !== undefined) {
             section[key].value = value;
           }
@@ -52,23 +54,29 @@ export class EnvConfigProvider<TConfig = any> extends BaseConfigProvider<TConfig
     }
   }
 
-  protected parseEnvValue(envValue: string, configValue: ConfigValue<any>): any {
+  protected parseEnvValue(
+    envValue: string,
+    configValue: ConfigValue<any>,
+  ): any {
     // Handle special cases based on the expected type
     if (configValue.defaultValue !== undefined) {
       const defaultType = typeof configValue.defaultValue;
-      
+
       switch (defaultType) {
-        case 'boolean':
-          return envValue.toLowerCase() === 'true' || envValue === '1';
-        
-        case 'number':
+        case "boolean":
+          return envValue.toLowerCase() === "true" || envValue === "1";
+
+        case "number":
           const num = parseFloat(envValue);
           return isNaN(num) ? undefined : num;
-        
-        case 'object':
+
+        case "object":
           if (Array.isArray(configValue.defaultValue)) {
             // Handle array values (e.g., scopes)
-            return envValue.split(',').map(s => s.trim()).filter(Boolean);
+            return envValue
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean);
           } else {
             // Handle JSON objects
             try {
@@ -77,12 +85,12 @@ export class EnvConfigProvider<TConfig = any> extends BaseConfigProvider<TConfig
               return undefined;
             }
           }
-        
+
         default:
           return envValue;
       }
     }
-    
+
     // Default to string
     return envValue;
   }
@@ -92,16 +100,16 @@ export class EnvConfigProvider<TConfig = any> extends BaseConfigProvider<TConfig
    */
   validate(): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
-    
+
     // Call base validation
     const baseResult = super.validate();
     errors.push(...baseResult.errors);
-    
+
     // Apps can extend this class and override this method for custom validation
-    
+
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 }

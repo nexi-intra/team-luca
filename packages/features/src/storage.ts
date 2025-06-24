@@ -1,6 +1,6 @@
-import type { IFeatureStorage } from './types';
-import { FeatureRing } from './types';
-import { FEATURE_RING_STORAGE_KEY, parseFeatureRing } from './constants';
+import type { IFeatureStorage } from "./types";
+import { FeatureRing } from "./types";
+import { FEATURE_RING_STORAGE_KEY, parseFeatureRing } from "./constants";
 
 /**
  * Browser localStorage implementation of feature storage
@@ -8,7 +8,7 @@ import { FEATURE_RING_STORAGE_KEY, parseFeatureRing } from './constants';
 export class LocalStorageFeatureStorage implements IFeatureStorage {
   private isAvailable(): boolean {
     try {
-      const test = '__storage_test__';
+      const test = "__storage_test__";
       window.localStorage.setItem(test, test);
       window.localStorage.removeItem(test);
       return true;
@@ -38,7 +38,7 @@ export class LocalStorageFeatureStorage implements IFeatureStorage {
     try {
       window.localStorage.setItem(FEATURE_RING_STORAGE_KEY, ring.toString());
     } catch (error) {
-      console.error('Failed to save feature ring:', error);
+      console.error("Failed to save feature ring:", error);
     }
   }
 
@@ -50,7 +50,7 @@ export class LocalStorageFeatureStorage implements IFeatureStorage {
     try {
       window.localStorage.removeItem(FEATURE_RING_STORAGE_KEY);
     } catch (error) {
-      console.error('Failed to clear feature ring:', error);
+      console.error("Failed to clear feature ring:", error);
     }
   }
 }
@@ -78,7 +78,7 @@ export class MemoryFeatureStorage implements IFeatureStorage {
  * Create the appropriate storage implementation
  */
 export function createFeatureStorage(): IFeatureStorage {
-  if (typeof window !== 'undefined' && window.localStorage) {
+  if (typeof window !== "undefined" && window.localStorage) {
     return new LocalStorageFeatureStorage();
   }
   return new MemoryFeatureStorage();

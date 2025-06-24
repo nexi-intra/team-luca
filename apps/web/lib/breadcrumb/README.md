@@ -16,13 +16,14 @@ A flexible breadcrumb navigation system that automatically generates breadcrumbs
 ### Basic Usage
 
 The breadcrumb is automatically included in layouts. It will:
+
 - Show a home icon for the root
 - Generate breadcrumbs from the URL path
 - Use predefined page titles from `route-metadata.ts`
 - Automatically hide on the home page
 
 ```tsx
-import { BreadcrumbContainer } from '@/components/navigation/BreadcrumbContainer';
+import { BreadcrumbContainer } from "@/components/navigation/BreadcrumbContainer";
 
 export default function Layout({ children }) {
   return (
@@ -40,9 +41,9 @@ export default function Layout({ children }) {
 Use the `useBreadcrumbTitle` hook to set custom titles:
 
 ```tsx
-'use client';
+"use client";
 
-import { useBreadcrumbTitle } from '@/hooks/useBreadcrumbTitle';
+import { useBreadcrumbTitle } from "@/hooks/useBreadcrumbTitle";
 
 export default function ProductPage({ product }) {
   // This will show the product name in the breadcrumb
@@ -58,10 +59,10 @@ Edit `/lib/breadcrumb/route-metadata.ts` to add page titles:
 
 ```ts
 export const routeMetadata: RouteMetadata = {
-  '/': 'Home',
-  '/products': 'Products',
-  '/products/[id]': 'Product Details', // Dynamic routes
-  '/about': 'About Us',
+  "/": "Home",
+  "/products": "Products",
+  "/products/[id]": "Product Details", // Dynamic routes
+  "/about": "About Us",
 };
 ```
 
@@ -74,8 +75,8 @@ const { addCustomBreadcrumb } = useBreadcrumb();
 
 useEffect(() => {
   addCustomBreadcrumb({
-    label: 'Category Name',
-    href: '/products/category-slug',
+    label: "Category Name",
+    href: "/products/category-slug",
   });
 }, []);
 ```
@@ -97,13 +98,17 @@ Or style the container:
 ## Examples
 
 ### Home Page
+
 - Not displayed (unless `showOnHomePage={true}`)
 
 ### /magicbutton
+
 - 🏠 > Magic Button
 
 ### /magicbutton/auth-demo
+
 - 🏠 > Magic Button > Authentication Demo
 
 ### /products/123 (with custom title)
+
 - 🏠 > Products > iPhone 15 Pro

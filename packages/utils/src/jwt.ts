@@ -1,4 +1,4 @@
-import { base64UrlDecode } from './core';
+import { base64UrlDecode } from "./core";
 
 /**
  * JWT-related utilities
@@ -10,16 +10,16 @@ import { base64UrlDecode } from './core';
  */
 export function parseJWT(token: string): any {
   try {
-    const parts = token.split('.');
+    const parts = token.split(".");
     if (parts.length !== 3) {
-      throw new Error('Invalid JWT format');
+      throw new Error("Invalid JWT format");
     }
 
     const payload = parts[1];
     const decoded = base64UrlDecode(payload);
     return JSON.parse(decoded);
   } catch (error) {
-    console.error('Failed to parse JWT:', error);
+    console.error("Failed to parse JWT:", error);
     return null;
   }
 }
@@ -37,7 +37,7 @@ export function isTokenExpired(token: string): boolean {
 
     const expirationTime = payload.exp * 1000; // Convert to milliseconds
     const currentTime = Date.now();
-    
+
     // Add a small buffer (5 seconds) to account for clock skew
     return currentTime >= expirationTime - 5000;
   } catch {
@@ -69,7 +69,10 @@ export function getTokenTimeRemaining(token: string): number {
 /**
  * Extract claims from a JWT token
  */
-export function extractClaims(token: string, claims: string[]): Record<string, any> {
+export function extractClaims(
+  token: string,
+  claims: string[],
+): Record<string, any> {
   try {
     const payload = parseJWT(token);
     if (!payload) {
@@ -77,7 +80,7 @@ export function extractClaims(token: string, claims: string[]): Record<string, a
     }
 
     const result: Record<string, any> = {};
-    claims.forEach(claim => {
+    claims.forEach((claim) => {
       if (payload[claim] !== undefined) {
         result[claim] = payload[claim];
       }
@@ -93,7 +96,7 @@ export function extractClaims(token: string, claims: string[]): Record<string, a
  * Get the token type (e.g., 'Bearer')
  */
 export function getTokenType(authHeader: string): string | null {
-  const parts = authHeader.split(' ');
+  const parts = authHeader.split(" ");
   if (parts.length === 2) {
     return parts[0];
   }
@@ -104,8 +107,8 @@ export function getTokenType(authHeader: string): string | null {
  * Extract token from Authorization header
  */
 export function extractTokenFromHeader(authHeader: string): string | null {
-  const parts = authHeader.split(' ');
-  if (parts.length === 2 && parts[0].toLowerCase() === 'bearer') {
+  const parts = authHeader.split(" ");
+  if (parts.length === 2 && parts[0].toLowerCase() === "bearer") {
     return parts[1];
   }
   return null;
@@ -114,7 +117,10 @@ export function extractTokenFromHeader(authHeader: string): string | null {
 /**
  * Format a token for Authorization header
  */
-export function formatAuthorizationHeader(token: string, type: string = 'Bearer'): string {
+export function formatAuthorizationHeader(
+  token: string,
+  type: string = "Bearer",
+): string {
   return `${type} ${token}`;
 }
 
@@ -123,16 +129,16 @@ export function formatAuthorizationHeader(token: string, type: string = 'Bearer'
  */
 export function decodeJWTHeader(token: string): any {
   try {
-    const parts = token.split('.');
+    const parts = token.split(".");
     if (parts.length !== 3) {
-      throw new Error('Invalid JWT format');
+      throw new Error("Invalid JWT format");
     }
 
     const header = parts[0];
     const decoded = base64UrlDecode(header);
     return JSON.parse(decoded);
   } catch (error) {
-    console.error('Failed to decode JWT header:', error);
+    console.error("Failed to decode JWT header:", error);
     return null;
   }
 }

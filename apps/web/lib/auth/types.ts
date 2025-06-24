@@ -1,4 +1,4 @@
-export type AuthSource = 'entraid' | 'sso' | 'supabase' | 'magic' | 'custom';
+export type AuthSource = "entraid" | "sso" | "supabase" | "magic" | "custom";
 
 export interface User {
   id: string;

@@ -1,9 +1,17 @@
-import { IConfigProvider, ConfigValue, FeatureRing, ConfigCategory, ConfigSchema } from '../types';
+import {
+  IConfigProvider,
+  ConfigValue,
+  FeatureRing,
+  ConfigCategory,
+  ConfigSchema,
+} from "../types";
 
 /**
  * Base configuration provider with common functionality
  */
-export abstract class BaseConfigProvider<TConfig = any> implements IConfigProvider<TConfig> {
+export abstract class BaseConfigProvider<TConfig = any>
+  implements IConfigProvider<TConfig>
+{
   protected config: TConfig;
   protected cache: Map<string, any> = new Map();
   protected schema: ConfigSchema;
@@ -29,22 +37,22 @@ export abstract class BaseConfigProvider<TConfig = any> implements IConfigProvid
     if (!this.config) {
       return undefined;
     }
-    
+
     if (this.cache.has(path)) {
       return this.cache.get(path);
     }
 
-    const parts = path.split('.');
+    const parts = path.split(".");
     let current: any = this.config;
-    
+
     for (const part of parts) {
-      if (current && typeof current === 'object' && part in current) {
+      if (current && typeof current === "object" && part in current) {
         current = current[part];
       } else {
         return undefined;
       }
     }
-    
+
     const value = current?.value;
     this.cache.set(path, value);
     return value;
@@ -54,18 +62,18 @@ export abstract class BaseConfigProvider<TConfig = any> implements IConfigProvid
     if (!this.config) {
       return undefined;
     }
-    
-    const parts = path.split('.');
+
+    const parts = path.split(".");
     let current: any = this.config;
-    
+
     for (const part of parts) {
-      if (current && typeof current === 'object' && part in current) {
+      if (current && typeof current === "object" && part in current) {
         current = current[part];
       } else {
         return undefined;
       }
     }
-    
+
     return current as ConfigValue<T>;
   }
 
@@ -80,17 +88,25 @@ export abstract class BaseConfigProvider<TConfig = any> implements IConfigProvid
 
   validate(): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
-    
+
     // Validate all sections in the schema
     for (const sectionKey in this.schema) {
-      if (this.config && typeof this.config === 'object' && sectionKey in this.config) {
-        this.validateSection((this.config as any)[sectionKey], sectionKey, errors);
+      if (
+        this.config &&
+        typeof this.config === "object" &&
+        sectionKey in this.config
+      ) {
+        this.validateSection(
+          (this.config as any)[sectionKey],
+          sectionKey,
+          errors,
+        );
       }
     }
-    
+
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -98,14 +114,18 @@ export abstract class BaseConfigProvider<TConfig = any> implements IConfigProvid
     for (const key in section) {
       const configValue = section[key] as ConfigValue<any>;
       const path = `${prefix}.${key}`;
-      
+
       // Check required values
       if (configValue.required && !configValue.value) {
         errors.push(`${configValue.name} (${path}) is required but not set`);
       }
-      
+
       // Run validation if value exists
-      if (configValue.value !== undefined && configValue.value !== null && configValue.validate) {
+      if (
+        configValue.value !== undefined &&
+        configValue.value !== null &&
+        configValue.validate
+      ) {
         const result = configValue.validate(configValue.value);
         if (result !== true) {
           errors.push(`${configValue.name} (${path}): ${result}`);
@@ -116,7 +136,7 @@ export abstract class BaseConfigProvider<TConfig = any> implements IConfigProvid
 
   getByFeatureRing(ring: FeatureRing): Partial<TConfig> {
     const result: any = {};
-    
+
     const filterByRing = (section: any, targetSection: any) => {
       for (const key in section) {
         if (section[key].featureRing === ring) {
@@ -124,17 +144,17 @@ export abstract class BaseConfigProvider<TConfig = any> implements IConfigProvid
         }
       }
     };
-    
+
     for (const sectionKey in this.config) {
-      if (this.config && typeof this.config === 'object') {
+      if (this.config && typeof this.config === "object") {
         const section = (this.config as any)[sectionKey];
-        if (section && typeof section === 'object') {
+        if (section && typeof section === "object") {
           result[sectionKey] = {};
           filterByRing(section, result[sectionKey]);
         }
       }
     }
-    
+
     return result;
   }
 
@@ -142,11 +162,15 @@ export abstract class BaseConfigProvider<TConfig = any> implements IConfigProvid
     // This is a simple implementation that maps category enum values to config keys
     // Apps can override this for custom behavior
     const categoryKey = category.toLowerCase();
-    
-    if (this.config && typeof this.config === 'object' && categoryKey in this.config) {
+
+    if (
+      this.config &&
+      typeof this.config === "object" &&
+      categoryKey in this.config
+    ) {
       return (this.config as any)[categoryKey];
     }
-    
+
     return {};
   }
 

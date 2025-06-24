@@ -1,12 +1,12 @@
 // Re-export types from the config package
-export { 
-  FeatureRing, 
+export {
+  FeatureRing,
   ConfigCategory,
-  type ConfigValue
-} from '@monorepo/config';
+  type ConfigValue,
+} from "@monorepo/config";
 
 // Import ConfigValue for local use
-import type { ConfigValue } from '@monorepo/config';
+import type { ConfigValue } from "@monorepo/config";
 
 /**
  * Complete application configuration schema
@@ -24,19 +24,19 @@ export interface AppConfig {
     supabaseUrl: ConfigValue<string>;
     supabaseAnonKey: ConfigValue<string>;
   };
-  
+
   // API Keys and External Services
   api: {
     anthropicKey: ConfigValue<string>;
   };
-  
+
   // General Application Settings
   general: {
     appUrl: ConfigValue<string>;
-    environment: ConfigValue<'development' | 'production' | 'test'>;
+    environment: ConfigValue<"development" | "production" | "test">;
     port: ConfigValue<number>;
   };
-  
+
   // Telemetry and Monitoring
   telemetry: {
     serviceName: ConfigValue<string>;
@@ -45,10 +45,10 @@ export interface AppConfig {
     metricsEndpoint: ConfigValue<string>;
     headers: ConfigValue<Record<string, string>>;
     samplingRate: ConfigValue<number>;
-    logLevel: ConfigValue<'VERBOSE' | 'INFO' | 'WARN' | 'ERROR' | 'NONE'>;
-    clientLogLevel: ConfigValue<'VERBOSE' | 'INFO' | 'WARN' | 'ERROR' | 'NONE'>;
+    logLevel: ConfigValue<"VERBOSE" | "INFO" | "WARN" | "ERROR" | "NONE">;
+    clientLogLevel: ConfigValue<"VERBOSE" | "INFO" | "WARN" | "ERROR" | "NONE">;
   };
-  
+
   // Feature Flags
   features: {
     enableTelemetry: ConfigValue<boolean>;
@@ -56,12 +56,12 @@ export interface AppConfig {
     enableAI: ConfigValue<boolean>;
     enableDevPanel: ConfigValue<boolean>;
   };
-  
+
   // Runtime Configuration
   runtime: {
     nextRuntime: ConfigValue<string>;
   };
-  
+
   // External Integrations
   integrations: {
     koksmatCompanionUrl: ConfigValue<string>;

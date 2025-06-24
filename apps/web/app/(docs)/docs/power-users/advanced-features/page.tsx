@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function AdvancedFeaturesPage() {
   return (
@@ -7,5 +7,5 @@ export default function AdvancedFeaturesPage() {
       description="Master advanced features and capabilities available to power users"
       ring="power-users"
     />
-  )
+  );
 }

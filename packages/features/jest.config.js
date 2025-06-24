@@ -1,14 +1,17 @@
 module.exports = {
-  preset: '../../jest.preset.js',
-  displayName: 'features',
-  testEnvironment: 'jsdom',
+  preset: "../../jest.preset.js",
+  displayName: "features",
+  testEnvironment: "jsdom",
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: '<rootDir>/tsconfig.json',
-    }],
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: "<rootDir>/tsconfig.json",
+      },
+    ],
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
-  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
+  setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup.ts"],
 };

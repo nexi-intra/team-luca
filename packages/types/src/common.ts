@@ -5,21 +5,25 @@
 /**
  * Make all properties in T optional recursively
  */
-export type DeepPartial<T> = T extends object ? {
-  [P in keyof T]?: DeepPartial<T[P]>;
-} : T;
+export type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
 
 /**
  * Make all properties in T required recursively
  */
-export type DeepRequired<T> = T extends object ? {
-  [P in keyof T]-?: DeepRequired<T[P]>;
-} : T;
+export type DeepRequired<T> = T extends object
+  ? {
+      [P in keyof T]-?: DeepRequired<T[P]>;
+    }
+  : T;
 
 /**
  * Extract the type of array elements
  */
-export type ArrayElement<ArrayType extends readonly unknown[]> = 
+export type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
 /**
@@ -30,7 +34,8 @@ export type RequireKeys<T, K extends keyof T> = T & Required<Pick<T, K>>;
 /**
  * Make specified keys optional while keeping others required
  */
-export type PartialKeys<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type PartialKeys<T, K extends keyof T> = Omit<T, K> &
+  Partial<Pick<T, K>>;
 
 /**
  * Exclude null and undefined from T
@@ -47,7 +52,9 @@ export type Record<K extends keyof any, T> = {
 /**
  * Async function type
  */
-export type AsyncFunction<T extends any[] = any[], R = any> = (...args: T) => Promise<R>;
+export type AsyncFunction<T extends any[] = any[], R = any> = (
+  ...args: T
+) => Promise<R>;
 
 /**
  * JSON-serializable types
@@ -60,22 +67,29 @@ export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
 /**
  * Environment types
  */
-export type Environment = 'development' | 'staging' | 'production' | 'test';
+export type Environment = "development" | "staging" | "production" | "test";
 
 /**
  * HTTP method types
  */
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS';
+export type HttpMethod =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "DELETE"
+  | "PATCH"
+  | "HEAD"
+  | "OPTIONS";
 
 /**
  * Status types
  */
-export type Status = 'idle' | 'loading' | 'success' | 'error';
+export type Status = "idle" | "loading" | "success" | "error";
 
 /**
  * Sort order types
  */
-export type SortOrder = 'asc' | 'desc';
+export type SortOrder = "asc" | "desc";
 
 /**
  * Date range types

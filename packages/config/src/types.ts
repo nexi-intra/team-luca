@@ -3,13 +3,13 @@
  */
 export enum FeatureRing {
   /** Internal testing only */
-  Internal = 'internal',
+  Internal = "internal",
   /** Early adopters and beta testers */
-  Beta = 'beta',
+  Beta = "beta",
   /** General availability */
-  GA = 'ga',
+  GA = "ga",
   /** Available to all users */
-  Public = 'public'
+  Public = "public",
 }
 
 /**
@@ -38,11 +38,11 @@ export interface ConfigValue<T> {
  * Configuration categories for organization
  */
 export enum ConfigCategory {
-  Authentication = 'authentication',
-  API = 'api',
-  Telemetry = 'telemetry',
-  General = 'general',
-  Features = 'features'
+  Authentication = "authentication",
+  API = "api",
+  Telemetry = "telemetry",
+  General = "general",
+  Features = "features",
 }
 
 /**
@@ -57,22 +57,22 @@ export type ConfigSchema = Record<string, Record<string, ConfigValue<any>>>;
 export interface IConfigProvider<TConfig = any> {
   /** Get a configuration value by path (e.g., 'auth.clientId') */
   get<T>(path: string): T | undefined;
-  
+
   /** Get a configuration value with its metadata */
   getWithMetadata<T>(path: string): ConfigValue<T> | undefined;
-  
+
   /** Get all configuration values */
   getAll(): TConfig;
-  
+
   /** Check if a configuration exists */
   has(path: string): boolean;
-  
+
   /** Validate all required configurations */
   validate(): { valid: boolean; errors: string[] };
-  
+
   /** Get configurations by feature ring */
   getByFeatureRing(ring: FeatureRing): Partial<TConfig>;
-  
+
   /** Get configurations by category */
   getByCategory(category: ConfigCategory): any;
 }

@@ -43,7 +43,7 @@ click "last-name"
 ```
 
 ```
-type "Smith" in "last-name"  
+type "Smith" in "last-name"
 description: Enter last name
 ```
 

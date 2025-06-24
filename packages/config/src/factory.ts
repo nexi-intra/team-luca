@@ -1,4 +1,4 @@
-import { IConfigFactory, IConfigProvider, ConfigSchema } from './types';
+import { IConfigFactory, IConfigProvider, ConfigSchema } from "./types";
 
 /**
  * Base configuration provider interface
@@ -12,11 +12,11 @@ export interface ConfigProviderConstructor<TConfig = any> {
  */
 export class ConfigFactory<TConfig = any> implements IConfigFactory<TConfig> {
   private provider: IConfigProvider<TConfig> | null = null;
-  
+
   constructor(
     private readonly schema: ConfigSchema,
     private readonly defaultProviderClass: ConfigProviderConstructor<TConfig>,
-    private readonly defaultProviderArgs?: any[]
+    private readonly defaultProviderArgs?: any[],
   ) {}
 
   /**
@@ -30,7 +30,7 @@ export class ConfigFactory<TConfig = any> implements IConfigFactory<TConfig> {
 
     this.provider = new this.defaultProviderClass(
       this.schema,
-      ...(this.defaultProviderArgs || [])
+      ...(this.defaultProviderArgs || []),
     );
 
     return this.provider;
@@ -50,7 +50,7 @@ export class ConfigFactory<TConfig = any> implements IConfigFactory<TConfig> {
 export function createConfigFactory<TConfig = any>(
   schema: ConfigSchema,
   providerClass: ConfigProviderConstructor<TConfig>,
-  providerArgs?: any[]
+  providerArgs?: any[],
 ): ConfigFactory<TConfig> {
   return new ConfigFactory(schema, providerClass, providerArgs);
 }

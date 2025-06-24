@@ -1,10 +1,10 @@
 /**
  * White-label configuration for the Magic Button Assistant template
- * 
+ *
  * This file contains all the customizable aspects of the application that can be
  * modified when forking this template. By keeping all customizations in this file,
  * it's easier to merge upstream updates while maintaining your customizations.
- * 
+ *
  * To customize:
  * 1. Fork this repository
  * 2. Modify this file with your branding and configuration
@@ -16,30 +16,30 @@ export const whitelabel = {
   // ========== BRANDING ==========
   branding: {
     // Application name - appears in headers, titles, and navigation
-    appName: 'Magic Button Assistant',
-    
+    appName: "Magic Button Assistant",
+
     // Short name - used in compact spaces
-    appNameShort: 'Magic Button',
-    
+    appNameShort: "Magic Button",
+
     // Company/Organization name
-    companyName: 'Magic Button',
-    
+    companyName: "Magic Button",
+
     // Tagline - appears on landing pages
-    tagline: 'Your intelligent AI assistant powered by Anthropic Claude',
-    
+    tagline: "Your intelligent AI assistant powered by Anthropic Claude",
+
     // Logo paths - place your logos in /public directory
     logo: {
-      light: '/magic-button-logo.svg',
-      dark: '/magic-button-logo.svg', // Can be different for dark mode
-      favicon: '/favicon.ico',
+      light: "/magic-button-logo.svg",
+      dark: "/magic-button-logo.svg", // Can be different for dark mode
+      favicon: "/favicon.ico",
     },
-    
+
     // Brand colors - used throughout the application
     colors: {
-      primary: '#233862', // Main brand color
-      primaryDark: '#1a2a4a', // Darker variant
-      primaryLight: '#2d4a7f', // Lighter variant
-      accent: '#3b82f6', // Accent color for CTAs
+      primary: "#233862", // Main brand color
+      primaryDark: "#1a2a4a", // Darker variant
+      primaryLight: "#2d4a7f", // Lighter variant
+      accent: "#3b82f6", // Accent color for CTAs
     },
   },
 
@@ -52,25 +52,25 @@ export const whitelabel = {
       github: false, // GitHub authentication (future)
       email: false, // Email/password authentication (future)
     },
-    
+
     // AI features
     ai: {
-      provider: 'anthropic' as 'anthropic' | 'openai' | 'azure-openai',
-      modelName: 'Claude 3 Opus', // Display name for the AI model
+      provider: "anthropic" as "anthropic" | "openai" | "azure-openai",
+      modelName: "Claude 3 Opus", // Display name for the AI model
     },
-    
+
     // Telemetry and monitoring
     telemetry: {
       enabled: true,
-      serviceName: 'magic-button-assistant', // Used in OTEL traces
+      serviceName: "magic-button-assistant", // Used in OTEL traces
     },
-    
+
     // Developer tools
     devTools: {
       koksmatCompanion: true, // Enable Koksmat Companion integration
       devPanel: true, // Show dev panel in development
     },
-    
+
     // Template features
     template: {
       showIntro: true, // Show template introduction on home page
@@ -82,37 +82,37 @@ export const whitelabel = {
     // Landing page content
     landing: {
       hero: {
-        title: 'Welcome to {appName}',
-        subtitle: '{tagline}',
-        ctaPrimary: 'Get Started',
-        ctaSecondary: 'Learn More',
+        title: "Welcome to {appName}",
+        subtitle: "{tagline}",
+        ctaPrimary: "Get Started",
+        ctaSecondary: "Learn More",
       },
       features: [
         {
-          title: 'AI-Powered',
-          description: 'Leverages Anthropic Claude for intelligent assistance',
-          icon: 'Zap',
+          title: "AI-Powered",
+          description: "Leverages Anthropic Claude for intelligent assistance",
+          icon: "Zap",
         },
         {
-          title: 'Secure by Design',
-          description: 'Enterprise-grade security with Azure AD integration',
-          icon: 'Shield',
+          title: "Secure by Design",
+          description: "Enterprise-grade security with Azure AD integration",
+          icon: "Shield",
         },
         {
-          title: 'Highly Scalable',
-          description: 'Built on Next.js for optimal performance',
-          icon: 'Rocket',
+          title: "Highly Scalable",
+          description: "Built on Next.js for optimal performance",
+          icon: "Rocket",
         },
       ],
     },
-    
+
     // Footer content
     footer: {
-      copyright: '© {year} {companyName}. All rights reserved.',
+      copyright: "© {year} {companyName}. All rights reserved.",
       links: [
-        { label: 'Privacy Policy', href: '/privacy' },
-        { label: 'Terms of Service', href: '/terms' },
-        { label: 'Documentation', href: '/docs' },
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "Terms of Service", href: "/terms" },
+        { label: "Documentation", href: "/docs" },
       ],
     },
   },
@@ -132,20 +132,21 @@ export const whitelabel = {
   // ========== METADATA ==========
   metadata: {
     // SEO and social media metadata
-    title: '{appName} - {tagline}',
-    description: 'An intelligent AI assistant template powered by Anthropic Claude, built with Next.js, TypeScript, and enterprise-grade security.',
-    keywords: ['AI assistant', 'Claude', 'Next.js', 'TypeScript', 'Enterprise'],
-    
+    title: "{appName} - {tagline}",
+    description:
+      "An intelligent AI assistant template powered by Anthropic Claude, built with Next.js, TypeScript, and enterprise-grade security.",
+    keywords: ["AI assistant", "Claude", "Next.js", "TypeScript", "Enterprise"],
+
     // Open Graph / Social media
     og: {
-      image: '/og-image.png', // 1200x630px recommended
-      type: 'website',
+      image: "/og-image.png", // 1200x630px recommended
+      type: "website",
     },
-    
+
     // Twitter Card
     twitter: {
-      card: 'summary_large_image',
-      creator: '@magicbutton',
+      card: "summary_large_image",
+      creator: "@magicbutton",
     },
   },
 
@@ -153,16 +154,16 @@ export const whitelabel = {
   external: {
     // Analytics (future implementation)
     analytics: {
-      googleAnalytics: '', // GA4 measurement ID
-      plausible: '', // Plausible domain
-      posthog: '', // PostHog API key
+      googleAnalytics: "", // GA4 measurement ID
+      plausible: "", // Plausible domain
+      posthog: "", // PostHog API key
     },
-    
+
     // Support and feedback
     support: {
-      email: 'support@magicbutton.cloud',
-      docs: 'https://docs.magicbutton.cloud',
-      github: 'https://github.com/magicbutton/magic-button-assistant',
+      email: "support@magicbutton.cloud",
+      docs: "https://docs.magicbutton.cloud",
+      github: "https://github.com/magicbutton/magic-button-assistant",
     },
   },
 
@@ -176,27 +177,27 @@ export const whitelabel = {
       tagline: whitelabel.branding.tagline,
       year: new Date().getFullYear().toString(),
     };
-    
+
     return template.replace(/{(\w+)}/g, (match, key) => vars[key] || match);
   },
 };
 
 // Type-safe helper to get processed content
 export function getWhitelabelContent<T extends keyof typeof whitelabel.content>(
-  section: T
-): typeof whitelabel.content[T] {
+  section: T,
+): (typeof whitelabel.content)[T] {
   const content = whitelabel.content[section];
-  
+
   // Process string templates in the content
   const processedContent = JSON.parse(
     JSON.stringify(content, (key, value) => {
-      if (typeof value === 'string') {
+      if (typeof value === "string") {
         return whitelabel.processTemplate(value);
       }
       return value;
-    })
+    }),
   );
-  
+
   return processedContent;
 }
 

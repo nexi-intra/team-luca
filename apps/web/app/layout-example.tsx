@@ -1,4 +1,4 @@
-import { BreadcrumbContainer } from '@/components/navigation/BreadcrumbContainer';
+import { BreadcrumbContainer } from "@/components/navigation/BreadcrumbContainer";
 
 export default function ExampleLayout({
   children,
@@ -18,9 +18,7 @@ export default function ExampleLayout({
       <BreadcrumbContainer />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {children}
-      </main>
+      <main className="container mx-auto px-4 py-8">{children}</main>
     </div>
   );
 }

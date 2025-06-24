@@ -1,11 +1,11 @@
-import { BaseFactory } from './base.factory';
-import { faker } from '@faker-js/faker';
+import { BaseFactory } from "./base.factory";
+import { faker } from "@faker-js/faker";
 
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'user' | 'guest';
+  role: "admin" | "user" | "guest";
   featureRing: 1 | 2 | 3 | 4;
   isActive: boolean;
   createdAt: Date;
@@ -17,7 +17,7 @@ export interface UserProfile {
   bio: string;
   avatar: string;
   preferences: {
-    theme: 'light' | 'dark';
+    theme: "light" | "dark";
     notifications: boolean;
   };
 }
@@ -28,7 +28,7 @@ export class UserFactory extends BaseFactory<User> {
       id: faker.string.uuid(),
       email: faker.internet.email(),
       name: faker.person.fullName(),
-      role: 'user',
+      role: "user",
       featureRing: 4,
       isActive: true,
       createdAt: faker.date.past(),
@@ -37,12 +37,12 @@ export class UserFactory extends BaseFactory<User> {
   }
 
   withProfile(): this {
-    return this.state('withProfile', {
+    return this.state("withProfile", {
       profile: {
         bio: faker.person.bio(),
         avatar: faker.image.avatar(),
         preferences: {
-          theme: faker.helpers.arrayElement(['light', 'dark'] as const),
+          theme: faker.helpers.arrayElement(["light", "dark"] as const),
           notifications: faker.datatype.boolean(),
         },
       },
@@ -50,20 +50,20 @@ export class UserFactory extends BaseFactory<User> {
   }
 
   admin(): this {
-    return this.state('admin', {
-      role: 'admin',
+    return this.state("admin", {
+      role: "admin",
       featureRing: 1,
     } as Partial<User>);
   }
 
   experimental(): this {
-    return this.state('experimental', {
+    return this.state("experimental", {
       featureRing: 1,
     } as Partial<User>);
   }
 
   inactive(): this {
-    return this.state('inactive', {
+    return this.state("inactive", {
       isActive: false,
     } as Partial<User>);
   }

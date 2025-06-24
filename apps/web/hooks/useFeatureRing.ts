@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useFeatureRingContext } from '@monorepo/features';
+import { useFeatureRingContext } from "@monorepo/features";
 
 export function useFeatureRing() {
   const { currentRing, setRing } = useFeatureRingContext();
-  
+
   return {
     currentRing,
     setRing,

@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function ExamplesPage() {
   return (
@@ -7,5 +7,5 @@ export default function ExamplesPage() {
       description="Sample applications and code snippets for common use cases"
       ring="developers"
     />
-  )
+  );
 }

@@ -34,6 +34,20 @@
       "@monorepo/features": ["../../packages/features/src"]
     }
   },
-  "include": ["next-env.d.ts", "jest.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "tests", "scripts", "*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"]
+  "include": [
+    "next-env.d.ts",
+    "jest.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "tests",
+    "scripts",
+    "*.test.ts",
+    "*.test.tsx",
+    "*.spec.ts",
+    "*.spec.tsx"
+  ]
 }

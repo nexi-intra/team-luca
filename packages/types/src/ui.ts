@@ -22,15 +22,15 @@ export interface RouteMetadata {
 /**
  * Command palette types
  */
-export type CommandCategory = 
-  | 'navigation' 
-  | 'actions' 
-  | 'search' 
-  | 'help' 
-  | 'theme' 
-  | 'language' 
-  | 'accessibility' 
-  | 'debug';
+export type CommandCategory =
+  | "navigation"
+  | "actions"
+  | "search"
+  | "help"
+  | "theme"
+  | "language"
+  | "accessibility"
+  | "debug";
 
 export interface CommandAction {
   id: string;
@@ -55,85 +55,85 @@ export interface CommandPaletteContextType {
 /**
  * Language and internationalization types
  */
-export type Language = 
-  | 'en' 
-  | 'es' 
-  | 'fr' 
-  | 'de' 
-  | 'it' 
-  | 'pt' 
-  | 'zh' 
-  | 'ja' 
-  | 'ko' 
-  | 'ar' 
-  | 'hi' 
-  | 'ru' 
-  | 'nl' 
-  | 'sv' 
-  | 'no' 
-  | 'da' 
-  | 'fi' 
-  | 'pl' 
-  | 'tr' 
-  | 'cs' 
-  | 'hu' 
-  | 'ro' 
-  | 'bg' 
-  | 'hr' 
-  | 'sr' 
-  | 'sk' 
-  | 'sl' 
-  | 'et' 
-  | 'lv' 
-  | 'lt' 
-  | 'is' 
-  | 'mt' 
-  | 'ga' 
-  | 'cy' 
-  | 'eu' 
-  | 'ca' 
-  | 'gl' 
-  | 'uk' 
-  | 'be' 
-  | 'kk' 
-  | 'uz' 
-  | 'ky' 
-  | 'tg' 
-  | 'mn' 
-  | 'ne' 
-  | 'si' 
-  | 'my' 
-  | 'km' 
-  | 'lo' 
-  | 'vi' 
-  | 'id' 
-  | 'ms' 
-  | 'th' 
-  | 'fil' 
-  | 'sw' 
-  | 'am' 
-  | 'ha' 
-  | 'yo' 
-  | 'ig' 
-  | 'zu' 
-  | 'xh' 
-  | 'af' 
-  | 'st' 
-  | 'tn' 
-  | 'ny';
+export type Language =
+  | "en"
+  | "es"
+  | "fr"
+  | "de"
+  | "it"
+  | "pt"
+  | "zh"
+  | "ja"
+  | "ko"
+  | "ar"
+  | "hi"
+  | "ru"
+  | "nl"
+  | "sv"
+  | "no"
+  | "da"
+  | "fi"
+  | "pl"
+  | "tr"
+  | "cs"
+  | "hu"
+  | "ro"
+  | "bg"
+  | "hr"
+  | "sr"
+  | "sk"
+  | "sl"
+  | "et"
+  | "lv"
+  | "lt"
+  | "is"
+  | "mt"
+  | "ga"
+  | "cy"
+  | "eu"
+  | "ca"
+  | "gl"
+  | "uk"
+  | "be"
+  | "kk"
+  | "uz"
+  | "ky"
+  | "tg"
+  | "mn"
+  | "ne"
+  | "si"
+  | "my"
+  | "km"
+  | "lo"
+  | "vi"
+  | "id"
+  | "ms"
+  | "th"
+  | "fil"
+  | "sw"
+  | "am"
+  | "ha"
+  | "yo"
+  | "ig"
+  | "zu"
+  | "xh"
+  | "af"
+  | "st"
+  | "tn"
+  | "ny";
 
 export interface LanguageInfo {
   code: Language;
   name: string;
   nativeName: string;
-  direction: 'ltr' | 'rtl';
+  direction: "ltr" | "rtl";
   enabled: boolean;
 }
 
 export interface LanguageDetectionResult {
   detectedLanguage: Language;
   confidence: number;
-  source: 'browser' | 'user' | 'default';
+  source: "browser" | "user" | "default";
 }
 
 export interface LanguageContextType {
@@ -160,8 +160,8 @@ export interface AccessibilityContextType {
   setReducedMotion: (value: boolean) => void;
   highContrast: boolean;
   setHighContrast: (value: boolean) => void;
-  fontSize: 'small' | 'medium' | 'large' | 'extra-large';
-  setFontSize: (size: 'small' | 'medium' | 'large' | 'extra-large') => void;
+  fontSize: "small" | "medium" | "large" | "extra-large";
+  setFontSize: (size: "small" | "medium" | "large" | "extra-large") => void;
   keyboardNavigation: boolean;
   setKeyboardNavigation: (value: boolean) => void;
   screenReaderMode: boolean;
@@ -169,14 +169,14 @@ export interface AccessibilityContextType {
 }
 
 export interface AnnounceContextType {
-  announce: (message: string, priority?: 'polite' | 'assertive') => void;
+  announce: (message: string, priority?: "polite" | "assertive") => void;
   clear: () => void;
 }
 
 /**
  * Theme types
  */
-export type Theme = 'light' | 'dark' | 'system';
+export type Theme = "light" | "dark" | "system";
 
 /**
  * Cookie consent types
@@ -203,7 +203,7 @@ export interface UserLike {
 
 export interface UserAvatarProps {
   user: UserLike;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   className?: string;
 }
 
@@ -249,7 +249,11 @@ export interface WhitelabelContextType {
 /**
  * Component positioning types
  */
-export type Position = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+export type Position =
+  | "top-left"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-right";
 
 /**
  * Focus management types

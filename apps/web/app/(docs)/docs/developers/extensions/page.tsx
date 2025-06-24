@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function ExtensionsPage() {
   return (
@@ -7,5 +7,5 @@ export default function ExtensionsPage() {
       description="Build custom extensions and plugins to extend platform functionality"
       ring="developers"
     />
-  )
+  );
 }

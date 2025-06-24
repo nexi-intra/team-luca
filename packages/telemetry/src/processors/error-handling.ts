@@ -1,15 +1,19 @@
-import { Context } from '@opentelemetry/api';
-import { SpanProcessor, ReadableSpan, Span } from '@opentelemetry/sdk-trace-base';
-import { TelemetryLogger } from '../interfaces/logger';
+import { Context } from "@opentelemetry/api";
+import {
+  SpanProcessor,
+  ReadableSpan,
+  Span,
+} from "@opentelemetry/sdk-trace-base";
+import { TelemetryLogger } from "../interfaces/logger";
 
 export class ErrorHandlingSpanProcessor implements SpanProcessor {
   private errorCount = 0;
   private lastErrorTime = 0;
   private readonly maxErrorsPerMinute = 5;
-  
+
   constructor(
     private readonly processor: SpanProcessor,
-    private readonly logger?: TelemetryLogger
+    private readonly logger?: TelemetryLogger,
   ) {}
 
   forceFlush(): Promise<void> {
@@ -20,7 +24,7 @@ export class ErrorHandlingSpanProcessor implements SpanProcessor {
     try {
       this.processor.onStart(span, parentContext);
     } catch (error) {
-      this.logError('Error in onStart', error);
+      this.logError("Error in onStart", error);
     }
   }
 
@@ -28,7 +32,7 @@ export class ErrorHandlingSpanProcessor implements SpanProcessor {
     try {
       this.processor.onEnd(span);
     } catch (error) {
-      this.logError('Error in onEnd', error);
+      this.logError("Error in onEnd", error);
     }
   }
 
@@ -40,7 +44,7 @@ export class ErrorHandlingSpanProcessor implements SpanProcessor {
     try {
       return await fn();
     } catch (error) {
-      this.logError('Error in span processor', error);
+      this.logError("Error in span processor", error);
       // Return resolved promise to prevent cascading failures
       return Promise.resolve() as any;
     }
@@ -48,29 +52,33 @@ export class ErrorHandlingSpanProcessor implements SpanProcessor {
 
   private logError(message: string, error: any): void {
     if (!this.logger) return;
-    
+
     const now = Date.now();
-    
+
     // Reset counter if more than a minute has passed
     if (now - this.lastErrorTime > 60000) {
       this.errorCount = 0;
     }
-    
+
     this.errorCount++;
     this.lastErrorTime = now;
-    
+
     // Only log first few errors per minute to avoid spam
     if (this.errorCount <= this.maxErrorsPerMinute) {
-      if (error?.code === 'ECONNREFUSED') {
+      if (error?.code === "ECONNREFUSED") {
         if (this.errorCount === 1) {
-          this.logger.warn(`OpenTelemetry collector not available at ${error.address || 'configured endpoint'}. Traces will be dropped.`);
+          this.logger.warn(
+            `OpenTelemetry collector not available at ${error.address || "configured endpoint"}. Traces will be dropped.`,
+          );
         }
       } else {
         this.logger.error(message, error);
       }
-      
+
       if (this.errorCount === this.maxErrorsPerMinute) {
-        this.logger.warn('Suppressing further telemetry errors for the next minute');
+        this.logger.warn(
+          "Suppressing further telemetry errors for the next minute",
+        );
       }
     }
   }
@@ -78,7 +86,7 @@ export class ErrorHandlingSpanProcessor implements SpanProcessor {
 
 export function createErrorHandlingProcessor(
   processor: SpanProcessor,
-  logger?: TelemetryLogger
+  logger?: TelemetryLogger,
 ): SpanProcessor {
   return new ErrorHandlingSpanProcessor(processor, logger);
 }

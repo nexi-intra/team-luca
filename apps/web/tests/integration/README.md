@@ -5,6 +5,7 @@ This directory contains integration tests for the OpenTelemetry instrumentation 
 ## Overview
 
 The integration tests verify that:
+
 - Traces are properly captured and sent to Jaeger
 - Sensitive data is masked in all traces
 - Operation keys are correctly applied for aggregation
@@ -32,16 +33,19 @@ npm run test:telemetry
 ### Manual Setup
 
 1. Start the telemetry infrastructure:
+
 ```bash
 docker-compose -f docker-compose.test.yml up -d
 ```
 
 2. Run the tests:
+
 ```bash
 npm run test:integration -- tests/integration/telemetry/telemetry.integration.test.ts
 ```
 
 3. Clean up:
+
 ```bash
 docker-compose -f docker-compose.test.yml down -v
 ```
@@ -65,7 +69,9 @@ The test setup includes:
 ## Test Structure
 
 ### `telemetry-helpers.ts`
+
 Helper utilities for:
+
 - Waiting for services to be ready
 - Querying Jaeger for traces
 - Querying Prometheus for metrics
@@ -73,7 +79,9 @@ Helper utilities for:
 - Checking sensitive data masking
 
 ### `telemetry.integration.test.ts`
+
 Integration tests covering:
+
 - Server-side trace capture
 - Client-side browser telemetry
 - Sensitive data masking
@@ -115,16 +123,19 @@ OTEL_SAMPLING_RATE=1.0
 ## Troubleshooting
 
 ### Services not starting
+
 - Check Docker is running: `docker info`
 - Check port conflicts: `lsof -i :16686`
 - View logs: `docker-compose -f docker-compose.test.yml logs`
 
 ### No traces appearing
+
 - Wait 5-10 seconds for traces to be processed
 - Check collector logs: `docker logs nextjs-template_otel-collector_1`
 - Verify endpoint configuration in environment variables
 
 ### Tests timing out
+
 - Increase timeout in test file: `test.setTimeout(120000)`
 - Check network connectivity to Docker containers
 - Ensure services are healthy before running tests

@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useAuth } from '@monorepo/auth';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { UserAvatar } from '@/components/auth/UserAvatar';
-import { Mail, Key, RefreshCw } from 'lucide-react';
+import React from "react";
+import { useAuth } from "@monorepo/auth";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { UserAvatar } from "@/components/auth/UserAvatar";
+import { Mail, Key, RefreshCw } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, isAuthenticated, refreshSession, authSource } = useAuth();
@@ -14,11 +20,12 @@ export default function ProfilePage() {
   if (!isAuthenticated || !user) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-muted-foreground">Please sign in to view your profile.</p>
+        <p className="text-muted-foreground">
+          Please sign in to view your profile.
+        </p>
       </div>
     );
   }
-
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -33,7 +40,9 @@ export default function ProfilePage() {
       <Card>
         <CardHeader>
           <CardTitle>User Information</CardTitle>
-          <CardDescription>Your account details and authentication status</CardDescription>
+          <CardDescription>
+            Your account details and authentication status
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-start gap-6">
@@ -48,12 +57,12 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Badge variant="outline">
-                  ID: {user.id}
-                </Badge>
+                <Badge variant="outline">ID: {user.id}</Badge>
                 {authSource && (
                   <Badge variant="secondary">
-                    {authSource === 'entraid' ? 'Microsoft Entra ID' : authSource.toUpperCase()}
+                    {authSource === "entraid"
+                      ? "Microsoft Entra ID"
+                      : authSource.toUpperCase()}
                   </Badge>
                 )}
               </div>
@@ -71,7 +80,9 @@ export default function ProfilePage() {
             <Key className="h-5 w-5" />
             Session Information
           </CardTitle>
-          <CardDescription>Details about your current authentication session</CardDescription>
+          <CardDescription>
+            Details about your current authentication session
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -82,13 +93,13 @@ export default function ProfilePage() {
                 <span className="font-medium">Active</span>
               </div>
             </div>
-            
+
             {/* Session expiry is not exposed in the current auth system */}
           </div>
 
           <div className="flex items-center gap-2">
-            <Button 
-              onClick={() => refreshSession()} 
+            <Button
+              onClick={() => refreshSession()}
               variant="outline"
               size="sm"
               className="gap-2"

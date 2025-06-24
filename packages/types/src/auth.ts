@@ -1,7 +1,7 @@
 /**
  * Authentication source types
  */
-export type AuthSource = 'entraid' | 'sso' | 'supabase' | 'magic' | 'custom';
+export type AuthSource = "entraid" | "sso" | "supabase" | "magic" | "custom";
 
 /**
  * Base user interface
@@ -79,7 +79,7 @@ export interface SessionPayload {
  * Authentication provider interface
  */
 export interface IAuthProvider {
-  name: 'none' | 'entraid' | 'supabase';
+  name: "none" | "entraid" | "supabase";
   initialize(): Promise<void>;
   signIn(): Promise<void>;
   signOut(): Promise<void>;
@@ -95,7 +95,7 @@ export interface IAuthProvider {
  * Authentication provider configuration
  */
 export interface AuthProviderConfig {
-  provider: 'none' | 'entraid' | 'supabase';
+  provider: "none" | "entraid" | "supabase";
   clientId?: string;
   authority?: string;
   redirectUri?: string;

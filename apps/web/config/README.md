@@ -5,7 +5,9 @@ This directory contains the white-label configuration for the application.
 ## Files
 
 ### `whitelabel.ts`
+
 The main configuration file that controls:
+
 - **Branding**: App name, logos, colors, tagline
 - **Features**: Which features are enabled (auth providers, AI settings, telemetry)
 - **Routes**: Which routes/sections are available
@@ -24,9 +26,10 @@ The main configuration file that controls:
    - Keep your customizations and merge any new configuration options
 
 3. **In Components**:
+
    ```typescript
-   import { useBranding } from '@/components/providers/WhitelabelProvider';
-   
+   import { useBranding } from "@/components/providers/WhitelabelProvider";
+
    const branding = useBranding();
    // Use branding.appName, branding.colors.primary, etc.
    ```
@@ -43,14 +46,16 @@ The main configuration file that controls:
 You can extend the configuration for different environments:
 
 ```typescript
-const isDevelopment = process.env.NODE_ENV === 'development';
-const isStaging = process.env.NEXT_PUBLIC_ENV === 'staging';
+const isDevelopment = process.env.NODE_ENV === "development";
+const isStaging = process.env.NEXT_PUBLIC_ENV === "staging";
 
 export const whitelabel = {
   branding: {
-    appName: isDevelopment ? 'Dev - My App' : 
-             isStaging ? 'Staging - My App' : 
-             'My App',
+    appName: isDevelopment
+      ? "Dev - My App"
+      : isStaging
+        ? "Staging - My App"
+        : "My App",
     // ...
   },
 };

@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function MonitoringPage() {
   return (
@@ -7,5 +7,5 @@ export default function MonitoringPage() {
       description="Set up comprehensive monitoring, alerting, and observability"
       ring="system-admins"
     />
-  )
+  );
 }

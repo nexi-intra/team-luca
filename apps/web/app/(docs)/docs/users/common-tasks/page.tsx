@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function CommonTasksPage() {
   return (
@@ -7,5 +7,5 @@ export default function CommonTasksPage() {
       description="Step-by-step guides for the most common tasks general users perform. Find quick instructions for everyday activities and workflows."
       ring="users"
     />
-  )
+  );
 }

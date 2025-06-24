@@ -77,10 +77,10 @@ pnpm --filter @monorepo/web add -D <package>
 In any app, you can import from shared packages:
 
 ```typescript
-import { logger } from '@monorepo/logger';
-import { trackOperation } from '@monorepo/telemetry';
-import { config } from '@monorepo/config';
-import type { User } from '@monorepo/types';
+import { logger } from "@monorepo/logger";
+import { trackOperation } from "@monorepo/telemetry";
+import { config } from "@monorepo/config";
+import type { User } from "@monorepo/types";
 ```
 
 ## Package Development
@@ -110,6 +110,7 @@ When creating new shared packages:
 ## Migration from Single Repo
 
 This monorepo was migrated from a single repository structure. Key changes:
+
 - Main app moved to `/apps/web`
 - Koksmat companion moved to `/apps/koksmat-companion`
 - Shared code can be extracted to `/packages/*` as needed

@@ -1,4 +1,4 @@
-import { User } from '../types';
+import { User } from "../types";
 
 /**
  * Authentication provider interface that all auth providers must implement
@@ -7,7 +7,7 @@ export interface IAuthProvider {
   /**
    * Provider name for identification
    */
-  name: 'none' | 'entraid' | 'supabase';
+  name: "none" | "entraid" | "supabase";
 
   /**
    * Initialize the auth provider
@@ -67,7 +67,7 @@ export interface IAuthProvider {
  * Configuration for auth providers
  */
 export interface AuthProviderConfig {
-  provider: 'none' | 'entraid' | 'supabase';
+  provider: "none" | "entraid" | "supabase";
   clientId?: string;
   authority?: string;
   redirectUri?: string;

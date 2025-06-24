@@ -1,11 +1,18 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import type { Feature, FeatureAccess, IFeatureStorage } from './types';
-import { FeatureRing } from './types';
-import { DEFAULT_FEATURE_RING, hasFeatureAccess } from './constants';
-import { getAllFeatures, getFeatureById } from './registry';
-import { createFeatureStorage } from './storage';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
+import type { Feature, FeatureAccess, IFeatureStorage } from "./types";
+import { FeatureRing } from "./types";
+import { DEFAULT_FEATURE_RING, hasFeatureAccess } from "./constants";
+import { getAllFeatures, getFeatureById } from "./registry";
+import { createFeatureStorage } from "./storage";
 
 /**
  * Feature ring context value
@@ -15,29 +22,31 @@ export interface FeatureRingContextValue {
    * Current feature ring level
    */
   currentRing: FeatureRing;
-  
+
   /**
    * Set the feature ring level
    */
   setRing: (ring: FeatureRing) => void;
-  
+
   /**
    * Check if a feature is accessible
    */
   hasFeatureAccess: (featureId: string) => boolean;
-  
+
   /**
    * Get detailed access info for a feature
    */
   getFeatureAccess: (featureId: string) => FeatureAccess | null;
-  
+
   /**
    * Get all accessible features
    */
   getAccessibleFeatures: () => Feature[];
 }
 
-const FeatureRingContext = createContext<FeatureRingContextValue | undefined>(undefined);
+const FeatureRingContext = createContext<FeatureRingContextValue | undefined>(
+  undefined,
+);
 
 /**
  * Feature ring provider props
@@ -69,7 +78,7 @@ export function FeatureRingProvider({
 }: FeatureRingProviderProps) {
   const storage = useMemo(
     () => customStorage || createFeatureStorage(),
-    [customStorage]
+    [customStorage],
   );
 
   const [currentRing, setCurrentRing] = useState<FeatureRing>(() => {
@@ -101,7 +110,7 @@ export function FeatureRingProvider({
       }
       return hasFeatureAccess(currentRing, feature.minRing);
     },
-    [currentRing]
+    [currentRing],
   );
 
   const getFeatureAccess = useCallback(
@@ -113,17 +122,19 @@ export function FeatureRingProvider({
 
       return {
         featureId,
-        hasAccess: feature.enabled && hasFeatureAccess(currentRing, feature.minRing),
+        hasAccess:
+          feature.enabled && hasFeatureAccess(currentRing, feature.minRing),
         currentRing,
         requiredRing: feature.minRing,
       };
     },
-    [currentRing]
+    [currentRing],
   );
 
   const getAccessibleFeatures = useCallback((): Feature[] => {
     return getAllFeatures().filter(
-      feature => feature.enabled && hasFeatureAccess(currentRing, feature.minRing)
+      (feature) =>
+        feature.enabled && hasFeatureAccess(currentRing, feature.minRing),
     );
   }, [currentRing]);
 
@@ -148,7 +159,9 @@ export function FeatureRingProvider({
 export function useFeatureRingContext(): FeatureRingContextValue {
   const context = useContext(FeatureRingContext);
   if (!context) {
-    throw new Error('useFeatureRingContext must be used within a FeatureRingProvider');
+    throw new Error(
+      "useFeatureRingContext must be used within a FeatureRingProvider",
+    );
   }
   return context;
 }

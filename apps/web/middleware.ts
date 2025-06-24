@@ -1,34 +1,36 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { SessionManager } from '@/lib/auth/session';
-import { applySecurityHeaders, generateNonce } from '@/lib/compliance/security-headers';
-import { auditLogger } from '@/lib/compliance/audit-logger';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { SessionManager } from "@/lib/auth/session";
+import {
+  applySecurityHeaders,
+  generateNonce,
+} from "@/lib/compliance/security-headers";
+import { auditLogger } from "@/lib/compliance/audit-logger";
 
 // Define protected routes that require authentication
-const protectedRoutes = [
-  '/api/protected',
-  '/dashboard',
-  '/admin',
-  '/settings',
-];
+const protectedRoutes = ["/api/protected", "/dashboard", "/admin", "/settings"];
 
 // Define public routes that don't require authentication
 const publicRoutes = [
-  '/',
-  '/api/auth/session',
-  '/api/auth/session/refresh',
-  '/api/health',
+  "/",
+  "/api/auth/session",
+  "/api/auth/session/refresh",
+  "/api/health",
 ];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   // Generate CSP nonce
   const nonce = generateNonce();
 
   // Check if the route is protected
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-  const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route),
+  );
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route),
+  );
 
   // Create response
   let response: NextResponse;
@@ -43,32 +45,32 @@ export async function middleware(request: NextRequest) {
     if (!session) {
       // Log failed access attempt
       await auditLogger.logAuthEvent(
-        'permission_denied',
+        "permission_denied",
         undefined,
         request,
-        'failure',
-        { path: pathname }
+        "failure",
+        { path: pathname },
       );
 
       // For API routes, return 401
-      if (pathname.startsWith('/api/')) {
+      if (pathname.startsWith("/api/")) {
         response = NextResponse.json(
-          { error: 'Unauthorized' },
-          { status: 401 }
+          { error: "Unauthorized" },
+          { status: 401 },
         );
       } else {
         // For pages, redirect to home
-        const url = new URL('/', request.url);
-        url.searchParams.set('from', pathname);
+        const url = new URL("/", request.url);
+        url.searchParams.set("from", pathname);
         response = NextResponse.redirect(url);
       }
     } else {
       // Add session data to request headers for server components
       const requestHeaders = new Headers(request.headers);
-      requestHeaders.set('x-user-id', session.userId);
-      requestHeaders.set('x-user-email', session.email);
-      requestHeaders.set('x-user-name', session.name);
-      requestHeaders.set('x-nonce', nonce);
+      requestHeaders.set("x-user-id", session.userId);
+      requestHeaders.set("x-user-email", session.email);
+      requestHeaders.set("x-user-name", session.name);
+      requestHeaders.set("x-nonce", nonce);
 
       response = NextResponse.next({
         request: {
@@ -95,6 +97,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public files (public directory)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

@@ -1,18 +1,30 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext } from 'react';
-import { whitelabel, WhitelabelConfig, getWhitelabelContent } from '@/config/whitelabel';
+import React, { createContext, useContext } from "react";
+import {
+  whitelabel,
+  WhitelabelConfig,
+  getWhitelabelContent,
+} from "@/config/whitelabel";
 
 interface WhitelabelContextType {
   config: WhitelabelConfig;
   getContent: typeof getWhitelabelContent;
 }
 
-const WhitelabelContext = createContext<WhitelabelContextType | undefined>(undefined);
+const WhitelabelContext = createContext<WhitelabelContextType | undefined>(
+  undefined,
+);
 
-export function WhitelabelProvider({ children }: { children: React.ReactNode }) {
+export function WhitelabelProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <WhitelabelContext.Provider value={{ config: whitelabel, getContent: getWhitelabelContent }}>
+    <WhitelabelContext.Provider
+      value={{ config: whitelabel, getContent: getWhitelabelContent }}
+    >
       {children}
     </WhitelabelContext.Provider>
   );
@@ -21,7 +33,7 @@ export function WhitelabelProvider({ children }: { children: React.ReactNode }) 
 export function useWhitelabel() {
   const context = useContext(WhitelabelContext);
   if (!context) {
-    throw new Error('useWhitelabel must be used within a WhitelabelProvider');
+    throw new Error("useWhitelabel must be used within a WhitelabelProvider");
   }
   return context;
 }

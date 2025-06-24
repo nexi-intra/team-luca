@@ -1,15 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface DevComponentOverlayProps {
   componentName: string;
   isVisible: boolean;
 }
 
-export function DevComponentOverlay({ componentName, isVisible }: DevComponentOverlayProps) {
+export function DevComponentOverlay({
+  componentName,
+  isVisible,
+}: DevComponentOverlayProps) {
   const pathname = usePathname();
   const [showRoute, setShowRoute] = useState(false);
   const [routeTimeout, setRouteTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -33,7 +36,7 @@ export function DevComponentOverlay({ componentName, isVisible }: DevComponentOv
     };
   }, [isVisible, routeTimeout]);
 
-  if (process.env.NODE_ENV !== 'development') return null;
+  if (process.env.NODE_ENV !== "development") return null;
 
   return (
     <>
@@ -46,7 +49,7 @@ export function DevComponentOverlay({ componentName, isVisible }: DevComponentOv
             transition={{ duration: 0.2 }}
             className="absolute top-0 left-0 z-50 bg-black text-white px-3 py-1.5 text-sm font-mono rounded-br-md pointer-events-none"
             style={{
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
             }}
           >
             {componentName}
@@ -66,7 +69,7 @@ export function DevComponentOverlay({ componentName, isVisible }: DevComponentOv
             <div
               className="bg-black text-white px-8 py-4 rounded-lg font-mono text-5xl font-bold"
               style={{
-                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+                boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
               }}
             >
               {pathname}

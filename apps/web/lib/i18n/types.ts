@@ -1,10 +1,20 @@
-export type Language = 'en-US' | 'es-ES' | 'fr-FR' | 'de-DE' | 'it-IT' | 'pt-BR' | 'ja-JP' | 'ko-KR' | 'zh-CN' | 'zh-TW';
+export type Language =
+  | "en-US"
+  | "es-ES"
+  | "fr-FR"
+  | "de-DE"
+  | "it-IT"
+  | "pt-BR"
+  | "ja-JP"
+  | "ko-KR"
+  | "zh-CN"
+  | "zh-TW";
 
 export interface LanguageInfo {
   code: Language;
   name: string;
   nativeName: string;
-  dir: 'ltr' | 'rtl';
+  dir: "ltr" | "rtl";
   dateFormat: string;
   numberFormat: {
     decimal: string;
@@ -16,7 +26,7 @@ export interface LanguageInfo {
 export interface LanguageDetectionResult {
   detectedLanguage: Language;
   confidence: number;
-  source: 'browser' | 'system' | 'geoip' | 'user' | 'default';
+  source: "browser" | "system" | "geoip" | "user" | "default";
 }
 
 export interface LanguageContextType {

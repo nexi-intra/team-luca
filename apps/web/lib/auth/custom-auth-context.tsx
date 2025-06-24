@@ -1,14 +1,21 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
+import { useRouter } from "next/navigation";
 import {
   AuthContextType,
   AuthSession,
   AuthUser,
   AuthConfig,
-  StoredAuthData
-} from './custom-auth-types';
+  StoredAuthData,
+} from "./custom-auth-types";
 import {
   saveAuthToStorage,
   getAuthFromStorage,
@@ -17,19 +24,19 @@ import {
   listenForAuthMessage,
   generateState,
   generatePKCE,
-  isTokenExpired
-} from './custom-auth-utils';
-import { AuthLogger } from './logger';
+  isTokenExpired,
+} from "./custom-auth-utils";
+import { AuthLogger } from "./logger";
 
 // Create logger instance
-const logger = new AuthLogger('Auth Context');
+const logger = new AuthLogger("Auth Context");
 
 const CustomAuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useCustomAuth = () => {
   const context = useContext(CustomAuthContext);
   if (!context) {
-    throw new Error('useCustomAuth must be used within a CustomAuthProvider');
+    throw new Error("useCustomAuth must be used within a CustomAuthProvider");
   }
   return context;
 };
@@ -39,7 +46,10 @@ interface CustomAuthProviderProps {
   config: AuthConfig;
 }
 
-export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children, config }) => {
+export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({
+  children,
+  config,
+}) => {
   const router = useRouter();
   const [session, setSession] = useState<AuthSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,11 +65,14 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
           const storedAuth = getAuthFromStorage();
           if (storedAuth) {
             // Check if token is still valid
-            if (storedAuth.user.accessToken && !isTokenExpired(storedAuth.user.accessToken)) {
+            if (
+              storedAuth.user.accessToken &&
+              !isTokenExpired(storedAuth.user.accessToken)
+            ) {
               setSession({
                 user: storedAuth.user,
                 isAuthenticated: true,
-                isLoading: false
+                isLoading: false,
               });
             } else if (storedAuth.refreshToken) {
               // Try to refresh the session
@@ -68,7 +81,7 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
           }
         }
       } catch (err) {
-        logger.error('Error initializing auth:', err);
+        logger.error("Error initializing auth:", err);
         setError(err as Error);
       } finally {
         setIsLoading(false);
@@ -83,7 +96,7 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
   useEffect(() => {
     if (config.silentAuth?.enabled && session?.isAuthenticated) {
       const interval = config.silentAuth.checkInterval || 5 * 60 * 1000; // 5 minutes default
-      
+
       silentAuthIntervalRef.current = setInterval(() => {
         checkAndRefreshSession();
       }, interval);
@@ -104,197 +117,225 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
       try {
         await refreshSession();
       } catch (err) {
-        logger.warn('Silent refresh failed:', err);
+        logger.warn("Silent refresh failed:", err);
         // Don't logout on silent refresh failure, let user continue
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  const refreshSessionWithToken = useCallback(async (refreshToken: string) => {
-    try {
-      // This would call your backend to refresh the token
-      const response = await fetch('/api/auth/refresh', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken })
-      });
+  const refreshSessionWithToken = useCallback(
+    async (refreshToken: string) => {
+      try {
+        // This would call your backend to refresh the token
+        const response = await fetch("/api/auth/refresh", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to refresh session');
+        if (!response.ok) {
+          throw new Error("Failed to refresh session");
+        }
+
+        const data = await response.json();
+        logger.info("Token response data:", {
+          ...data,
+          accessToken: data.accessToken ? "***" : undefined,
+          refreshToken: data.refreshToken ? "***" : undefined,
+        });
+
+        const user: AuthUser = {
+          ...data.user,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          expiresAt: data.expiresAt,
+        };
+
+        logger.info("Created user object:", {
+          ...user,
+          accessToken: "***",
+          refreshToken: "***",
+        });
+
+        setSession({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+
+        if (config.persistence?.enabled) {
+          saveAuthToStorage(user, data.expiresAt, data.refreshToken);
+        }
+      } catch (err) {
+        logger.error("Token refresh failed:", err);
+        throw err;
       }
+    },
+    [config.persistence?.enabled],
+  );
 
-      const data = await response.json();
-      logger.info('Token response data:', { ...data, accessToken: data.accessToken ? '***' : undefined, refreshToken: data.refreshToken ? '***' : undefined });
-      
-      const user: AuthUser = {
-        ...data.user,
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
-        expiresAt: data.expiresAt
-      };
-      
-      logger.info('Created user object:', { ...user, accessToken: '***', refreshToken: '***' });
+  const login = useCallback(
+    async (hint?: string) => {
+      setIsLoading(true);
+      setError(null);
 
-      setSession({
-        user,
-        isAuthenticated: true,
-        isLoading: false
-      });
+      try {
+        const state = generateState();
+        const { codeVerifier, codeChallenge } = await generatePKCE();
 
-      if (config.persistence?.enabled) {
-        saveAuthToStorage(user, data.expiresAt, data.refreshToken);
+        // Store state and verifier for later verification
+        sessionStorage.setItem("auth-state", state);
+        sessionStorage.setItem("auth-verifier", codeVerifier);
+
+        const params = new URLSearchParams({
+          client_id: config.clientId,
+          redirect_uri: config.redirectUri,
+          response_type: "code",
+          scope: config.scopes.join(" "),
+          state,
+          code_challenge: codeChallenge,
+          code_challenge_method: "S256",
+          ...(hint && { login_hint: hint }),
+        });
+
+        // Redirect to auth provider
+        window.location.href = `${config.authority}/oauth2/v2.0/authorize?${params}`;
+      } catch (err) {
+        setError(err as Error);
+        setIsLoading(false);
       }
-    } catch (err) {
-      logger.error('Token refresh failed:', err);
-      throw err;
-    }
-  }, [config.persistence?.enabled]);
+    },
+    [config],
+  );
 
-  const login = useCallback(async (hint?: string) => {
-    setIsLoading(true);
-    setError(null);
+  const loginWithPopup = useCallback(
+    async (hint?: string) => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const state = generateState();
-      const { codeVerifier, codeChallenge } = await generatePKCE();
+      try {
+        const state = generateState();
+        const { codeVerifier, codeChallenge } = await generatePKCE();
 
-      // Store state and verifier for later verification
-      sessionStorage.setItem('auth-state', state);
-      sessionStorage.setItem('auth-verifier', codeVerifier);
+        // Store state and verifier for later verification
+        sessionStorage.setItem("auth-state", state);
+        sessionStorage.setItem("auth-verifier", codeVerifier);
 
-      const params = new URLSearchParams({
-        client_id: config.clientId,
-        redirect_uri: config.redirectUri,
-        response_type: 'code',
-        scope: config.scopes.join(' '),
-        state,
-        code_challenge: codeChallenge,
-        code_challenge_method: 'S256',
-        ...(hint && { login_hint: hint })
-      });
+        const params = new URLSearchParams({
+          client_id: config.clientId,
+          redirect_uri: config.redirectUri,
+          response_type: "code",
+          scope: config.scopes.join(" "),
+          state,
+          code_challenge: codeChallenge,
+          code_challenge_method: "S256",
+          display: "popup",
+          ...(hint && { login_hint: hint }),
+        });
 
-      // Redirect to auth provider
-      window.location.href = `${config.authority}/oauth2/v2.0/authorize?${params}`;
-    } catch (err) {
-      setError(err as Error);
-      setIsLoading(false);
-    }
-  }, [config]);
+        const authUrl = `${config.authority}/oauth2/v2.0/authorize?${params}`;
+        authWindowRef.current = openAuthPopup(
+          authUrl,
+          config.popup?.width,
+          config.popup?.height,
+        );
 
-  const loginWithPopup = useCallback(async (hint?: string) => {
-    setIsLoading(true);
-    setError(null);
+        if (!authWindowRef.current) {
+          throw new Error("Failed to open authentication popup");
+        }
 
-    try {
-      const state = generateState();
-      const { codeVerifier, codeChallenge } = await generatePKCE();
+        // Listen for auth completion message
+        const authData = await listenForAuthMessage();
 
-      // Store state and verifier for later verification
-      sessionStorage.setItem('auth-state', state);
-      sessionStorage.setItem('auth-verifier', codeVerifier);
-
-      const params = new URLSearchParams({
-        client_id: config.clientId,
-        redirect_uri: config.redirectUri,
-        response_type: 'code',
-        scope: config.scopes.join(' '),
-        state,
-        code_challenge: codeChallenge,
-        code_challenge_method: 'S256',
-        display: 'popup',
-        ...(hint && { login_hint: hint })
-      });
-
-      const authUrl = `${config.authority}/oauth2/v2.0/authorize?${params}`;
-      authWindowRef.current = openAuthPopup(
-        authUrl,
-        config.popup?.width,
-        config.popup?.height
-      );
-
-      if (!authWindowRef.current) {
-        throw new Error('Failed to open authentication popup');
+        // Exchange code for tokens
+        await handleAuthCallback(authData.code, authData.state);
+      } catch (err) {
+        setError(err as Error);
+        setIsLoading(false);
+      } finally {
+        if (authWindowRef.current && !authWindowRef.current.closed) {
+          authWindowRef.current.close();
+        }
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [config],
+  );
 
-      // Listen for auth completion message
-      const authData = await listenForAuthMessage();
-      
-      // Exchange code for tokens
-      await handleAuthCallback(authData.code, authData.state);
-    } catch (err) {
-      setError(err as Error);
-      setIsLoading(false);
-    } finally {
-      if (authWindowRef.current && !authWindowRef.current.closed) {
-        authWindowRef.current.close();
+  const handleAuthCallback = useCallback(
+    async (code: string, state: string) => {
+      try {
+        // Verify state
+        const savedState = sessionStorage.getItem("auth-state");
+        if (state !== savedState) {
+          throw new Error("Invalid state parameter");
+        }
+
+        const codeVerifier = sessionStorage.getItem("auth-verifier");
+        if (!codeVerifier) {
+          throw new Error("Code verifier not found");
+        }
+
+        // Exchange code for tokens
+        const response = await fetch("/api/auth/token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code,
+            codeVerifier,
+            redirectUri: config.redirectUri,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to exchange code for tokens");
+        }
+
+        const data = await response.json();
+        logger.info("Token response data:", {
+          ...data,
+          accessToken: data.accessToken ? "***" : undefined,
+          refreshToken: data.refreshToken ? "***" : undefined,
+        });
+
+        const user: AuthUser = {
+          ...data.user,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          expiresAt: data.expiresAt,
+        };
+
+        logger.info("Created user object:", {
+          ...user,
+          accessToken: "***",
+          refreshToken: "***",
+        });
+
+        setSession({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+
+        if (config.persistence?.enabled) {
+          saveAuthToStorage(user, data.expiresAt, data.refreshToken);
+        }
+
+        // Clean up
+        sessionStorage.removeItem("auth-state");
+        sessionStorage.removeItem("auth-verifier");
+
+        // Important: Set loading to false after successful auth
+        setIsLoading(false);
+      } catch (err) {
+        setError(err as Error);
+        setIsLoading(false);
+        throw err;
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config]);
-
-  const handleAuthCallback = useCallback(async (code: string, state: string) => {
-    try {
-      // Verify state
-      const savedState = sessionStorage.getItem('auth-state');
-      if (state !== savedState) {
-        throw new Error('Invalid state parameter');
-      }
-
-      const codeVerifier = sessionStorage.getItem('auth-verifier');
-      if (!codeVerifier) {
-        throw new Error('Code verifier not found');
-      }
-
-      // Exchange code for tokens
-      const response = await fetch('/api/auth/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code,
-          codeVerifier,
-          redirectUri: config.redirectUri
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to exchange code for tokens');
-      }
-
-      const data = await response.json();
-      logger.info('Token response data:', { ...data, accessToken: data.accessToken ? '***' : undefined, refreshToken: data.refreshToken ? '***' : undefined });
-      
-      const user: AuthUser = {
-        ...data.user,
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
-        expiresAt: data.expiresAt
-      };
-      
-      logger.info('Created user object:', { ...user, accessToken: '***', refreshToken: '***' });
-
-      setSession({
-        user,
-        isAuthenticated: true,
-        isLoading: false
-      });
-
-      if (config.persistence?.enabled) {
-        saveAuthToStorage(user, data.expiresAt, data.refreshToken);
-      }
-
-      // Clean up
-      sessionStorage.removeItem('auth-state');
-      sessionStorage.removeItem('auth-verifier');
-      
-      // Important: Set loading to false after successful auth
-      setIsLoading(false);
-    } catch (err) {
-      setError(err as Error);
-      setIsLoading(false);
-      throw err;
-    }
-  }, [config.persistence?.enabled, config.redirectUri]);
+    },
+    [config.persistence?.enabled, config.redirectUri],
+  );
 
   const logout = useCallback(async () => {
     setIsLoading(true);
@@ -302,11 +343,11 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
     try {
       // Call logout endpoint
       if (session?.user.accessToken) {
-        await fetch('/api/auth/logout', {
-          method: 'POST',
+        await fetch("/api/auth/logout", {
+          method: "POST",
           headers: {
-            'Authorization': `Bearer ${session.user.accessToken}`
-          }
+            Authorization: `Bearer ${session.user.accessToken}`,
+          },
         });
       }
 
@@ -317,12 +358,12 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
       // Redirect to logout URL
       const params = new URLSearchParams({
         client_id: config.clientId,
-        logout_uri: config.postLogoutRedirectUri
+        logout_uri: config.postLogoutRedirectUri,
       });
 
       window.location.href = `${config.authority}/oauth2/v2.0/logout?${params}`;
     } catch (err) {
-      logger.error('Logout error:', err);
+      logger.error("Logout error:", err);
       // Still clear local state even if logout request fails
       setSession(null);
       clearAuthFromStorage();
@@ -333,7 +374,7 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
 
   const refreshSession = useCallback(async () => {
     if (!session?.user.refreshToken) {
-      throw new Error('No refresh token available');
+      throw new Error("No refresh token available");
     }
 
     await refreshSessionWithToken(session.user.refreshToken);
@@ -344,25 +385,25 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
   useEffect(() => {
     const handleCallback = async () => {
       const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      const state = params.get('state');
-      const error = params.get('error');
+      const code = params.get("code");
+      const state = params.get("state");
+      const error = params.get("error");
 
       if (error) {
-        setError(new Error(params.get('error_description') || error));
+        setError(new Error(params.get("error_description") || error));
         setIsLoading(false);
-        router.replace('/');
+        router.replace("/");
         return;
       }
 
       if (code && state) {
         try {
           await handleAuthCallback(code, state);
-          router.replace('/');
+          router.replace("/");
         } catch (err) {
-          logger.error('Auth callback error:', err);
+          logger.error("Auth callback error:", err);
           setIsLoading(false);
-          router.replace('/');
+          router.replace("/");
         }
       }
     };
@@ -380,7 +421,7 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({ children
     isAuthenticated: session?.isAuthenticated || false,
     isLoading,
     user: session?.user || null,
-    error
+    error,
   };
 
   return (

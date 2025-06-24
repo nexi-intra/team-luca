@@ -1,6 +1,6 @@
-import { test as base, expect, Page } from '@playwright/test';
-import { DIContainer, ServiceTokens } from '@/lib/di/container';
-import { factories } from '@/tests/factories';
+import { test as base, expect, Page } from "@playwright/test";
+import { DIContainer, ServiceTokens } from "@/lib/di/container";
+import { factories } from "@/tests/factories";
 
 interface TestFixtures {
   testUser: Awaited<ReturnType<typeof factories.user.create>>;
@@ -11,9 +11,9 @@ interface TestFixtures {
 export const test = base.extend<TestFixtures>({
   testUser: async ({}, use) => {
     const user = await factories.user.create({
-      email: 'test@example.com',
-      name: 'Test User',
-      role: 'user',
+      email: "test@example.com",
+      name: "Test User",
+      role: "user",
       featureRing: 4,
     });
     await use(user);
@@ -21,10 +21,10 @@ export const test = base.extend<TestFixtures>({
 
   authenticatedPage: async ({ page, testUser }, use) => {
     await page.addInitScript((user: any) => {
-      localStorage.setItem('test-user', JSON.stringify(user));
-      localStorage.setItem('feature-ring', user.featureRing.toString());
+      localStorage.setItem("test-user", JSON.stringify(user));
+      localStorage.setItem("feature-ring", user.featureRing.toString());
     }, testUser);
-    
+
     await use(page);
   },
 

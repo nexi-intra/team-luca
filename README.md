@@ -5,7 +5,7 @@ This is a monorepo template for creating Magic Button AI Assistants.
 ## Structure
 
 - `/apps/web` - Main Next.js web application
-- `/apps/koksmat-companion` - Developer automation server  
+- `/apps/koksmat-companion` - Developer automation server
 - `/packages/*` - Shared packages
 
 ## Quick Start

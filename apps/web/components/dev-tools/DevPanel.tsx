@@ -25,16 +25,16 @@ import {
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import html2canvas from "html2canvas";
-import { cn } from '@monorepo/utils';
-import { useFeatureRingContext } from '@monorepo/features';
-import { getRingName, FEATURE_RINGS } from '@monorepo/features';
-import type { FeatureRing } from '@monorepo/features';
-import { createLogger } from '@monorepo/logger';
+import { cn } from "@monorepo/utils";
+import { useFeatureRingContext } from "@monorepo/features";
+import { getRingName, FEATURE_RINGS } from "@monorepo/features";
+import type { FeatureRing } from "@monorepo/features";
+import { createLogger } from "@monorepo/logger";
 import { KoksmatCompanionStatus } from "./KoksmatCompanionStatus";
 import { withDevOverlay } from "@/lib/dev/with-dev-overlay";
 import { EnvWarningBanner } from "./EnvWarningBanner";
 
-const logger = createLogger('DevPanel');
+const logger = createLogger("DevPanel");
 
 interface Position {
   x: number;
@@ -56,10 +56,10 @@ function DevPanelBase() {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<Position>(() => {
     // Start at center of screen for animation
-    if (typeof window !== 'undefined') {
-      return { 
-        x: window.innerWidth / 2 - 24, 
-        y: window.innerHeight / 2 - 24 
+    if (typeof window !== "undefined") {
+      return {
+        x: window.innerWidth / 2 - 24,
+        y: window.innerHeight / 2 - 24,
       };
     }
     return { x: 20, y: 20 };
@@ -69,14 +69,15 @@ function DevPanelBase() {
   const [isHovered, setIsHovered] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState("en");
   const [showResetDialog, setShowResetDialog] = useState(false);
-  const [panelPosition, setPanelPosition] = useState<'left' | 'right'>('left');
+  const [panelPosition, setPanelPosition] = useState<"left" | "right">("left");
   const [isSignaling, setIsSignaling] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const { theme, setTheme } = useTheme();
-  
+
   // Feature ring context
-  const { currentRing: userRing, setRing: setUserRing } = useFeatureRingContext();
-  
+  const { currentRing: userRing, setRing: setUserRing } =
+    useFeatureRingContext();
+
   const router = useRouter();
   const dragRef = useRef<HTMLDivElement>(null);
   const dragStartPos = useRef<Position>({ x: 0, y: 0 });
@@ -84,28 +85,28 @@ function DevPanelBase() {
 
   const handleRingChange = (value: string) => {
     const newRing = parseInt(value) as FeatureRing;
-    logger.info('Changing ring from', userRing, 'to', newRing);
+    logger.info("Changing ring from", userRing, "to", newRing);
     setUserRing(newRing);
-    
+
     // Force a small delay to see the change
     setTimeout(() => {
-      logger.verbose('Ring after change:', userRing);
+      logger.verbose("Ring after change:", userRing);
     }, 100);
   };
 
   // Debug current ring
   useEffect(() => {
-    logger.verbose('Current user ring:', userRing);
+    logger.verbose("Current user ring:", userRing);
   }, [userRing]);
 
   // Initial load animation
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     // Get saved position or default
-    const saved = localStorage.getItem('devPanelPosition');
+    const saved = localStorage.getItem("devPanelPosition");
     let finalPosition = { x: 20, y: 20 };
-    
+
     if (saved) {
       try {
         finalPosition = JSON.parse(saved);
@@ -136,16 +137,22 @@ function DevPanelBase() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging) return;
-      const newX = Math.max(0, Math.min(window.innerWidth - 48, e.clientX - dragStartPos.current.x));
-      const newY = Math.max(0, Math.min(window.innerHeight - 48, e.clientY - dragStartPos.current.y));
+      const newX = Math.max(
+        0,
+        Math.min(window.innerWidth - 48, e.clientX - dragStartPos.current.x),
+      );
+      const newY = Math.max(
+        0,
+        Math.min(window.innerHeight - 48, e.clientY - dragStartPos.current.y),
+      );
       setPosition({ x: newX, y: newY });
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
       // Save position to localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('devPanelPosition', JSON.stringify(position));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("devPanelPosition", JSON.stringify(position));
       }
     };
 
@@ -166,12 +173,12 @@ function DevPanelBase() {
       const iconRect = dragRef.current.getBoundingClientRect();
       const panelWidth = 288; // w-72 = 18rem = 288px
       const windowWidth = window.innerWidth;
-      
+
       // If icon is too close to right edge, show panel on left
       if (iconRect.right + panelWidth > windowWidth - 20) {
-        setPanelPosition('right');
+        setPanelPosition("right");
       } else {
-        setPanelPosition('left');
+        setPanelPosition("left");
       }
     }
   }, [isOpen, position]);
@@ -180,14 +187,14 @@ function DevPanelBase() {
   useEffect(() => {
     const handleResize = () => {
       // Ensure icon stays within viewport on resize
-      setPosition(prev => ({
+      setPosition((prev) => ({
         x: Math.min(prev.x, window.innerWidth - 48),
-        y: Math.min(prev.y, window.innerHeight - 48)
+        y: Math.min(prev.y, window.innerHeight - 48),
       }));
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Handle Control + Option to signal location
@@ -206,20 +213,19 @@ function DevPanelBase() {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
   // Only show in development
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV !== "development") {
     return null;
   }
-
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!dragRef.current) return;
@@ -240,26 +246,26 @@ function DevPanelBase() {
 
   const handleReset = () => {
     // Save dev panel position before clearing
-    const savedPosition = localStorage.getItem('devPanelPosition');
-    
+    const savedPosition = localStorage.getItem("devPanelPosition");
+
     // Clear cookies
     document.cookie.split(";").forEach((c) => {
       document.cookie = c
         .replace(/^ +/, "")
         .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
-    
+
     // Clear local storage
     localStorage.clear();
-    
+
     // Clear session storage
     sessionStorage.clear();
-    
+
     // Restore dev panel position
     if (savedPosition) {
-      localStorage.setItem('devPanelPosition', savedPosition);
+      localStorage.setItem("devPanelPosition", savedPosition);
     }
-    
+
     // Reload the page
     router.refresh();
     window.location.reload();
@@ -274,7 +280,7 @@ function DevPanelBase() {
         windowWidth: document.documentElement.scrollWidth,
         windowHeight: document.documentElement.scrollHeight,
       });
-      
+
       // Convert to blob and download
       canvas.toBlob((blob) => {
         if (blob) {
@@ -299,7 +305,7 @@ function DevPanelBase() {
       ref={dragRef}
       className={cn(
         "fixed z-[9999] select-none",
-        isInitialLoad && "transition-all duration-1000 ease-out"
+        isInitialLoad && "transition-all duration-1000 ease-out",
       )}
       style={{ left: `${position.x}px`, top: `${position.y}px` }}
     >
@@ -315,9 +321,15 @@ function DevPanelBase() {
       {isSignaling && (
         <>
           <div className="absolute inset-0 h-12 w-12 animate-ping rounded-full bg-blue-500 opacity-75" />
-          <div className="absolute inset-0 h-12 w-12 animate-ping rounded-full bg-blue-500 opacity-50" style={{ animationDelay: '0.5s' }} />
-          <div className="absolute inset-0 h-12 w-12 animate-ping rounded-full bg-blue-500 opacity-25" style={{ animationDelay: '1s' }} />
-          
+          <div
+            className="absolute inset-0 h-12 w-12 animate-ping rounded-full bg-blue-500 opacity-50"
+            style={{ animationDelay: "0.5s" }}
+          />
+          <div
+            className="absolute inset-0 h-12 w-12 animate-ping rounded-full bg-blue-500 opacity-25"
+            style={{ animationDelay: "1s" }}
+          />
+
           {/* Location tooltip */}
           <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-100 px-3 py-1 text-xs text-white dark:text-gray-900 shadow-lg">
             <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-gray-900 dark:bg-gray-100" />
@@ -325,14 +337,18 @@ function DevPanelBase() {
           </div>
         </>
       )}
-      
+
       {/* Draggable Icon */}
       <button
         className={cn(
           "relative h-12 w-12 cursor-move rounded-full bg-white p-2 shadow-lg transition-all duration-200",
-          isInitialLoad ? "opacity-100 scale-125" : (isHovered || isOpen ? "opacity-100" : "opacity-20"),
+          isInitialLoad
+            ? "opacity-100 scale-125"
+            : isHovered || isOpen
+              ? "opacity-100"
+              : "opacity-20",
           isSignaling && "ring-4 ring-blue-500 ring-opacity-50 scale-110",
-          isInitialLoad && "animate-bounce"
+          isInitialLoad && "animate-bounce",
         )}
         onMouseDown={handleMouseDown}
         onMouseEnter={() => setIsHovered(true)}
@@ -350,16 +366,16 @@ function DevPanelBase() {
 
       {/* Control Panel */}
       <Collapsible open={isOpen}>
-        <CollapsibleContent 
+        <CollapsibleContent
           ref={panelRef}
           className={cn(
             "absolute top-14 w-72 rounded-lg border bg-background p-4 shadow-xl",
-            panelPosition === 'right' ? "right-0" : "left-0"
+            panelPosition === "right" ? "right-0" : "left-0",
           )}
           style={{
             // Ensure panel doesn't go off bottom of screen
             maxHeight: `calc(100vh - ${position.y + 70}px)`,
-            overflowY: 'auto'
+            overflowY: "auto",
           }}
         >
           <div className="flex items-center justify-between mb-4">
@@ -380,7 +396,10 @@ function DevPanelBase() {
               <label className="text-xs text-muted-foreground mb-1 block">
                 Language
               </label>
-              <Select value={currentLanguage} onValueChange={handleLanguageChange}>
+              <Select
+                value={currentLanguage}
+                onValueChange={handleLanguageChange}
+              >
                 <SelectTrigger className="h-8">
                   <Globe className="h-3 w-3 mr-2" />
                   <SelectValue />
@@ -398,7 +417,7 @@ function DevPanelBase() {
             {/* Theme Toggle */}
             <div>
               <label className="text-xs text-muted-foreground mb-1 block">
-                Theme: {theme || 'system'}
+                Theme: {theme || "system"}
               </label>
               <div className="flex gap-1">
                 <Button
@@ -435,8 +454,8 @@ function DevPanelBase() {
               <label className="text-xs text-muted-foreground mb-1 block">
                 Feature Ring
               </label>
-              <Select 
-                value={userRing.toString()} 
+              <Select
+                value={userRing.toString()}
                 onValueChange={handleRingChange}
               >
                 <SelectTrigger className="h-8">
@@ -470,16 +489,18 @@ function DevPanelBase() {
                 </SelectContent>
               </Select>
               <div className="text-xs text-muted-foreground mt-1 space-y-1">
-                <p>Current: Ring {userRing} ({getRingName(userRing)})</p>
+                <p>
+                  Current: Ring {userRing} ({getRingName(userRing)})
+                </p>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4].map((ring) => (
                     <div
                       key={ring}
                       className={cn(
                         "w-4 h-4 rounded text-xs flex items-center justify-center font-bold",
-                        userRing <= ring 
-                          ? "bg-green-500 text-white" 
-                          : "bg-gray-300 text-gray-600"
+                        userRing <= ring
+                          ? "bg-green-500 text-white"
+                          : "bg-gray-300 text-gray-600",
                       )}
                     >
                       {ring}
@@ -495,7 +516,10 @@ function DevPanelBase() {
             {/* Actions */}
             <div className="space-y-2 pt-2 border-t">
               <div className="text-xs text-muted-foreground text-center pb-1">
-                Hold <kbd className="px-1 py-0.5 text-xs bg-muted rounded">Ctrl</kbd>+<kbd className="px-1 py-0.5 text-xs bg-muted rounded">Alt</kbd> to find panel
+                Hold{" "}
+                <kbd className="px-1 py-0.5 text-xs bg-muted rounded">Ctrl</kbd>
+                +<kbd className="px-1 py-0.5 text-xs bg-muted rounded">Alt</kbd>{" "}
+                to find panel
               </div>
               <Button
                 variant="outline"
@@ -526,7 +550,7 @@ function DevPanelBase() {
           <AlertDialogHeader>
             <AlertDialogTitle>Reset All Storage?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action will clear all cookies, sessions, and local storage. 
+              This action will clear all cookies, sessions, and local storage.
               You will be logged out and all saved preferences will be lost.
               This action cannot be undone.
             </AlertDialogDescription>
@@ -550,10 +574,10 @@ const DevPanel = withDevOverlay(DevPanelBase, "DevPanel");
 
 // Only show DevPanel in development mode
 export default function DevPanelWrapper() {
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV !== "development") {
     return null;
   }
-  
+
   return (
     <>
       <DevPanel />
@@ -561,4 +585,3 @@ export default function DevPanelWrapper() {
     </>
   );
 }
-

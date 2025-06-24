@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function WorkflowsPage() {
   return (
@@ -7,5 +7,5 @@ export default function WorkflowsPage() {
       description="Design and implement efficient workflows for complex tasks"
       ring="power-users"
     />
-  )
+  );
 }

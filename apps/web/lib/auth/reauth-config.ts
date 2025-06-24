@@ -1,4 +1,4 @@
-import { AuthSource } from './types';
+import { AuthSource } from "./types";
 
 export interface ReauthConfig {
   enabled: boolean;
@@ -10,14 +10,14 @@ export interface ReauthConfig {
 export const defaultReauthConfig: ReauthConfig = {
   enabled: true,
   intervalMinutes: 10, // Re-authenticate every 10 minutes
-  warningMinutes: 1,   // Show warning 1 minute before re-auth
-  providers: ['entraid', 'sso', 'supabase', 'custom'] // Magic auth excluded
+  warningMinutes: 1, // Show warning 1 minute before re-auth
+  providers: ["entraid", "sso", "supabase", "custom"], // Magic auth excluded
 };
 
 export function shouldReauthenticate(
   authSource: AuthSource | null,
   lastAuthTime: Date | null,
-  config: ReauthConfig = defaultReauthConfig
+  config: ReauthConfig = defaultReauthConfig,
 ): boolean {
   if (!config.enabled || !authSource || !lastAuthTime) {
     return false;
@@ -37,7 +37,7 @@ export function shouldReauthenticate(
 
 export function getNextReauthTime(
   lastAuthTime: Date | null,
-  config: ReauthConfig = defaultReauthConfig
+  config: ReauthConfig = defaultReauthConfig,
 ): Date | null {
   if (!lastAuthTime || !config.enabled) {
     return null;
@@ -48,9 +48,7 @@ export function getNextReauthTime(
   return nextTime;
 }
 
-export function getTimeUntilReauth(
-  nextReauthTime: Date | null
-): number {
+export function getTimeUntilReauth(nextReauthTime: Date | null): number {
   if (!nextReauthTime) {
     return -1;
   }

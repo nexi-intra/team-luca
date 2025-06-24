@@ -1,5 +1,5 @@
-import { SignJWT, jwtVerify } from 'jose';
-import type { SessionPayload } from '@monorepo/types';
+import { SignJWT, jwtVerify } from "jose";
+import type { SessionPayload } from "@monorepo/types";
 
 /**
  * Session configuration
@@ -9,7 +9,7 @@ export interface SessionConfig {
   cookieName?: string;
   duration?: number; // in seconds
   secure?: boolean;
-  sameSite?: 'lax' | 'strict' | 'none';
+  sameSite?: "lax" | "strict" | "none";
 }
 
 /**
@@ -21,15 +21,15 @@ export class SessionManager {
 
   constructor(config: SessionConfig) {
     this.config = {
-      cookieName: 'session-token',
+      cookieName: "session-token",
       duration: 60 * 60 * 8, // 8 hours
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       ...config,
     };
 
     if (!config.secret || config.secret.length < 32) {
-      throw new Error('Session secret must be at least 32 characters long');
+      throw new Error("Session secret must be at least 32 characters long");
     }
 
     this.secret = new TextEncoder().encode(config.secret);
@@ -38,9 +38,11 @@ export class SessionManager {
   /**
    * Create a session token
    */
-  async createSession(payload: Omit<SessionPayload, 'exp' | 'iat'>): Promise<string> {
+  async createSession(
+    payload: Omit<SessionPayload, "exp" | "iat">,
+  ): Promise<string> {
     const token = await new SignJWT(payload)
-      .setProtectedHeader({ alg: 'HS256' })
+      .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime(`${this.config.duration}s`)
       .sign(this.secret);
@@ -56,7 +58,7 @@ export class SessionManager {
       const { payload } = await jwtVerify(token, this.secret);
       return payload as unknown as SessionPayload;
     } catch (error) {
-      console.error('Session verification failed:', error);
+      console.error("Session verification failed:", error);
       return null;
     }
   }
@@ -68,7 +70,7 @@ export class SessionManager {
     name: string;
     httpOnly: boolean;
     secure: boolean;
-    sameSite: 'lax' | 'strict' | 'none';
+    sameSite: "lax" | "strict" | "none";
     maxAge: number;
     path: string;
   } {
@@ -78,7 +80,7 @@ export class SessionManager {
       secure: this.config.secure,
       sameSite: this.config.sameSite,
       maxAge: maxAge ?? this.config.duration,
-      path: '/',
+      path: "/",
     };
   }
 

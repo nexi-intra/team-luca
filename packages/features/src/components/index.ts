@@ -1,2 +1,2 @@
-export * from './FeatureGate';
-export * from './RingGate';
+export * from "./FeatureGate";
+export * from "./RingGate";

@@ -1,5 +1,5 @@
-import React from 'react';
-import { useFeatureAccess } from '../hooks/useFeatureAccess';
+import React from "react";
+import { useFeatureAccess } from "../hooks/useFeatureAccess";
 
 /**
  * Props for FeatureGate component
@@ -22,7 +22,11 @@ export interface FeatureGateProps {
 /**
  * Component that conditionally renders content based on feature access
  */
-export function FeatureGate({ feature, children, fallback = null }: FeatureGateProps) {
+export function FeatureGate({
+  feature,
+  children,
+  fallback = null,
+}: FeatureGateProps) {
   const hasAccess = useFeatureAccess(feature);
   return <>{hasAccess ? children : fallback}</>;
 }
@@ -38,7 +42,7 @@ export interface MultiFeatureGateProps {
   /**
    * Whether all features must be accessible (AND) or just one (OR)
    */
-  mode?: 'all' | 'any';
+  mode?: "all" | "any";
   /**
    * Content to render when condition is met
    */
@@ -52,24 +56,24 @@ export interface MultiFeatureGateProps {
 /**
  * Component that conditionally renders content based on multiple feature access
  */
-export function MultiFeatureGate({ 
-  features, 
-  mode = 'all', 
-  children, 
-  fallback = null 
+export function MultiFeatureGate({
+  features,
+  mode = "all",
+  children,
+  fallback = null,
 }: MultiFeatureGateProps) {
   const { hasFeatureAccess } = useFeatureRingContext();
-  
+
   const hasAccess = React.useMemo(() => {
-    if (mode === 'all') {
-      return features.every(feature => hasFeatureAccess(feature));
+    if (mode === "all") {
+      return features.every((feature) => hasFeatureAccess(feature));
     } else {
-      return features.some(feature => hasFeatureAccess(feature));
+      return features.some((feature) => hasFeatureAccess(feature));
     }
   }, [features, mode, hasFeatureAccess]);
-  
+
   return <>{hasAccess ? children : fallback}</>;
 }
 
 // Import needed for MultiFeatureGate
-import { useFeatureRingContext } from '../context';
+import { useFeatureRingContext } from "../context";

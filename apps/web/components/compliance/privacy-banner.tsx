@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Info, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { getUserJurisdiction, isCcpaApplicable } from '@/lib/compliance';
+import React, { useEffect, useState } from "react";
+import { Info, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { getUserJurisdiction, isCcpaApplicable } from "@/lib/compliance";
 
 export function PrivacyBanner() {
   const [showCcpaBanner, setShowCcpaBanner] = useState(false);
-  const [jurisdiction, setJurisdiction] = useState<string>('');
+  const [jurisdiction, setJurisdiction] = useState<string>("");
 
   useEffect(() => {
     // Determine user jurisdiction
     const userJurisdiction = getUserJurisdiction(
       new Request(window.location.href, {
         headers: {
-          'accept-language': navigator.language,
+          "accept-language": navigator.language,
         },
-      })
+      }),
     );
     setJurisdiction(userJurisdiction);
 
     // Check if CCPA banner should be shown
     if (isCcpaApplicable(userJurisdiction)) {
-      const ccpaAcknowledged = localStorage.getItem('ccpa-acknowledged');
+      const ccpaAcknowledged = localStorage.getItem("ccpa-acknowledged");
       if (!ccpaAcknowledged) {
         setShowCcpaBanner(true);
       }
@@ -31,7 +31,7 @@ export function PrivacyBanner() {
   }, []);
 
   const handleAcknowledge = () => {
-    localStorage.setItem('ccpa-acknowledged', 'true');
+    localStorage.setItem("ccpa-acknowledged", "true");
     setShowCcpaBanner(false);
   };
 
@@ -48,14 +48,15 @@ export function PrivacyBanner() {
                 Your Privacy Rights (CCPA)
               </p>
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                As a California resident, you have the right to opt-out of the sale of your personal information.
+                As a California resident, you have the right to opt-out of the
+                sale of your personal information.
               </p>
               <div className="flex gap-2">
                 <Button
                   size="sm"
                   variant="link"
                   className="h-auto p-0 text-blue-700 hover:text-blue-800 dark:text-blue-300"
-                  onClick={() => window.open('/privacy#do-not-sell', '_blank')}
+                  onClick={() => window.open("/privacy#do-not-sell", "_blank")}
                 >
                   Do Not Sell My Info
                 </Button>
@@ -63,7 +64,7 @@ export function PrivacyBanner() {
                   size="sm"
                   variant="link"
                   className="h-auto p-0 text-blue-700 hover:text-blue-800 dark:text-blue-300"
-                  onClick={() => window.open('/privacy', '_blank')}
+                  onClick={() => window.open("/privacy", "_blank")}
                 >
                   Privacy Policy
                 </Button>

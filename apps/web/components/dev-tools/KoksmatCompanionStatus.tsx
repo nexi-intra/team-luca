@@ -1,30 +1,35 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Wifi, 
-  WifiOff, 
-  Play, 
-  Terminal, 
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Wifi,
+  WifiOff,
+  Play,
+  Terminal,
   Activity,
   AlertCircle,
   Loader2,
-  FileText
-} from 'lucide-react';
-import { koksmatCompanion, CompanionStatus } from '@/lib/koksmat/companion-client';
-import { cn } from '@monorepo/utils';
+  FileText,
+} from "lucide-react";
+import {
+  koksmatCompanion,
+  CompanionStatus,
+} from "@/lib/koksmat/companion-client";
+import { cn } from "@monorepo/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Separator } from '@/components/ui/separator';
-import { KoksmatLogViewer } from './KoksmatLogViewer';
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
+import { KoksmatLogViewer } from "./KoksmatLogViewer";
 
 export function KoksmatCompanionStatus() {
-  const [status, setStatus] = useState<CompanionStatus>({ status: 'disconnected' });
+  const [status, setStatus] = useState<CompanionStatus>({
+    status: "disconnected",
+  });
   const [scripts, setScripts] = useState<string[]>([]);
   const [isLoadingScripts, setIsLoadingScripts] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
@@ -43,7 +48,7 @@ export function KoksmatCompanionStatus() {
   }, []);
 
   useEffect(() => {
-    if (status.status === 'connected') {
+    if (status.status === "connected") {
       loadScripts();
     }
   }, [status.status]);
@@ -54,14 +59,14 @@ export function KoksmatCompanionStatus() {
       const scriptList = await koksmatCompanion.listScripts();
       setScripts(scriptList);
     } catch (error) {
-      console.error('Failed to load scripts:', error);
+      console.error("Failed to load scripts:", error);
     } finally {
       setIsLoadingScripts(false);
     }
   };
 
   const handleConnect = () => {
-    if (status.status === 'connected') {
+    if (status.status === "connected") {
       koksmatCompanion.disconnect();
     } else {
       koksmatCompanion.connect();
@@ -71,27 +76,27 @@ export function KoksmatCompanionStatus() {
   const executeScript = async (scriptName: string) => {
     try {
       const scriptId = koksmatCompanion.executeScript(scriptName);
-      
+
       // Listen for script events
       const unsubscribe = koksmatCompanion.onScriptEvent(scriptId, (event) => {
-        console.log('Script event:', event);
+        console.log("Script event:", event);
         // You could show output in a modal or console here
       });
 
       // Clean up after 30 seconds
       setTimeout(unsubscribe, 30000);
     } catch (error) {
-      console.error('Failed to execute script:', error);
+      console.error("Failed to execute script:", error);
     }
   };
 
   const getStatusIcon = () => {
     switch (status.status) {
-      case 'connected':
+      case "connected":
         return <Wifi className="h-3 w-3" />;
-      case 'connecting':
+      case "connecting":
         return <Loader2 className="h-3 w-3 animate-spin" />;
-      case 'error':
+      case "error":
         return <AlertCircle className="h-3 w-3" />;
       default:
         return <WifiOff className="h-3 w-3" />;
@@ -100,14 +105,14 @@ export function KoksmatCompanionStatus() {
 
   const getStatusColor = () => {
     switch (status.status) {
-      case 'connected':
-        return 'text-green-500';
-      case 'connecting':
-        return 'text-yellow-500';
-      case 'error':
-        return 'text-red-500';
+      case "connected":
+        return "text-green-500";
+      case "connecting":
+        return "text-yellow-500";
+      case "error":
+        return "text-red-500";
       default:
-        return 'text-gray-500';
+        return "text-gray-500";
     }
   };
 
@@ -132,53 +137,62 @@ export function KoksmatCompanionStatus() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="font-medium text-sm">Koksmat Companion</h4>
-                <Badge variant={status.status === 'connected' ? 'default' : 'secondary'}>
+                <Badge
+                  variant={
+                    status.status === "connected" ? "default" : "secondary"
+                  }
+                >
                   {status.status}
                 </Badge>
               </div>
 
-              {status.status === 'disconnected' && (
+              {status.status === "disconnected" && (
                 <div className="space-y-2 text-sm">
                   <p className="text-muted-foreground">
                     Start the companion server to enable script automation:
                   </p>
                   <pre className="bg-muted p-2 rounded text-xs">
-                    <code>cd koksmat-companion{'\n'}npm install{'\n'}npm start</code>
+                    <code>
+                      cd koksmat-companion{"\n"}npm install{"\n"}npm start
+                    </code>
                   </pre>
-                  <Button
-                    size="sm"
-                    className="w-full"
-                    onClick={handleConnect}
-                  >
+                  <Button size="sm" className="w-full" onClick={handleConnect}>
                     <Wifi className="h-3 w-3 mr-2" />
                     Connect to Companion
                   </Button>
                 </div>
               )}
 
-              {status.status === 'connected' && (
+              {status.status === "connected" && (
                 <>
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div className="space-y-1">
                       <Activity className="h-4 w-4 mx-auto text-blue-500" />
-                      <p className="text-xs font-medium">{status.scripts?.running || 0}</p>
+                      <p className="text-xs font-medium">
+                        {status.scripts?.running || 0}
+                      </p>
                       <p className="text-xs text-muted-foreground">Running</p>
                     </div>
                     <div className="space-y-1">
                       <Terminal className="h-4 w-4 mx-auto text-green-500" />
-                      <p className="text-xs font-medium">{status.scripts?.completed || 0}</p>
+                      <p className="text-xs font-medium">
+                        {status.scripts?.completed || 0}
+                      </p>
                       <p className="text-xs text-muted-foreground">Completed</p>
                     </div>
                     <div className="space-y-1">
                       <AlertCircle className="h-4 w-4 mx-auto text-red-500" />
-                      <p className="text-xs font-medium">{status.scripts?.failed || 0}</p>
+                      <p className="text-xs font-medium">
+                        {status.scripts?.failed || 0}
+                      </p>
                       <p className="text-xs text-muted-foreground">Failed</p>
                     </div>
                   </div>
 
                   {status.uptime && (
                     <p className="text-xs text-muted-foreground">
-                      Uptime: {Math.floor(status.uptime / 1000 / 60)}m {Math.floor((status.uptime / 1000) % 60)}s
+                      Uptime: {Math.floor(status.uptime / 1000 / 60)}m{" "}
+                      {Math.floor((status.uptime / 1000) % 60)}s
                     </p>
                   )}
 
@@ -197,7 +211,7 @@ export function KoksmatCompanionStatus() {
                         {isLoadingScripts ? (
                           <Loader2 className="h-3 w-3 animate-spin" />
                         ) : (
-                          'Refresh'
+                          "Refresh"
                         )}
                       </Button>
                     </div>
@@ -240,7 +254,7 @@ export function KoksmatCompanionStatus() {
                       <FileText className="h-3 w-3 mr-2" />
                       View Logs
                     </Button>
-                    
+
                     <Button
                       variant="outline"
                       size="sm"
@@ -254,16 +268,12 @@ export function KoksmatCompanionStatus() {
                 </>
               )}
 
-              {status.status === 'error' && (
+              {status.status === "error" && (
                 <div className="space-y-2">
                   <p className="text-sm text-red-500">
                     Failed to connect to companion server
                   </p>
-                  <Button
-                    size="sm"
-                    className="w-full"
-                    onClick={handleConnect}
-                  >
+                  <Button size="sm" className="w-full" onClick={handleConnect}>
                     Retry Connection
                   </Button>
                 </div>
@@ -272,11 +282,11 @@ export function KoksmatCompanionStatus() {
           </PopoverContent>
         </Popover>
       </div>
-      
+
       {/* Log Viewer */}
-      <KoksmatLogViewer 
-        isOpen={showLogViewer} 
-        onClose={() => setShowLogViewer(false)} 
+      <KoksmatLogViewer
+        isOpen={showLogViewer}
+        onClose={() => setShowLogViewer(false)}
       />
     </div>
   );

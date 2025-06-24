@@ -24,7 +24,7 @@
     "format": "prettier --write \"**/*.{js,ts,tsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,tsx,json,md}\"",
     "install:all": "pnpm install",
-    "prepare": "husky install && pre-commit install",
+    "prepare": "husky install",
     "pre-commit": "pre-commit run --all-files",
     "pre-commit:update": "pre-commit autoupdate",
     "secrets:scan": "detect-secrets scan --baseline .secrets.baseline",
@@ -34,7 +34,6 @@
     "@types/node": "^22.9.3",
     "glob": "^11.0.3",
     "husky": "^9.0.11",
-    "pre-commit": "^1.2.2",
     "prettier": "^3.4.6",
     "typescript": "^5.7.2"
   }

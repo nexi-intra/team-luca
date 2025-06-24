@@ -1,5 +1,5 @@
-import { AuthUser, AuthSession } from './types';
-import { parseJWT, isTokenExpired, extractClaims } from '@monorepo/utils';
+import { AuthUser, AuthSession } from "./types";
+import { parseJWT, isTokenExpired, extractClaims } from "@monorepo/utils";
 
 export interface MagicAuthConfig {
   allowedIssuers?: string[];
@@ -13,7 +13,7 @@ export class MagicAuthHandler {
   constructor(config: MagicAuthConfig = {}) {
     this.config = {
       tokenValidation: true,
-      ...config
+      ...config,
     };
   }
 
@@ -53,7 +53,7 @@ export class MagicAuthHandler {
 
       return true;
     } catch (error) {
-      console.error('Token validation failed:', error);
+      console.error("Token validation failed:", error);
       return false;
     }
   }
@@ -73,10 +73,12 @@ export class MagicAuthHandler {
       }
 
       // Extract user information from token claims
-      const id = payload.sub || payload.oid || payload.user_id || '';
-      const email = payload.email || payload.preferred_username || payload.upn || '';
-      const displayName = payload.name || payload.given_name || payload.display_name || email;
-      
+      const id = payload.sub || payload.oid || payload.user_id || "";
+      const email =
+        payload.email || payload.preferred_username || payload.upn || "";
+      const displayName =
+        payload.name || payload.given_name || payload.display_name || email;
+
       // Extract roles from various possible claims
       let roles: string[] = [];
       if (payload.roles) {
@@ -84,7 +86,9 @@ export class MagicAuthHandler {
       } else if (payload.role) {
         roles = Array.isArray(payload.role) ? payload.role : [payload.role];
       } else if (payload.groups) {
-        roles = Array.isArray(payload.groups) ? payload.groups : [payload.groups];
+        roles = Array.isArray(payload.groups)
+          ? payload.groups
+          : [payload.groups];
       }
 
       const expiresAt = payload.exp ? new Date(payload.exp * 1000) : undefined;
@@ -95,10 +99,10 @@ export class MagicAuthHandler {
         email,
         displayName,
         roles: roles.length > 0 ? roles : undefined,
-        source: 'magic',
+        source: "magic",
         metadata: {
-          tokenClaims: payload
-        }
+          tokenClaims: payload,
+        },
       };
 
       // Create session
@@ -106,22 +110,22 @@ export class MagicAuthHandler {
         user,
         token,
         expiresAt,
-        source: 'magic'
+        source: "magic",
       };
 
       return session;
     } catch (error) {
-      console.error('Failed to create session from token:', error);
+      console.error("Failed to create session from token:", error);
       return null;
     }
   }
 
   generateMagicLink(baseUrl: string, token: string, route?: string): string {
     const url = new URL(baseUrl);
-    url.searchParams.set('magicauth', 'true');
-    url.searchParams.set('token', token);
+    url.searchParams.set("magicauth", "true");
+    url.searchParams.set("token", token);
     if (route) {
-      url.searchParams.set('route', route);
+      url.searchParams.set("route", route);
     }
     return url.toString();
   }

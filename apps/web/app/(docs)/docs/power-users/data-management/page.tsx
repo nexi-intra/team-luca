@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function DataManagementPage() {
   return (
@@ -7,5 +7,5 @@ export default function DataManagementPage() {
       description="Advanced data handling, import/export, and bulk operations"
       ring="power-users"
     />
-  )
+  );
 }

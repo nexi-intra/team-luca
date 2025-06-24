@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { AuthProviderFactory } from './providers/factory';
-import type { IAuthProvider } from '@monorepo/auth';
-import { User } from './types';
-import { createLogger } from '@monorepo/logger';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
+import { AuthProviderFactory } from "./providers/factory";
+import type { IAuthProvider } from "@monorepo/auth";
+import { User } from "./types";
+import { createLogger } from "@monorepo/logger";
 
-const logger = createLogger('AuthProviderV2');
+const logger = createLogger("AuthProviderV2");
 
 // Extended user type for backward compatibility
 interface ExtendedUser extends User {
@@ -29,11 +35,11 @@ const toExtendedUser = (user: any, providerName: string): ExtendedUser => {
     idToken: null,
     refreshToken: null,
     expiresAt: null,
-    givenName: user.givenName || '',
-    surname: user.surname || '',
-    jobTitle: user.jobTitle || '',
-    officeLocation: user.officeLocation || '',
-    preferredLanguage: user.preferredLanguage || 'en'
+    givenName: user.givenName || "",
+    surname: user.surname || "",
+    jobTitle: user.jobTitle || "",
+    officeLocation: user.officeLocation || "",
+    preferredLanguage: user.preferredLanguage || "en",
   } as ExtendedUser;
 };
 
@@ -61,7 +67,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -82,38 +88,41 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
     const initializeAuth = async () => {
       try {
         setIsLoading(true);
-        
+
         // Create the auth provider
         const provider = AuthProviderFactory.create();
         providerRef.current = provider;
-        
+
         // Initialize the provider
         await provider.initialize();
-        
+
         // Subscribe to auth state changes
         unsubscribeRef.current = provider.onAuthStateChange((newUser) => {
-          logger.info('Auth state changed', { user: newUser?.email });
-          
+          logger.info("Auth state changed", { user: newUser?.email });
+
           // Extend user with compatibility fields
-          const extendedUser: ExtendedUser | null = newUser ? toExtendedUser(newUser, provider.name) : null;
-          
+          const extendedUser: ExtendedUser | null = newUser
+            ? toExtendedUser(newUser, provider.name)
+            : null;
+
           setUser(extendedUser);
           setError(null);
           if (extendedUser) {
             setLastAuthTime(new Date());
           }
         });
-        
+
         // Get initial user state
         const currentUser = provider.getUser();
-        const extendedUser: ExtendedUser | null = currentUser ? toExtendedUser(currentUser, provider.name) : null;
+        const extendedUser: ExtendedUser | null = currentUser
+          ? toExtendedUser(currentUser, provider.name)
+          : null;
         setUser(extendedUser);
         if (extendedUser) {
           setLastAuthTime(new Date());
         }
-        
       } catch (err) {
-        logger.error('Failed to initialize auth provider', err);
+        logger.error("Failed to initialize auth provider", err);
         setError(err as Error);
       } finally {
         setIsLoading(false);
@@ -132,14 +141,14 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signIn = async () => {
     if (!providerRef.current) {
-      throw new Error('Auth provider not initialized');
+      throw new Error("Auth provider not initialized");
     }
-    
+
     try {
       setError(null);
       await providerRef.current.signIn();
     } catch (err) {
-      logger.error('Sign in failed', err);
+      logger.error("Sign in failed", err);
       setError(err as Error);
       throw err;
     }
@@ -147,14 +156,14 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signOut = async () => {
     if (!providerRef.current) {
-      throw new Error('Auth provider not initialized');
+      throw new Error("Auth provider not initialized");
     }
-    
+
     try {
       setError(null);
       await providerRef.current.signOut();
     } catch (err) {
-      logger.error('Sign out failed', err);
+      logger.error("Sign out failed", err);
       setError(err as Error);
       throw err;
     }
@@ -165,7 +174,10 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
     if (providerRef.current) {
       const currentUser = providerRef.current.getUser();
       if (currentUser) {
-        const extendedUser = toExtendedUser(currentUser, providerRef.current.name);
+        const extendedUser = toExtendedUser(
+          currentUser,
+          providerRef.current.name,
+        );
         setUser(extendedUser);
         setLastAuthTime(new Date());
       }
@@ -174,7 +186,7 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
 
   const skipReauth = () => {
     // No-op for compatibility
-    logger.info('Skip reauth called');
+    logger.info("Skip reauth called");
   };
 
   const value: AuthContextType = {
@@ -193,7 +205,7 @@ export const AuthProviderV2: React.FC<AuthProviderProps> = ({ children }) => {
     lastAuthTime,
     nextReauthTime: null, // Not implemented in new system
     isReauthRequired: false, // Not implemented in new system
-    skipReauth
+    skipReauth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

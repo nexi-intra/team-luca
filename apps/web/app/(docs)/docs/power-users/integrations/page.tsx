@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function IntegrationsPage() {
   return (
@@ -7,5 +7,5 @@ export default function IntegrationsPage() {
       description="Connect with external services and tools for enhanced functionality"
       ring="power-users"
     />
-  )
+  );
 }

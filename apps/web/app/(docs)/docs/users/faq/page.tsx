@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function FAQPage() {
   return (
@@ -7,5 +7,5 @@ export default function FAQPage() {
       description="Quick answers to the most commonly asked questions about the platform. Find instant solutions to typical queries from general users."
       ring="users"
     />
-  )
+  );
 }

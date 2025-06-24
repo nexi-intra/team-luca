@@ -3,16 +3,16 @@
  */
 
 // Auth types
-export * from './auth';
+export * from "./auth";
 
 // API types
-export * from './api';
+export * from "./api";
 
 // Demo types
-export * from './demo';
+export * from "./demo";
 
 // UI types
-export * from './ui';
+export * from "./ui";
 
 // Common utility types
-export * from './common';
+export * from "./common";

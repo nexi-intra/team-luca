@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { X, Cookie, Shield, BarChart3, Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { withDevOverlay } from '@/lib/dev/with-dev-overlay';
+import React, { useState, useEffect } from "react";
+import { X, Cookie, Shield, BarChart3, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { withDevOverlay } from "@/lib/dev/with-dev-overlay";
 
 export interface CookiePreferences {
   necessary: boolean;
@@ -20,8 +26,8 @@ interface CookieConsentProps {
   onDecline?: () => void;
 }
 
-const CONSENT_KEY = 'cookie-consent';
-const PREFERENCES_KEY = 'cookie-preferences';
+const CONSENT_KEY = "cookie-consent";
+const PREFERENCES_KEY = "cookie-preferences";
 
 function CookieConsentBase({ onAccept, onDecline }: CookieConsentProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -47,7 +53,7 @@ function CookieConsentBase({ onAccept, onDecline }: CookieConsentProps) {
         try {
           setPreferences(JSON.parse(savedPreferences));
         } catch (e) {
-          console.error('Failed to parse cookie preferences:', e);
+          console.error("Failed to parse cookie preferences:", e);
         }
       }
     }
@@ -79,7 +85,7 @@ function CookieConsentBase({ onAccept, onDecline }: CookieConsentProps) {
   };
 
   const saveConsent = (prefs: CookiePreferences) => {
-    localStorage.setItem(CONSENT_KEY, 'true');
+    localStorage.setItem(CONSENT_KEY, "true");
     localStorage.setItem(PREFERENCES_KEY, JSON.stringify(prefs));
     setIsVisible(false);
     onAccept?.(prefs);
@@ -89,8 +95,11 @@ function CookieConsentBase({ onAccept, onDecline }: CookieConsentProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
-      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsVisible(false)} />
-      
+      <div
+        className="fixed inset-0 bg-black/20 backdrop-blur-sm"
+        onClick={() => setIsVisible(false)}
+      />
+
       <Card className="relative z-10 w-full max-w-2xl animate-in slide-in-from-bottom-4 duration-300">
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between">
@@ -108,25 +117,35 @@ function CookieConsentBase({ onAccept, onDecline }: CookieConsentProps) {
             </Button>
           </div>
           <CardDescription>
-            We use cookies to enhance your experience, analyze site traffic, and personalize content.
+            We use cookies to enhance your experience, analyze site traffic, and
+            personalize content.
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-4">
           {!showDetails ? (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                By clicking &quot;Accept All&quot;, you agree to the storing of cookies on your device. You can also customize your preferences.
+                By clicking &quot;Accept All&quot;, you agree to the storing of
+                cookies on your device. You can also customize your preferences.
               </p>
-              
+
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button onClick={handleAcceptAll} className="flex-1">
                   Accept All
                 </Button>
-                <Button onClick={() => setShowDetails(true)} variant="outline" className="flex-1">
+                <Button
+                  onClick={() => setShowDetails(true)}
+                  variant="outline"
+                  className="flex-1"
+                >
                   Manage Preferences
                 </Button>
-                <Button onClick={handleDeclineAll} variant="ghost" className="flex-1">
+                <Button
+                  onClick={handleDeclineAll}
+                  variant="ghost"
+                  className="flex-1"
+                >
                   Reject All
                 </Button>
               </div>
@@ -205,15 +224,20 @@ function CookieConsentBase({ onAccept, onDecline }: CookieConsentProps) {
                 <Button onClick={handleAcceptSelected} className="flex-1">
                   Save Preferences
                 </Button>
-                <Button onClick={() => setShowDetails(false)} variant="outline" className="flex-1">
+                <Button
+                  onClick={() => setShowDetails(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
                   Back
                 </Button>
               </div>
             </div>
           )}
-          
+
           <p className="text-xs text-center text-muted-foreground">
-            You can change your cookie settings at any time by clicking the cookie icon in the footer.
+            You can change your cookie settings at any time by clicking the
+            cookie icon in the footer.
           </p>
         </CardContent>
       </Card>
@@ -224,11 +248,13 @@ function CookieConsentBase({ onAccept, onDecline }: CookieConsentProps) {
 // Hook to check cookie consent
 export function useCookieConsent() {
   const [hasConsent, setHasConsent] = useState<boolean | null>(null);
-  const [preferences, setPreferences] = useState<CookiePreferences | null>(null);
+  const [preferences, setPreferences] = useState<CookiePreferences | null>(
+    null,
+  );
 
   useEffect(() => {
     const consent = localStorage.getItem(CONSENT_KEY);
-    setHasConsent(consent === 'true');
+    setHasConsent(consent === "true");
 
     if (consent) {
       const prefs = localStorage.getItem(PREFERENCES_KEY);
@@ -236,7 +262,7 @@ export function useCookieConsent() {
         try {
           setPreferences(JSON.parse(prefs));
         } catch (e) {
-          console.error('Failed to parse cookie preferences:', e);
+          console.error("Failed to parse cookie preferences:", e);
         }
       }
     }

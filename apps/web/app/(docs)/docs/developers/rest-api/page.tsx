@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function RestApiPage() {
   return (
@@ -7,5 +7,5 @@ export default function RestApiPage() {
       description="Complete REST API reference with endpoints, parameters, and examples"
       ring="developers"
     />
-  )
+  );
 }

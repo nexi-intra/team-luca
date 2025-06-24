@@ -8,7 +8,7 @@ export interface AuthUser {
   accessToken?: string;
   refreshToken?: string;
   expiresAt?: number;
-  source?: 'custom' | 'entraid' | 'sso' | 'supabase' | 'magic';
+  source?: "custom" | "entraid" | "sso" | "supabase" | "magic";
   metadata?: Record<string, any>;
 }
 

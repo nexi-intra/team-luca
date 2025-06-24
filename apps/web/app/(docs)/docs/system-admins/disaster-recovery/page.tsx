@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function DisasterRecoveryPage() {
   return (
@@ -7,5 +7,5 @@ export default function DisasterRecoveryPage() {
       description="Plan and implement disaster recovery strategies and procedures"
       ring="system-admins"
     />
-  )
+  );
 }

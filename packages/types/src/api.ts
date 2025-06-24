@@ -54,7 +54,7 @@ export interface MagicLinkResponse {
  * Health check types
  */
 export interface HealthCheckResponse {
-  status: 'healthy' | 'unhealthy';
+  status: "healthy" | "unhealthy";
   timestamp: string;
   service: string;
   requestId: string;
@@ -106,7 +106,7 @@ export interface FilterParams {
 
 export interface SortParams {
   field: string;
-  order: 'asc' | 'desc';
+  order: "asc" | "desc";
 }
 
 /**

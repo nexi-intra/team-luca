@@ -1,6 +1,6 @@
-import { ConfigHelpers } from '@monorepo/config';
-import { configFactory } from './factory';
-import { AppConfig } from './types';
+import { ConfigHelpers } from "@monorepo/config";
+import { configFactory } from "./factory";
+import { AppConfig } from "./types";
 
 // Create the configuration provider
 const provider = configFactory.create();
@@ -18,7 +18,7 @@ export const config = {
   validate: provider.validate.bind(provider),
   getByFeatureRing: provider.getByFeatureRing.bind(provider),
   getByCategory: provider.getByCategory.bind(provider),
-  
+
   // Helper methods
   getRequired: helpers.getRequired.bind(helpers),
   getOrDefault: helpers.getOrDefault.bind(helpers),
@@ -31,5 +31,5 @@ export const config = {
 };
 
 // Export types for convenience
-export type { AppConfig } from './types';
-export { FeatureRing, ConfigCategory } from './types';
+export type { AppConfig } from "./types";
+export { FeatureRing, ConfigCategory } from "./types";

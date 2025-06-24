@@ -1,15 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { SessionManager } from '@/lib/auth/session';
+import { NextRequest, NextResponse } from "next/server";
+import { SessionManager } from "@/lib/auth/session";
 
 // POST /api/auth/session - Create a new session
 export async function POST(request: NextRequest) {
   try {
     // Get the authorization header
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(
-        { error: 'Missing or invalid authorization header' },
-        { status: 401 }
+        { error: "Missing or invalid authorization header" },
+        { status: 401 },
       );
     }
 
@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
 
     if (!userId || !email || !name) {
       return NextResponse.json(
-        { error: 'Missing required user data' },
-        { status: 400 }
+        { error: "Missing required user data" },
+        { status: 400 },
       );
     }
 
@@ -38,8 +38,8 @@ export async function POST(request: NextRequest) {
 
     // Create response
     const response = NextResponse.json(
-      { success: true, message: 'Session created' },
-      { status: 200 }
+      { success: true, message: "Session created" },
+      { status: 200 },
     );
 
     // Set session cookie
@@ -47,10 +47,10 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('Session creation error:', error);
+    console.error("Session creation error:", error);
     return NextResponse.json(
-      { error: 'Failed to create session' },
-      { status: 500 }
+      { error: "Failed to create session" },
+      { status: 500 },
     );
   }
 }
@@ -59,18 +59,18 @@ export async function POST(request: NextRequest) {
 export async function DELETE(_request: NextRequest) {
   try {
     const response = NextResponse.json(
-      { success: true, message: 'Session cleared' },
-      { status: 200 }
+      { success: true, message: "Session cleared" },
+      { status: 200 },
     );
 
     await SessionManager.clearSession(response);
 
     return response;
   } catch (error) {
-    console.error('Session deletion error:', error);
+    console.error("Session deletion error:", error);
     return NextResponse.json(
-      { error: 'Failed to clear session' },
-      { status: 500 }
+      { error: "Failed to clear session" },
+      { status: 500 },
     );
   }
 }
@@ -79,12 +79,9 @@ export async function DELETE(_request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const session = await SessionManager.getSession(request);
-    
+
     if (!session) {
-      return NextResponse.json(
-        { error: 'No active session' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "No active session" }, { status: 401 });
     }
 
     return NextResponse.json({
@@ -92,13 +89,13 @@ export async function GET(request: NextRequest) {
         userId: session.userId,
         email: session.email,
         name: session.name,
-      }
+      },
     });
   } catch (error) {
-    console.error('Session retrieval error:', error);
+    console.error("Session retrieval error:", error);
     return NextResponse.json(
-      { error: 'Failed to get session' },
-      { status: 500 }
+      { error: "Failed to get session" },
+      { status: 500 },
     );
   }
 }

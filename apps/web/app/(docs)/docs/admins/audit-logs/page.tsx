@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function AuditLogsPage() {
   return (
@@ -7,5 +7,5 @@ export default function AuditLogsPage() {
       description="Monitor system activity, track changes, and maintain compliance records"
       ring="admins"
     />
-  )
+  );
 }

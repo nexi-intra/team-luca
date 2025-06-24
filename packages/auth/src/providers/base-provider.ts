@@ -1,5 +1,5 @@
-import type { User } from '@monorepo/types';
-import type { IAuthProvider, AuthState, AuthEvents } from './types';
+import type { User } from "@monorepo/types";
+import type { IAuthProvider, AuthState, AuthEvents } from "./types";
 
 /**
  * Base authentication provider implementation
@@ -15,7 +15,7 @@ export abstract class BaseAuthProvider implements IAuthProvider {
   protected listeners: ((user: User | null) => void)[] = [];
   protected events: AuthEvents = {};
 
-  abstract name: 'none' | 'entraid' | 'supabase';
+  abstract name: "none" | "entraid" | "supabase";
 
   constructor(events?: AuthEvents) {
     this.events = events || {};
@@ -35,7 +35,7 @@ export abstract class BaseAuthProvider implements IAuthProvider {
   }
 
   requiresAuth(): boolean {
-    return this.name !== 'none';
+    return this.name !== "none";
   }
 
   getAuthState(): { isLoading: boolean; error: Error | null } {
@@ -48,12 +48,12 @@ export abstract class BaseAuthProvider implements IAuthProvider {
   onAuthStateChange(callback: (user: User | null) => void): () => void {
     this.listeners.push(callback);
     return () => {
-      this.listeners = this.listeners.filter(l => l !== callback);
+      this.listeners = this.listeners.filter((l) => l !== callback);
     };
   }
 
   protected notifyListeners(user: User | null): void {
-    this.listeners.forEach(listener => listener(user));
+    this.listeners.forEach((listener) => listener(user));
   }
 
   protected setLoading(isLoading: boolean): void {
@@ -71,13 +71,13 @@ export abstract class BaseAuthProvider implements IAuthProvider {
     const wasAuthenticated = this.state.isAuthenticated;
     this.state.user = user;
     this.state.isAuthenticated = !!user;
-    
+
     if (!wasAuthenticated && user && this.events.onSignIn) {
       this.events.onSignIn(user);
     } else if (wasAuthenticated && !user && this.events.onSignOut) {
       this.events.onSignOut();
     }
-    
+
     this.notifyListeners(user);
   }
 }

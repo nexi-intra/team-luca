@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function DeploymentPage() {
   return (
@@ -7,5 +7,5 @@ export default function DeploymentPage() {
       description="Deploy and manage applications across different environments"
       ring="system-admins"
     />
-  )
+  );
 }

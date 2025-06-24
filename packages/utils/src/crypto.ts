@@ -1,4 +1,4 @@
-import { base64UrlEncode } from './core';
+import { base64UrlEncode } from "./core";
 
 /**
  * Cryptographic and security utilities
@@ -28,18 +28,18 @@ export function generateCodeVerifier(length: number = 128): string {
 export async function generateCodeChallenge(verifier: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(verifier);
-  const digest = await crypto.subtle.digest('SHA-256', data);
+  const digest = await crypto.subtle.digest("SHA-256", data);
   const base64Digest = btoa(String.fromCharCode(...new Uint8Array(digest)));
-  return base64Digest
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+  return base64Digest.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 /**
  * Generate a complete PKCE pair
  */
-export async function generatePKCE(): Promise<{ verifier: string; challenge: string }> {
+export async function generatePKCE(): Promise<{
+  verifier: string;
+  challenge: string;
+}> {
   const verifier = generateCodeVerifier();
   const challenge = await generateCodeChallenge(verifier);
   return { verifier, challenge };
@@ -51,25 +51,25 @@ export async function generatePKCE(): Promise<{ verifier: string; challenge: str
 export async function sha256(message: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(message);
-  const hash = await crypto.subtle.digest('SHA-256', data);
+  const hash = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(hash))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /**
  * Generate a cryptographically secure random UUID v4
  */
 export function generateUUID(): string {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
     return crypto.randomUUID();
   }
 
   // Fallback for environments without crypto.randomUUID
-  const template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+  const template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
   return template.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -81,8 +81,8 @@ export function generateHex(length: number = 16): string {
   const array = new Uint8Array(length / 2);
   crypto.getRandomValues(array);
   return Array.from(array)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /**
@@ -144,29 +144,33 @@ export function generatePassword(options: PasswordOptions = {}): string {
     excludeAmbiguous = true,
   } = options;
 
-  let charset = '';
-  
+  let charset = "";
+
   if (includeLowercase) {
-    charset += excludeAmbiguous ? 'abcdefghjkmnpqrstuvwxyz' : 'abcdefghijklmnopqrstuvwxyz';
+    charset += excludeAmbiguous
+      ? "abcdefghjkmnpqrstuvwxyz"
+      : "abcdefghijklmnopqrstuvwxyz";
   }
-  
+
   if (includeUppercase) {
-    charset += excludeAmbiguous ? 'ABCDEFGHJKLMNPQRSTUVWXYZ' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    charset += excludeAmbiguous
+      ? "ABCDEFGHJKLMNPQRSTUVWXYZ"
+      : "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   }
-  
+
   if (includeNumbers) {
-    charset += excludeAmbiguous ? '23456789' : '0123456789';
+    charset += excludeAmbiguous ? "23456789" : "0123456789";
   }
-  
+
   if (includeSymbols) {
-    charset += excludeAmbiguous ? '!@#$%^&*' : '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    charset += excludeAmbiguous ? "!@#$%^&*" : "!@#$%^&*()_+-=[]{}|;:,.<>?";
   }
 
   if (!charset) {
-    throw new Error('At least one character type must be included');
+    throw new Error("At least one character type must be included");
   }
 
-  let password = '';
+  let password = "";
   for (let i = 0; i < length; i++) {
     password += charset[secureRandomInt(0, charset.length - 1)];
   }

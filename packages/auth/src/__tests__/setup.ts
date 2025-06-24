@@ -37,8 +37,8 @@ if (!(global as any).window) {
 // Mock location if not already present
 if (!(global as any).window.location) {
   (global as any).window.location = {
-    origin: 'http://localhost:3000',
-    href: 'http://localhost:3000',
+    origin: "http://localhost:3000",
+    href: "http://localhost:3000",
   };
 }
 
@@ -74,7 +74,7 @@ const cryptoMock = {
 
 (global as any).TextDecoder = class {
   decode(bytes: Uint8Array): string {
-    let result = '';
+    let result = "";
     for (let i = 0; i < bytes.length; i++) {
       result += String.fromCharCode(bytes[i]);
     }

@@ -27,22 +27,26 @@ gh repo create my-app --template magicbutton/nextjs-template
 ### Local Development
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/your-username/your-app.git
 cd your-app
 ```
 
 2. Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.example .env.local
 ```
 
 4. Configure your Microsoft Entra ID application and update `.env.local`:
+
 ```env
 NEXT_PUBLIC_AUTH_CLIENT_ID=your-client-id
 NEXT_PUBLIC_AUTH_AUTHORITY=https://login.microsoftonline.com/your-tenant-id
@@ -54,6 +58,7 @@ SESSION_SECRET=your-secret-key
 ```
 
 5. Run the development server:
+
 ```bash
 pnpm run dev
 ```
@@ -65,11 +70,13 @@ Open [http://localhost:3000](http://localhost:3000) to see your app.
 The template includes a Koksmat Companion server for developer automation:
 
 1. Install companion dependencies:
+
 ```bash
 pnpm run koksmat:install
 ```
 
 2. Start the companion server (in a separate terminal):
+
 ```bash
 pnpm run koksmat:dev  # Development mode with hot reload
 # or
@@ -117,11 +124,11 @@ The template includes a ring-based feature deployment system:
 ### Using Feature Gates
 
 ```tsx
-import { FeatureGate } from '@/components/features/FeatureGate';
+import { FeatureGate } from "@/components/features/FeatureGate";
 
 <FeatureGate featureId="experimental-chat">
   <ExperimentalChat />
-</FeatureGate>
+</FeatureGate>;
 ```
 
 ### Defining Features
@@ -131,11 +138,11 @@ Edit `lib/features/constants.ts`:
 ```typescript
 export const FEATURES = {
   MY_FEATURE: {
-    id: 'my-feature',
-    name: 'My Feature',
-    description: 'Description of my feature',
+    id: "my-feature",
+    name: "My Feature",
+    description: "Description of my feature",
     ring: 2, // Preview feature
-    category: 'UI',
+    category: "UI",
   },
 };
 ```
@@ -163,7 +170,7 @@ npm run test:e2e:headed       # Run in headed browser
 Create test data using factories:
 
 ```typescript
-import { factories } from '@/tests/factories';
+import { factories } from "@/tests/factories";
 
 const user = await factories.user.admin().create();
 const features = await factories.feature.experimental().createMany(5);
@@ -176,6 +183,7 @@ The template uses Azure AD for authentication. Users must authenticate to access
 ### Demo Mode
 
 For development without Azure AD:
+
 1. Set `NEXT_PUBLIC_DEMO_MODE=true` in `.env.local`
 2. Use the demo login button on the homepage
 

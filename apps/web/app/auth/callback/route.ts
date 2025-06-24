@@ -1,27 +1,27 @@
-import { NextResponse } from 'next/server';
-import { config } from '@/lib/config';
-import { createLogger } from '@monorepo/logger';
+import { NextResponse } from "next/server";
+import { config } from "@/lib/config";
+import { createLogger } from "@monorepo/logger";
 
-const logger = createLogger('AuthCallbackRoute');
+const logger = createLogger("AuthCallbackRoute");
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const provider = config.get('auth.provider') as string;
-  
-  logger.info('Auth callback received', { 
+  const provider = config.get("auth.provider") as string;
+
+  logger.info("Auth callback received", {
     provider,
-    hasCode: requestUrl.searchParams.has('code'),
-    hasError: requestUrl.searchParams.has('error')
+    hasCode: requestUrl.searchParams.has("code"),
+    hasError: requestUrl.searchParams.has("error"),
   });
 
   // For Supabase, the client-side handler will process the callback
-  if (provider === 'supabase') {
+  if (provider === "supabase") {
     // Redirect to home and let the client-side handle the auth
-    return NextResponse.redirect(new URL('/', requestUrl.origin));
+    return NextResponse.redirect(new URL("/", requestUrl.origin));
   }
 
   // For Entra ID, the client-side handler will process the callback
-  if (provider === 'entraid') {
+  if (provider === "entraid") {
     // The client-side auth provider will handle the callback
     return new NextResponse(
       `
@@ -41,12 +41,12 @@ export async function GET(request: Request) {
       `,
       {
         headers: {
-          'Content-Type': 'text/html',
+          "Content-Type": "text/html",
         },
-      }
+      },
     );
   }
 
   // For unknown providers or 'none', redirect to home
-  return NextResponse.redirect(new URL('/', requestUrl.origin));
+  return NextResponse.redirect(new URL("/", requestUrl.origin));
 }

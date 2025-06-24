@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useBreadcrumb } from '@/lib/breadcrumb/context';
+import { useEffect } from "react";
+import { useBreadcrumb } from "@/lib/breadcrumb/context";
 
 /**
  * Hook to set a custom page title for the current breadcrumb

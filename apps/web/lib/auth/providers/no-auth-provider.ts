@@ -1,11 +1,11 @@
-import { IAuthProvider } from './types';
-import { User } from '../types';
+import { IAuthProvider } from "./types";
+import { User } from "../types";
 
 /**
  * No-auth provider for when authentication is disabled
  */
 export class NoAuthProvider implements IAuthProvider {
-  name: 'none' = 'none';
+  name: "none" = "none";
   private listeners: Set<(user: User | null) => void> = new Set();
 
   async initialize(): Promise<void> {
@@ -23,19 +23,19 @@ export class NoAuthProvider implements IAuthProvider {
   getUser(): User | null {
     // Return a default user when auth is disabled
     return {
-      id: 'anonymous',
-      email: 'anonymous@localhost',
-      name: 'Anonymous User',
-      givenName: 'Anonymous',
-      surname: 'User',
-      jobTitle: 'User',
-      officeLocation: 'Local',
-      preferredLanguage: 'en',
+      id: "anonymous",
+      email: "anonymous@localhost",
+      name: "Anonymous User",
+      givenName: "Anonymous",
+      surname: "User",
+      jobTitle: "User",
+      officeLocation: "Local",
+      preferredLanguage: "en",
       accessToken: null,
       idToken: null,
       refreshToken: null,
       expiresAt: null,
-      photo: null
+      photo: null,
     };
   }
 
@@ -52,7 +52,7 @@ export class NoAuthProvider implements IAuthProvider {
     this.listeners.add(callback);
     // Immediately call with the anonymous user
     callback(this.getUser());
-    
+
     return () => {
       this.listeners.delete(callback);
     };
@@ -65,7 +65,7 @@ export class NoAuthProvider implements IAuthProvider {
   getAuthState(): { isLoading: boolean; error: Error | null } {
     return {
       isLoading: false,
-      error: null
+      error: null,
     };
   }
 }

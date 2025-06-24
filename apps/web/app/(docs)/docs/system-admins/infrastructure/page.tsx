@@ -1,4 +1,4 @@
-import DocPlaceholder from '@/app/(docs)/components/DocPlaceholder'
+import DocPlaceholder from "@/app/(docs)/components/DocPlaceholder";
 
 export default function InfrastructurePage() {
   return (
@@ -7,5 +7,5 @@ export default function InfrastructurePage() {
       description="Design and manage the underlying infrastructure architecture"
       ring="system-admins"
     />
-  )
+  );
 }

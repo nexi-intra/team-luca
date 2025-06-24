@@ -1,4 +1,4 @@
-import { useFeatureRingContext } from '../context';
+import { useFeatureRingContext } from "../context";
 
 /**
  * Hook to get the current feature ring
