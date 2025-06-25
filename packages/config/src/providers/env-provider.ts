@@ -7,7 +7,7 @@ import { BaseConfigProvider } from "./base-provider";
 export class EnvConfigProvider<
   TConfig = any,
 > extends BaseConfigProvider<TConfig> {
-  private envMapping: EnvMapping;
+  protected envMapping: EnvMapping;
 
   constructor(schema: ConfigSchema, envMapping: EnvMapping) {
     super(schema);

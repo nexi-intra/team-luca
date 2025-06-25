@@ -7,7 +7,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { useAuth } from "@monorepo/auth";
+import { useAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 interface SessionContextValue {
@@ -22,7 +22,7 @@ const SessionContext = createContext<SessionContextValue | undefined>(
 );
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user, getAccessToken } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       setError(null);
 
       // Get the access token
-      const accessToken = await getAccessToken();
+      const accessToken = user.accessToken;
 
       // Exchange the auth token for a session cookie
       const response = await fetch("/api/auth/session", {
@@ -74,7 +74,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, user, router, getAccessToken]);
+  }, [isAuthenticated, user, router]);
 
   const refreshSession = useCallback(async () => {
     if (!isAuthenticated) {

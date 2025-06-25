@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { customAuthConfig } from "@/lib/auth/custom-auth-config";
 import { AuthLogger } from "@/lib/auth/logger";
 
 // Create logger instance
@@ -24,14 +23,32 @@ export async function POST(request: NextRequest) {
     }
 
     // Exchange authorization code for tokens
-    const tokenEndpoint = `${customAuthConfig.authority}/oauth2/v2.0/token`;
+    // Get auth config from environment variables
+    // Use server-side variables first, fallback to NEXT_PUBLIC_ variables
+    const clientId =
+      process.env.AUTH_CLIENT_ID || process.env.NEXT_PUBLIC_AUTH_CLIENT_ID;
+    const authority =
+      process.env.AUTH_AUTHORITY || process.env.NEXT_PUBLIC_AUTH_AUTHORITY;
+
+    if (!clientId || !authority) {
+      logger.error("Missing auth configuration", {
+        clientId: !!clientId,
+        authority: !!authority,
+      });
+      return NextResponse.json(
+        { error: "Server configuration error: Missing auth settings" },
+        { status: 500 },
+      );
+    }
+
+    const tokenEndpoint = `${authority}/oauth2/v2.0/token`;
     const tokenParams = {
       grant_type: "authorization_code",
-      client_id: customAuthConfig.clientId,
+      client_id: clientId,
       code,
-      redirect_uri: redirectUri || customAuthConfig.redirectUri,
+      redirect_uri: redirectUri,
       code_verifier: codeVerifier,
-      scope: customAuthConfig.scopes.join(" "),
+      scope: "openid profile email offline_access User.Read",
     };
 
     logger.info("Token exchange request", {
@@ -41,6 +58,7 @@ export async function POST(request: NextRequest) {
         code: tokenParams.code.substring(0, 10) + "...",
         code_verifier: "***",
       },
+      fullRedirectUri: tokenParams.redirect_uri,
     });
 
     const tokenResponse = await fetch(tokenEndpoint, {
@@ -54,14 +72,29 @@ export async function POST(request: NextRequest) {
     logger.info("Token response status", tokenResponse.status);
 
     if (!tokenResponse.ok) {
-      const error = await tokenResponse.text();
-      logger.info("Token exchange failed", {
+      const errorText = await tokenResponse.text();
+      let errorDetails;
+      try {
+        errorDetails = JSON.parse(errorText);
+      } catch {
+        errorDetails = { error: errorText };
+      }
+
+      logger.error("Token exchange failed", {
         status: tokenResponse.status,
-        error,
+        error: errorDetails,
+        tokenParams: {
+          ...tokenParams,
+          code: tokenParams.code.substring(0, 10) + "...",
+          code_verifier: "***",
+        },
       });
-      logger.error("Token exchange failed:", error);
+
       return NextResponse.json(
-        { error: "Failed to exchange code for tokens" },
+        {
+          error: "Failed to exchange code for tokens",
+          details: errorDetails,
+        },
         { status: tokenResponse.status },
       );
     }

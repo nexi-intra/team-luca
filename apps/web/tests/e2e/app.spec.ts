@@ -8,7 +8,7 @@ test.describe("App Navigation", () => {
     await expect(page).toHaveTitle(/Magic Button Assistant/);
 
     // Check if main content is visible
-    const mainContent = page.locator("main");
+    const mainContent = page.locator("main").first();
     await expect(mainContent).toBeVisible();
   });
 
@@ -46,7 +46,7 @@ test.describe("Responsive Design", () => {
     await page.goto("/");
 
     // Check if the page adapts to mobile view
-    const mainContent = page.locator("main");
+    const mainContent = page.locator("main").first();
     await expect(mainContent).toBeVisible();
 
     // Mobile menu should be available if implemented
@@ -61,7 +61,7 @@ test.describe("Responsive Design", () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/");
 
-    const mainContent = page.locator("main");
+    const mainContent = page.locator("main").first();
     await expect(mainContent).toBeVisible();
   });
 });
