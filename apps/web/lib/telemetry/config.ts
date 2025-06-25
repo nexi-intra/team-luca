@@ -32,9 +32,8 @@ export function getTelemetryConfig(): TelemetryConfig {
       ? undefined
       : config.get("telemetry.metricsEndpoint"),
     headers: config.getOrDefault("telemetry.headers", {}),
-    enableConsoleExporter:
-      config.getOrDefault("general.environment", "development") ===
-      "development",
+    // Console exporter is always disabled regardless of environment
+    enableConsoleExporter: false,
     samplingRate: config.getOrDefault("telemetry.samplingRate", 1.0),
   };
 }

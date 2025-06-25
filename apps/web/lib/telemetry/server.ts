@@ -5,10 +5,7 @@ import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentation
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
-import {
-  BatchSpanProcessor,
-  ConsoleSpanExporter,
-} from "@opentelemetry/sdk-trace-base";
+import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api";
 import { getTelemetryConfig, getResourceAttributes } from "./config";
 import { createSanitizingSpanProcessor } from "./processors";
@@ -30,7 +27,7 @@ export function initializeServerTelemetry() {
 
   const config = getTelemetryConfig();
 
-  if (!config.tracesEndpoint && !config.enableConsoleExporter) {
+  if (!config.tracesEndpoint) {
     logger.info("OpenTelemetry disabled - no endpoint configured");
     return;
   }
@@ -38,10 +35,8 @@ export function initializeServerTelemetry() {
   // Mark as initialized early to prevent race conditions
   isInitialized = true;
 
-  // Enable diagnostics in development
-  if (config.environment === "development") {
-    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
-  }
+  // Diagnostics are disabled - no console output
+  // diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
 
   logger.info("Initializing OpenTelemetry for server", {
     serviceName: config.serviceName,
@@ -57,13 +52,11 @@ export function initializeServerTelemetry() {
     [SemanticResourceAttributes.PROCESS_RUNTIME_VERSION]: process.version,
   });
 
-  // Create trace exporter
-  const traceExporter = config.tracesEndpoint
-    ? new OTLPTraceExporter({
-        url: config.tracesEndpoint,
-        headers: config.headers,
-      })
-    : new ConsoleSpanExporter();
+  // Create trace exporter - only OTLP exporter, no console fallback
+  const traceExporter = new OTLPTraceExporter({
+    url: config.tracesEndpoint,
+    headers: config.headers,
+  });
 
   // Create metric exporter
   const metricExporter = config.metricsEndpoint
