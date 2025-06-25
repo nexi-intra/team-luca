@@ -5,7 +5,7 @@ import { parseMarkdownScript } from "@/lib/demo/parser";
 
 export async function GET() {
   try {
-    const demoDir = path.join(process.cwd(), "demo");
+    const demoDir = path.join(process.cwd(), "..", "..", "demo");
     const files = await fs.readdir(demoDir);
 
     const scripts = await Promise.all(

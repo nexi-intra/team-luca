@@ -7,7 +7,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { useAuth } from "@monorepo/auth";
+import { useAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 interface SessionContextValue {

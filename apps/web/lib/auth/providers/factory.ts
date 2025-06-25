@@ -4,6 +4,7 @@ import { EntraIDAuthProvider } from "./entraid-provider";
 import { SupabaseAuthProvider } from "./supabase-provider";
 import { config } from "@/lib/config";
 import { createLogger } from "@monorepo/logger";
+import { getClientAuthConfig } from "../client-config";
 
 const logger = createLogger("AuthProviderFactory");
 
@@ -15,20 +16,54 @@ export class AuthProviderFactory {
    * Create an auth provider based on configuration
    */
   static create(): IAuthProvider {
-    const providerType = (config.get("auth.provider") as string) || "entraid";
+    let providerConfig: AuthProviderConfig;
+    let providerType: string;
 
-    logger.info("Creating auth provider", { provider: providerType });
+    // On client side, use direct env var access
+    if (typeof window !== "undefined") {
+      const clientConfig = getClientAuthConfig();
+      providerType = clientConfig.provider;
 
-    const providerConfig: AuthProviderConfig = {
-      provider: providerType as "none" | "entraid" | "supabase",
-      clientId: config.get("auth.clientId"),
-      authority: config.get("auth.authority"),
-      redirectUri: config.get("auth.redirectUri"),
-      postLogoutRedirectUri: config.get("auth.postLogoutRedirectUri"),
-      scopes: config.get("auth.scopes"),
-      supabaseUrl: config.get("auth.supabaseUrl"),
-      supabaseAnonKey: config.get("auth.supabaseAnonKey"),
-    };
+      logger.info("Creating auth provider (client)", {
+        provider: providerType,
+      });
+
+      providerConfig = {
+        provider: providerType as "none" | "entraid" | "supabase",
+        clientId: clientConfig.clientId,
+        authority: clientConfig.authority,
+        redirectUri: clientConfig.redirectUri,
+        postLogoutRedirectUri: clientConfig.postLogoutRedirectUri,
+        scopes: ["openid", "profile", "email", "offline_access", "User.Read"], // Default scopes
+        supabaseUrl: "", // Not needed for entraid
+        supabaseAnonKey: "", // Not needed for entraid
+      };
+
+      console.log("[AuthProviderFactory] Client-side config values:", {
+        provider: providerType,
+        clientId: providerConfig.clientId,
+        authority: providerConfig.authority,
+        redirectUri: providerConfig.redirectUri,
+      });
+    } else {
+      // On server side, use the config system
+      providerType = (config.get("auth.provider") as string) || "entraid";
+
+      logger.info("Creating auth provider (server)", {
+        provider: providerType,
+      });
+
+      providerConfig = {
+        provider: providerType as "none" | "entraid" | "supabase",
+        clientId: config.get("auth.clientId"),
+        authority: config.get("auth.authority"),
+        redirectUri: config.get("auth.redirectUri"),
+        postLogoutRedirectUri: config.get("auth.postLogoutRedirectUri"),
+        scopes: config.get("auth.scopes"),
+        supabaseUrl: config.get("auth.supabaseUrl"),
+        supabaseAnonKey: config.get("auth.supabaseAnonKey"),
+      };
+    }
 
     switch (providerType) {
       case "none":
