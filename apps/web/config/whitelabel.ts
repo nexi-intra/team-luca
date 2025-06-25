@@ -16,7 +16,7 @@ export const whitelabel = {
   // ========== BRANDING ==========
   branding: {
     // Application name - appears in headers, titles, and navigation
-    appName: "Team Luca",
+    appName: "Team Luca Assistant",
 
     // Short name - used in compact spaces
     appNameShort: "Team Luca",
@@ -25,7 +25,7 @@ export const whitelabel = {
     companyName: "Team Luca",
 
     // Tagline - appears on landing pages
-    tagline: "Your intelligent AI assistant powered by Anthropic Claude",
+    tagline: "Your intelligent assistant",
 
     // Logo paths - place your logos in /public directory
     logo: {

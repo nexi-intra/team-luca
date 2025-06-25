@@ -3,17 +3,18 @@ import { getGlobalProcessManager } from "@monorepo/powershell-runner";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const manager = getGlobalProcessManager();
-    const info = await manager.getProcessInfo(params.id);
+    const info = await manager.getProcessInfo(id);
 
     if (!info) {
       return NextResponse.json({ error: "Process not found" }, { status: 404 });
     }
 
-    const output = await manager.getProcessOutput(params.id);
+    const output = await manager.getProcessOutput(id);
 
     return NextResponse.json({ info, output });
   } catch (error) {
@@ -26,11 +27,12 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const manager = getGlobalProcessManager();
-    manager.killProcess(params.id);
+    manager.killProcess(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

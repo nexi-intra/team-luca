@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ProcessList } from "./components/ProcessList";
 import { ProcessDetails } from "./components/ProcessDetails";
 import { NewProcessForm } from "./components/NewProcessForm";
@@ -13,9 +13,31 @@ export default function ScriptsPage() {
   );
   const { processes, loading, error, refresh, startProcess } = useProcesses();
 
-  useSSE("/api/scripts/events", (event) => {
-    refresh();
-  });
+  // Add a regular polling interval as a fallback
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refresh();
+    }, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [refresh]);
+
+  // SSE for real-time updates
+  const handleSSEMessage = useCallback(
+    (event: any) => {
+      // Only refresh if it's a relevant event
+      if (
+        event.type === "process-started" ||
+        event.type === "process-ended" ||
+        event.type === "process-output"
+      ) {
+        refresh();
+      }
+    },
+    [refresh],
+  );
+
+  useSSE("/api/scripts/events", handleSSEMessage);
 
   return (
     <div className="container mx-auto p-4">

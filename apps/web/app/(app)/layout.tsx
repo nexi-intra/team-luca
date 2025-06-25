@@ -29,7 +29,14 @@ import {
 import { SidebarUserMenu } from "@/components/auth/SidebarUserMenu";
 import Image from "next/image";
 import Link from "next/link";
-import { Home, FileText, Settings, BarChart, Shield } from "lucide-react";
+import {
+  Home,
+  FileText,
+  Settings,
+  BarChart,
+  Shield,
+  FlaskConical,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const getSidebarItems = (routes: any) =>
@@ -114,6 +121,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/experimental"}
+                >
+                  <Link href="/experimental">
+                    <FlaskConical className="h-4 w-4" />
+                    <span>Experimental</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {routes.settings && (
                 <SidebarMenuItem>
                   <SidebarMenuButton
