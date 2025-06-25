@@ -208,7 +208,7 @@ export default function FeaturesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredFeatures.map((feature) => {
           const hasAccess = hasAccessToFeature(feature.id);
-          const Icon = ringIcons[feature.ring];
+          const Icon = ringIcons[feature.minRing];
 
           return (
             <Card
@@ -233,10 +233,10 @@ export default function FeaturesPage() {
                         <div
                           className={cn(
                             "w-2 h-2 rounded-full mr-1",
-                            ringColors[feature.ring],
+                            ringColors[feature.minRing],
                           )}
                         ></div>
-                        Ring {feature.ring}
+                        Ring {feature.minRing}
                       </Badge>
                       {feature.category && (
                         <Badge variant="secondary" className="text-xs">
@@ -255,13 +255,13 @@ export default function FeaturesPage() {
                   <div className="text-xs text-muted-foreground">
                     {hasAccess
                       ? "Available"
-                      : `Requires Ring ${feature.ring} or higher`}
+                      : `Requires Ring ${feature.minRing} or higher`}
                   </div>
-                  {!hasAccess && userRing > feature.ring && (
+                  {!hasAccess && userRing > feature.minRing && (
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleRingChange(feature.ring)}
+                      onClick={() => handleRingChange(feature.minRing)}
                     >
                       Enable Access
                     </Button>
