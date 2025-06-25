@@ -1,6 +1,6 @@
-# Magic Button Assistant Monorepo Template
+# Team Luca Monorepo
 
-This is a monorepo template for creating Magic Button AI Assistants.
+This is the Team Luca monorepo for AI-powered assistant applications.
 
 ## Structure
 
