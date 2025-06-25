@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SessionManager } from "@/lib/auth/session";
-import {
-  applySecurityHeaders,
-} from "@/lib/compliance/security-headers";
+import { applySecurityHeaders } from "@/lib/compliance/security-headers";
 import { auditLogger } from "@/lib/compliance/audit-logger";
 
 // Define protected routes that require authentication
@@ -81,8 +79,8 @@ export async function middleware(request: NextRequest) {
   response = applySecurityHeaders(response);
 
   // Explicitly remove any CSP header that might have been set
-  response.headers.delete('content-security-policy');
-  response.headers.delete('Content-Security-Policy');
+  response.headers.delete("content-security-policy");
+  response.headers.delete("Content-Security-Policy");
 
   return response;
 }

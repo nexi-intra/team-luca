@@ -40,9 +40,7 @@ export function getSecurityHeaders(): SecurityHeaders {
 
 // CSP functions have been removed - CSP is no longer implemented
 
-export function applySecurityHeaders(
-  response: NextResponse,
-): NextResponse {
+export function applySecurityHeaders(response: NextResponse): NextResponse {
   const headers = getSecurityHeaders();
 
   Object.entries(headers).forEach(([key, value]) => {
@@ -51,4 +49,3 @@ export function applySecurityHeaders(
 
   return response;
 }
-
