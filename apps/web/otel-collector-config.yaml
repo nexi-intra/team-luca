@@ -56,12 +56,12 @@ service:
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [otlp/jaeger, debug]
+      exporters: [otlp/jaeger]
     
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [prometheus, debug]
+      exporters: [prometheus]
 
   extensions: [health_check, pprof, zpages]
 

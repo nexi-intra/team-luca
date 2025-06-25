@@ -12,7 +12,7 @@ export default defineConfig({
     ["junit", { outputFile: "test-results/junit.xml" }],
   ],
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:2512",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:2803",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -41,10 +41,6 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
-    command: "pnpm build && pnpm start",
-    port: 2512,
-    timeout: 120 * 1000,
-    reuseExistingServer: !process.env.CI,
-  },
+  // For development testing, assume dev server is already running
+  // No webServer configuration - tests will use existing dev server
 });

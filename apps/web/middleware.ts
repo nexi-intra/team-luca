@@ -3,7 +3,6 @@ import type { NextRequest } from "next/server";
 import { SessionManager } from "@/lib/auth/session";
 import {
   applySecurityHeaders,
-  generateNonce,
 } from "@/lib/compliance/security-headers";
 import { auditLogger } from "@/lib/compliance/audit-logger";
 
@@ -20,9 +19,6 @@ const publicRoutes = [
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // Generate CSP nonce
-  const nonce = generateNonce();
 
   // Check if the route is protected
   const isProtectedRoute = protectedRoutes.some((route) =>
@@ -70,7 +66,6 @@ export async function middleware(request: NextRequest) {
       requestHeaders.set("x-user-id", session.userId);
       requestHeaders.set("x-user-email", session.email);
       requestHeaders.set("x-user-name", session.name);
-      requestHeaders.set("x-nonce", nonce);
 
       response = NextResponse.next({
         request: {
@@ -82,8 +77,12 @@ export async function middleware(request: NextRequest) {
     response = NextResponse.next();
   }
 
-  // Apply security headers to all responses
-  response = applySecurityHeaders(response, nonce);
+  // Apply security headers to all responses (without CSP)
+  response = applySecurityHeaders(response);
+
+  // Explicitly remove any CSP header that might have been set
+  response.headers.delete('content-security-policy');
+  response.headers.delete('Content-Security-Policy');
 
   return response;
 }

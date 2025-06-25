@@ -1,0 +1,4 @@
+
+> @monorepo/web@0.1.0 test:e2e:production /Users/niels/Code/magicbutton.cloud/templates/nextjs-template/apps/web
+> playwright test --config=playwright.config.ts "--reporter=json"
+

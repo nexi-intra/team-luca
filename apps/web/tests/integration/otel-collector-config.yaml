@@ -57,12 +57,12 @@ service:
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, attributes]
-      exporters: [otlp, debug]
+      exporters: [otlp]
     
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch, attributes]
-      exporters: [prometheus, debug]
+      exporters: [prometheus]
 
   extensions: [health_check, pprof, zpages]
 
