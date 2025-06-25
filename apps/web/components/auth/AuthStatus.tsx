@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useAuth } from "@monorepo/auth";
+import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { User, LogOut } from "lucide-react";

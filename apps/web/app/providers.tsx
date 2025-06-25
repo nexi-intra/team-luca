@@ -1,8 +1,7 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { AuthProvider } from "@monorepo/auth";
-import { AuthProviderFactory } from "@/lib/auth/providers/factory";
+import { AuthProvider } from "@/lib/auth/auth-provider";
 import { SessionProvider } from "@/lib/auth/session-context";
 import { FeatureRingProvider } from "@monorepo/features";
 import { DemoProvider } from "@/lib/demo/context";
@@ -41,7 +40,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           </div>
         }
       >
-        <AuthProvider provider={AuthProviderFactory.create()}>
+        <AuthProvider>
           <SessionProvider>
             <FeatureRingProvider initialRing={4}>
               <DemoProvider>

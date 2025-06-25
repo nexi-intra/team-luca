@@ -258,8 +258,8 @@ export const CustomAuthProvider: React.FC<CustomAuthProviderProps> = ({
           authWindowRef.current.close();
         }
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [config],
   );
 

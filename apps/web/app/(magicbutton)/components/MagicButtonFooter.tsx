@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@monorepo/auth";
+import { useAuth } from "@/lib/auth";
 import {
   useBranding,
   useWhitelabel,
