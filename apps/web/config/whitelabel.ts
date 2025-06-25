@@ -1,5 +1,5 @@
 /**
- * White-label configuration for the Team Luca template
+ * White-label configuration for the Magic Button Assistant template
  *
  * This file contains all the customizable aspects of the application that can be
  * modified when forking this template. By keeping all customizations in this file,
@@ -16,21 +16,21 @@ export const whitelabel = {
   // ========== BRANDING ==========
   branding: {
     // Application name - appears in headers, titles, and navigation
-    appName: "Team Luca",
+    appName: "Magic Button Assistant",
 
     // Short name - used in compact spaces
-    appNameShort: "Team Luca",
+    appNameShort: "Magic Button",
 
     // Company/Organization name
-    companyName: "Team Luca",
+    companyName: "Magic Button",
 
     // Tagline - appears on landing pages
     tagline: "Your intelligent AI assistant powered by Anthropic Claude",
 
     // Logo paths - place your logos in /public directory
     logo: {
-      light: "/team-luca-logo.svg",
-      dark: "/team-luca-logo.svg", // Can be different for dark mode
+      light: "/magic-button-logo.svg",
+      dark: "/magic-button-logo.svg", // Can be different for dark mode
       favicon: "/favicon.ico",
     },
 
@@ -62,7 +62,7 @@ export const whitelabel = {
     // Telemetry and monitoring
     telemetry: {
       enabled: true,
-      serviceName: "team-luca", // Used in OTEL traces
+      serviceName: "magic-button-assistant", // Used in OTEL traces
     },
 
     // Developer tools
@@ -146,7 +146,7 @@ export const whitelabel = {
     // Twitter Card
     twitter: {
       card: "summary_large_image",
-      creator: "@teamluca",
+      creator: "@magicbutton",
     },
   },
 
@@ -161,9 +161,9 @@ export const whitelabel = {
 
     // Support and feedback
     support: {
-      email: "support@teamluca.com",
-      docs: "https://docs.teamluca.com",
-      github: "https://github.com/team-luca/team-luca",
+      email: "support@magicbutton.cloud",
+      docs: "https://docs.magicbutton.cloud",
+      github: "https://github.com/magicbutton/magic-button-assistant",
     },
   },
 

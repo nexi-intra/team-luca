@@ -1,6 +1,6 @@
 # CLAUDE.md - Monorepo Guide
 
-This file provides guidance to Claude Code (claude.ai/code) when working with this Team Luca monorepo.
+This file provides guidance to Claude Code (claude.ai/code) when working with this Magic Button Assistant monorepo template.
 
 ## Monorepo Structure
 
@@ -106,3 +106,12 @@ When creating new shared packages:
 3. **Shared packages use TypeScript source** directly (no build step required for development)
 4. **The web app has its own CLAUDE-APP.md** with app-specific guidance
 5. **Git worktrees** are configured as requested - use `git worktree add -b <branchname> ../<branchname>` for new branches
+
+## Migration from Single Repo
+
+This monorepo was migrated from a single repository structure. Key changes:
+
+- Main app moved to `/apps/web`
+- Koksmat companion moved to `/apps/koksmat-companion`
+- Shared code can be extracted to `/packages/*` as needed
+- All dependencies managed centrally through pnpm workspaces
