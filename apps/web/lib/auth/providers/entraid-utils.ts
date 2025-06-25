@@ -29,15 +29,26 @@ export async function handleAuthCallback(
       body: JSON.stringify({
         code,
         codeVerifier,
-        redirectUri:
-          config.get("auth.redirectUri") ||
-          window.location.origin + "/auth/callback",
+        redirectUri: window.location.origin + "/",
       }),
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      return { success: false, error: `Failed to exchange code: ${error}` };
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { error: await response.text() };
+      }
+
+      console.error("Token exchange failed:", errorData);
+      return {
+        success: false,
+        error:
+          errorData.details?.error_description ||
+          errorData.error ||
+          "Failed to exchange code",
+      };
     }
 
     const data = await response.json();

@@ -19,6 +19,8 @@ export class EntraIDAuthProvider implements IAuthProvider {
   private listeners: Set<(user: User | null) => void> = new Set();
   private config: AuthProviderConfig;
   private refreshTimer: NodeJS.Timeout | null = null;
+  private isProcessingCallback = false;
+  private processedCodes = new Set<string>();
 
   constructor(config: AuthProviderConfig) {
     this.config = config;
@@ -49,16 +51,21 @@ export class EntraIDAuthProvider implements IAuthProvider {
       }
     }
 
-    // Handle auth callback if we're on the callback URL
-    if (
-      typeof window !== "undefined" &&
-      window.location.pathname === "/auth/callback"
-    ) {
-      await this.handleCallback();
+    // Handle auth callback if we have auth parameters in the URL
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (
+        params.has("code") &&
+        params.has("state") &&
+        !this.isProcessingCallback
+      ) {
+        await this.handleCallback();
+      }
     }
   }
 
-  async signIn(): Promise<void> {
+  async signIn(options?: { mode?: "popup" | "redirect" }): Promise<void> {
+    const mode = options?.mode || "popup"; // Default to popup
     const { clientId, authority, redirectUri, scopes } = this.config;
 
     if (!clientId || !authority) {
@@ -75,13 +82,17 @@ export class EntraIDAuthProvider implements IAuthProvider {
     sessionStorage.setItem("pkce_code_verifier", codeVerifier);
     sessionStorage.setItem("auth_state", state);
 
+    if (mode === "popup") {
+      sessionStorage.setItem("auth_popup", "true");
+    }
+
     const authUrl = new URL(`${authority}/oauth2/v2.0/authorize`);
     authUrl.searchParams.append("client_id", clientId);
     authUrl.searchParams.append("response_type", "code");
-    authUrl.searchParams.append(
-      "redirect_uri",
-      redirectUri || window.location.origin + "/auth/callback",
-    );
+
+    // Always use the current host with root path as callback
+    const callbackUrl = window.location.origin + "/";
+    authUrl.searchParams.append("redirect_uri", callbackUrl);
     authUrl.searchParams.append(
       "scope",
       (
@@ -93,7 +104,80 @@ export class EntraIDAuthProvider implements IAuthProvider {
     authUrl.searchParams.append("state", state);
     authUrl.searchParams.append("prompt", "select_account");
 
-    window.location.href = authUrl.toString();
+    if (mode === "redirect") {
+      // Traditional redirect flow
+      window.location.href = authUrl.toString();
+      return;
+    }
+
+    // Popup flow
+    const popupWidth = 500;
+    const popupHeight = 600;
+    const left = window.screenX + (window.outerWidth - popupWidth) / 2;
+    const top = window.screenY + (window.outerHeight - popupHeight) / 2;
+
+    const popup = window.open(
+      authUrl.toString(),
+      "EntraIDAuth",
+      `width=${popupWidth},height=${popupHeight},left=${left},top=${top},popup=yes`,
+    );
+
+    if (!popup) {
+      throw new Error(
+        "Failed to open authentication popup. Please allow popups for this site.",
+      );
+    }
+
+    // Monitor the popup
+    return new Promise((resolve, reject) => {
+      const checkInterval = setInterval(() => {
+        try {
+          if (popup.closed) {
+            clearInterval(checkInterval);
+            // Check if authentication was successful
+            const authUser = localStorage.getItem("auth_user");
+            if (authUser) {
+              resolve();
+            } else {
+              reject(new Error("Authentication cancelled"));
+            }
+          }
+        } catch (e) {
+          // Ignore cross-origin errors
+        }
+      }, 500);
+
+      // Listen for messages from the popup
+      const messageHandler = (event: MessageEvent) => {
+        if (event.data.type === "auth-success") {
+          clearInterval(checkInterval);
+          window.removeEventListener("message", messageHandler);
+          popup.close();
+
+          // Load the user data from localStorage that was set by the popup
+          const authUserStr = localStorage.getItem("auth_user");
+          if (authUserStr) {
+            try {
+              const authUser = JSON.parse(authUserStr);
+              this.currentUser = authUser;
+              this.notifyListeners();
+              this.scheduleTokenRefresh(authUser);
+            } catch (e) {
+              logger.error("Failed to parse auth user from localStorage", e);
+            }
+          }
+
+          resolve();
+        } else if (event.data.type === "auth-error") {
+          clearInterval(checkInterval);
+          window.removeEventListener("message", messageHandler);
+          popup.close();
+          reject(new Error(event.data.error || "Authentication failed"));
+        }
+      };
+
+      window.addEventListener("message", messageHandler);
+    });
   }
 
   async signOut(): Promise<void> {
@@ -114,7 +198,7 @@ export class EntraIDAuthProvider implements IAuthProvider {
       const logoutUrl = new URL(`${authority}/oauth2/v2.0/logout`);
       logoutUrl.searchParams.append(
         "post_logout_redirect_uri",
-        postLogoutRedirectUri || window.location.origin,
+        window.location.origin + "/",
       );
       window.location.href = logoutUrl.toString();
     }
@@ -153,14 +237,35 @@ export class EntraIDAuthProvider implements IAuthProvider {
   }
 
   async handleCallback(code?: string, state?: string): Promise<void> {
+    // Prevent duplicate processing
+    if (this.isProcessingCallback) {
+      logger.info("Already processing callback, skipping");
+      return;
+    }
+
+    this.isProcessingCallback = true;
+
     const params = new URLSearchParams(window.location.search);
     code = code || params.get("code") || undefined;
     state = state || params.get("state") || undefined;
 
     if (!code) {
       logger.error("No authorization code in callback");
+      this.isProcessingCallback = false;
       throw new Error("No authorization code received");
     }
+
+    // Check if we've already processed this code
+    if (this.processedCodes.has(code)) {
+      logger.info("Code already processed, skipping", {
+        code: code.substring(0, 10) + "...",
+      });
+      this.isProcessingCallback = false;
+      return;
+    }
+
+    // Mark this code as processed
+    this.processedCodes.add(code);
 
     try {
       const result = await handleAuthCallback(code, state);
@@ -171,16 +276,60 @@ export class EntraIDAuthProvider implements IAuthProvider {
         this.notifyListeners();
         this.scheduleTokenRefresh(result.user);
 
-        // Redirect to home or intended destination
-        window.location.href =
-          sessionStorage.getItem("auth_redirect_url") || "/";
-        sessionStorage.removeItem("auth_redirect_url");
+        // Check if this is a popup authentication
+        const isPopup = sessionStorage.getItem("auth_popup") === "true";
+        sessionStorage.removeItem("auth_popup");
+
+        if (isPopup) {
+          // Clean up the URL in the popup too
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+
+          // Send success message to parent window
+          if (window.opener) {
+            window.opener.postMessage({ type: "auth-success" }, "*");
+          }
+          // The popup will be closed by the parent window
+        } else {
+          // Clean up the URL by removing auth parameters
+          const redirectUrl =
+            sessionStorage.getItem("auth_redirect_url") || "/";
+          sessionStorage.removeItem("auth_redirect_url");
+
+          // Use replaceState to remove the auth parameters from the URL without adding to history
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+
+          // Navigate to the intended destination
+          window.location.href = redirectUrl;
+        }
       } else {
         throw new Error(result.error || "Authentication failed");
       }
     } catch (error) {
       logger.error("Failed to handle auth callback", error);
+
+      // Check if this is a popup authentication
+      const isPopup = sessionStorage.getItem("auth_popup") === "true";
+      sessionStorage.removeItem("auth_popup");
+
+      if (isPopup && window.opener) {
+        // Send error message to parent window
+        window.opener.postMessage(
+          {
+            type: "auth-error",
+            error:
+              error instanceof Error ? error.message : "Authentication failed",
+          },
+          "*",
+        );
+      }
+
+      this.isProcessingCallback = false;
       throw error;
+    } finally {
+      // Always reset the flag after processing
+      this.isProcessingCallback = false;
     }
   }
 
