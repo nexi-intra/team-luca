@@ -1,26 +1,51 @@
-# CLAUDE.md - Monorepo Guide
+# CLAUDE.md - Magic Button Assistant Monorepo Template
 
-This file provides guidance to Claude Code (claude.ai/code) when working with this Magic Button Assistant monorepo template.
+This file provides guidance to Claude Code (claude.ai/code) when working with this **Magic Button Assistant monorepo template**.
+
+## Template Overview
+
+This is a **template repository** for creating Magic Button Assistant applications. When using this template:
+
+- **Replace placeholder content** with your specific application logic
+- **Keep the monorepo structure** for scalability and code organization
+- **Follow the established patterns** for consistency
 
 ## Monorepo Structure
 
-This project is organized as a pnpm monorepo with the following structure:
+This template is organized as a pnpm monorepo with clear separation of concerns:
 
 ```
 /
-├── apps/
-│   ├── web/                 # Main Next.js web application
-│   └── koksmat-companion/   # Developer automation server
-├── packages/
+├── apps/                    # APPLICATION CODE GOES HERE
+│   ├── web/                 # Main Next.js web application (YOUR FRONTEND)
+│   │   ├── src/            # Replace with your app components
+│   │   ├── public/         # Your static assets
+│   │   └── ...             # Your app-specific config
+│   └── koksmat-companion/   # Developer automation server (BACKEND TOOLS)
+│       ├── src/            # Your automation scripts
+│       └── ...             # Your tool configurations
+├── packages/                # SHARED CODE GOES HERE
 │   ├── logger/             # Shared logging utilities
 │   ├── telemetry/          # OpenTelemetry configuration
 │   ├── config/             # Configuration management
-│   ├── types/              # Shared TypeScript types
-│   └── utils/              # Common utilities
-├── pnpm-workspace.yaml     # Workspace configuration
+│   ├── types/              # Shared TypeScript types (ADD YOUR TYPES)
+│   └── utils/              # Common utilities (ADD YOUR UTILS)
+├── pnpm-workspace.yaml     # Workspace configuration (DO NOT MODIFY)
 ├── package.json            # Root package with monorepo scripts
 └── tsconfig.base.json      # Base TypeScript configuration
 ```
+
+### Where to Put Your Code
+
+| Code Type | Location | Example |
+|-----------|----------|---------|
+| Frontend components | `/apps/web/src/components/` | `Button.tsx`, `Dashboard.tsx` |
+| API routes | `/apps/web/src/app/api/` | `route.ts` files |
+| Backend automation | `/apps/koksmat-companion/src/` | Scripts, tools, automations |
+| Shared types | `/packages/types/src/` | `user.ts`, `api.ts` |
+| Shared utilities | `/packages/utils/src/` | `formatters.ts`, `validators.ts` |
+| Configuration | `/packages/config/src/` | Environment-specific configs |
+| New shared package | `/packages/[name]/` | Create new package as needed |
 
 ## Monorepo Commands
 
@@ -107,11 +132,30 @@ When creating new shared packages:
 4. **The web app has its own CLAUDE-APP.md** with app-specific guidance
 5. **Git worktrees** are configured as requested - use `git worktree add -b <branchname> ../<branchname>` for new branches
 
-## Migration from Single Repo
+## Using This Template
 
-This monorepo was migrated from a single repository structure. Key changes:
+### Quick Start
 
-- Main app moved to `/apps/web`
-- Koksmat companion moved to `/apps/koksmat-companion`
-- Shared code can be extracted to `/packages/*` as needed
-- All dependencies managed centrally through pnpm workspaces
+1. **Clone/fork this template** for your new project
+2. **Update package names** in all `package.json` files to match your project
+3. **Replace template content** in `/apps/web` with your application
+4. **Add your shared code** to appropriate packages
+5. **Customize koksmat-companion** for your automation needs
+
+### Best Practices
+
+- **Apps contain application logic** - Put UI, API routes, and app-specific code here
+- **Packages contain shared code** - Extract reusable logic, types, and utilities
+- **Use TypeScript everywhere** - The template is fully typed for better DX
+- **Follow the monorepo patterns** - Consistency makes maintenance easier
+
+### Template Customization Points
+
+| What to Customize | Where | Notes |
+|-------------------|--------|-------|
+| App name/branding | `/apps/web/package.json`, app metadata | Update name, description |
+| API endpoints | `/apps/web/src/app/api/` | Add your routes |
+| UI components | `/apps/web/src/components/` | Replace with your UI |
+| Automation tools | `/apps/koksmat-companion/` | Add your scripts |
+| Shared types | `/packages/types/src/` | Define your domain types |
+| Environment config | `/packages/config/` | Add your env variables |
